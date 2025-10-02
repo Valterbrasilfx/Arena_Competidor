@@ -16,6 +16,7 @@
             --cor-whatsapp: #25D366; 
             --cor-alerta: #ffc107; 
             --cor-sucesso: #d4edda;
+            --cor-copia: #ff8c00; /* Laranja para o botão Copia e Cola */
         } 
         body { font-family: 'Roboto', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         header { width: 100%; text-align: center; padding: 20px 0; background-color: #000; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
@@ -56,6 +57,26 @@
         #pix-info strong { color: var(--cor-primaria); display: block; margin-top: 5px; }
         #pix-info .atencao { color: #cc0000; font-weight: bold; margin-top: 10px; display: block; font-size: 0.95rem; }
         
+        /* Estilo do Botão PIX Copia e Cola */
+        .pix-copia-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: var(--cor-copia);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            box-sizing: border-box;
+            margin-top: 10px;
+        }
+        .pix-copia-btn:hover { background-color: #e67e22; }
+
         .whatsapp-btn { 
             display: block; 
             width: 100%; 
@@ -96,76 +117,81 @@
     </header>
 
     <div class="main-content">
-       <h1>Confirmação de Pagamento PIX</h1>
-       <div class="confirmation-container">
-           
-           <div class="info-box">
-               <h2>👋 Quase lá!</h2>
-               <p>Preencha os dados abaixo e efetue o PIX. Depois, clique no botão WhatsApp para enviar o comprovante.</p>
-               <p style="font-weight: bold; color: var(--cor-secundaria);">O status da sua inscrição será atualizado para <span style="color: var(--cor-alerta);">EM ANÁLISE</span> após o envio do comprovante.</p>
-           </div>
-           
-           <div class="input-fields">
-                <label for="nome-atleta">Seu Nome Completo:</label>
-                <input type="text" id="nome-atleta" placeholder="Nome Completo do Atleta" required>
+        <h1>Confirmação de Pagamento PIX</h1>
+        <div class="confirmation-container">
+            
+            <div class="info-box">
+                <h2>👋 Quase lá!</h2>
+                <p>Preencha os dados abaixo e efetue o PIX. Depois, clique no botão WhatsApp para enviar o comprovante.</p>
+                <p style="font-weight: bold; color: var(--cor-secundaria);">O status da sua inscrição será atualizado para <span style="color: var(--cor-alerta);">EM ANÁLISE</span> após o envio do comprovante.</p>
+            </div>
+            
+            <div class="input-fields">
+                 <label for="nome-atleta">Seu Nome Completo:</label>
+                 <input type="text" id="nome-atleta" placeholder="Nome Completo do Atleta" required>
 
-                <label for="numero-ordem">Seu Número de Ordem (CPF, etc.):</label>
-                <input type="text" id="numero-ordem" placeholder="Ex: CPF ou Número de Inscrição" required>
+                 <label for="numero-ordem">Seu Número de Ordem (CPF, etc.):</label>
+                 <input type="text" id="numero-ordem" placeholder="Ex: CPF ou Número de Inscrição" required>
 
-                <label for="tipo-inscricao">Selecione o Tipo de Inscrição:</label>
-                <select id="tipo-inscricao">
-                    <option value="70.00">Apenas Categoria (R$ 70,00)</option>
-                    <option value="110.00">Categoria + Absoluto (R$ 110,00)</option>
-                </select>
-           </div>
-           
-           <table class="summary-table">
-               <thead>
-                   <tr>
-                       <th>Descrição</th>
-                       <th>Valor</th>
-                   </tr>
-               </thead>
-               <tbody>
-                   <tr>
-                       <td>Inscrição (Categoria + Peso)</td>
-                       <td>R$ 70,00</td>
-                   </tr>
-                   <tr id="linha-absoluto" style="display:none;">
-                       <td>Absoluto</td>
-                       <td>R$ 40,00</td>
-                   </tr>
-                   <tr class="total-row">
-                       <th>Total a Pagar</th>
-                       <td id="valor-total">R$ 70,00</td>
-                   </tr>
-               </tbody>
-           </table>
-           
-           <div class="pix-section">
-               <h2>Informações para Pagamento PIX</h2>
-               
-               <div id="pix-info">
-                   <p><strong>Evento:</strong> BBC Open de Jiu-Jitsu</p>
-                   <p>O pagamento deve ser feito por <b>Pix</b> para a seguinte conta:</p>
-                   <p><strong>Chave Pix:</strong> 62.810.446/0001-39 (CNPJ)</p>
-                   <p><strong>Identificação:</strong> 62.810.446 VALTER SILVA BRASIL</p>
-                   <strong class="atencao">IMPORTANTE:</strong>
-                   <p>Após realizar o pagamento, clique no botão abaixo para enviar o <b>Comprovante</b> para a organização via WhatsApp. A confirmação do status leva até 24h úteis.</p>
-               </div>
-               
-               <div class="qrcode-container">
-                   <h3>Escaneie o QR Code</h3>
-                   <img id="pix-qrcode-img" src="../../img/IMG_5482.jpg" alt="PIX QR Code" style="max-width: 200px;">
-               </div>
+                 <label for="tipo-inscricao">Selecione o Tipo de Inscrição:</label>
+                 <select id="tipo-inscricao">
+                     <option value="70.00">Apenas Categoria (R$ 70,00)</option>
+                     <option value="110.00">Categoria + Absoluto (R$ 110,00)</option>
+                 </select>
+            </div>
+            
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Descrição</th>
+                        <th>Valor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Inscrição (Categoria + Peso)</td>
+                        <td>R$ 70,00</td>
+                    </tr>
+                    <tr id="linha-absoluto" style="display:none;">
+                        <td>Absoluto</td>
+                        <td>R$ 40,00</td>
+                    </tr>
+                    <tr class="total-row">
+                        <th>Total a Pagar</th>
+                        <td id="valor-total">R$ 70,00</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="pix-section">
+                <h2>Informações para Pagamento PIX</h2>
                 
-               <a id="whatsapp-link" href="#" target="_blank" class="whatsapp-btn">
-                   Preencha os campos para enviar o Comprovante
-               </a>
+                <div id="pix-info">
+                    <p><strong>Evento:</strong> BBC Open de Jiu-Jitsu</p>
+                    <p>O pagamento deve ser feito por <b>Pix</b> para a seguinte conta:</p>
+                    <p><strong>Chave Pix:</strong> 62.810.446/0001-39 (CNPJ)</p>
+                    <p><strong>Identificação:</strong> 62.810.446 VALTER SILVA BRASIL</p>
+                    <strong class="atencao">IMPORTANTE:</strong>
+                    <p>Após realizar o pagamento, clique no botão abaixo para enviar o <b>Comprovante</b> para a organização via WhatsApp. A confirmação do status leva até 24h úteis.</p>
+                </div>
+                
+                <div class="qrcode-container">
+                    <h3>Escaneie o QR Code</h3>
+                    <img id="pix-qrcode-img" src="../../img/IMG_5482.jpg" alt="PIX QR Code" style="max-width: 200px;">
+                </div>
+                
+                <div id="pix-copia-e-cola-container">
+                    <button class="pix-copia-btn" onclick="copiarPix()">
+                        <span id="copia-text">Copiar Chave Pix Copia e Cola</span> 📋
+                    </button>
+                    </div>
+                <a id="whatsapp-link" href="#" target="_blank" class="whatsapp-btn">
+                    Preencha os campos para enviar o Comprovante
+                </a>
 
-           </div>
-           
-       </div>
+            </div>
+            
+        </div>
     </div>
 
     <div class="footer">
@@ -179,7 +205,11 @@
         const linhaAbsoluto = document.getElementById('linha-absoluto');
         const valorTotalElement = document.getElementById('valor-total');
         const whatsappLink = document.getElementById('whatsapp-link');
-        
+        const copiaText = document.getElementById('copia-text');
+
+        // Código PIX Copia e Cola
+        const pixCopiaECola = '00020126360014br.gov.bcb.pix0114628104460001395204000053039865802BR592462.810.446 VALTER SILVA 6009Sao Paulo610901227-20062240520daqr27030924361048376304C2FA';
+
         // --- FUNÇÃO PARA ATUALIZAR A TABELA E O LINK DO WHATSAPP ---
         function atualizarDados() {
             const valor = parseFloat(tipoInscricaoSelect.value);
@@ -219,10 +249,26 @@
             }
         }
 
+        // --- NOVA FUNÇÃO PARA COPIAR O CÓDIGO PIX ---
+        function copiarPix() {
+            navigator.clipboard.writeText(pixCopiaECola).then(() => {
+                copiaText.innerText = 'Copiado! ✅ Cole no seu App do Banco';
+                setTimeout(() => {
+                    copiaText.innerText = 'Copiar Chave Pix Copia e Cola';
+                }, 3000);
+            }, (err) => {
+                // Mensagem alternativa caso a cópia falhe (ex: navegador antigo)
+                alert(`Não foi possível copiar automaticamente. Copie o código abaixo:\n\n${pixCopiaECola}`);
+            });
+        }
+
         // --- EVENT LISTENERS ---
         nomeAtletaInput.addEventListener('input', atualizarDados);
         numeroOrdemInput.addEventListener('input', atualizarDados);
         tipoInscricaoSelect.addEventListener('change', atualizarDados);
+        
+        // Expor a função copiarPix globalmente para o onclick no HTML
+        window.copiarPix = copiarPix;
         
         // Chamada inicial
         document.addEventListener('DOMContentLoaded', atualizarDados);
