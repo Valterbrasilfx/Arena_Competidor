@@ -72,14 +72,14 @@
                        <p><strong>Chave Pix:</strong> 62.810.446/0001-39 (CNPJ)</p>
                        <p><strong>Identificação:</strong> 62.810.446 VALTER SILVA BRASIL</p>
                        <strong class="atencao">ATENÇÃO:</strong>
-                       <p>Enviar o <b>Comprovante do Pagamento</b> clicando no botão abaixo. A validação é feita pela organização do campeonato (BBC OPEN), favor aguardar. Ao enviar o comprovante, a situação do pagamento via <b>Em Análise</b> na página Inscrições Realizadas na conta do Responsável ou Atleta após acesso.</p>
+                       <p>Enviar o <b>Comprovante do Pagamento</b> clicando no botão abaixo. A validação é feita pela organização do campeonato (BBC OPEN), favor aguardar. Ao enviar o comprovante, a situação do pagamento fica <b>Em Análise</b> na página de checagem, depois de confirmada pela organização passa para o status de Confirmada.</p>
                    </div>
                    
                    <h3>Escaneie o QR Code</h3>
                    <img id="pix-qrcode-img" src="img/IMG_5467.jpg" alt="PIX QR Code Simulado" style="max-width: 250px; border: 1px solid #ccc; padding: 5px; display: block; margin: 0 auto;">
                    
                 
-                   <a href="https://api.whatsapp.com/send?phone=5584987513740&text=Ol%C3%A1%2C%20segue%20o%20comprovante%20de%20pagamento%20da%20inscri%C3%A7%C3%A3o%20do%20atleta%20[NOME_DO_ATLETA]%20para%20o%20BBC%20Open%20de%20Jiu-Jitsu." target="_blank" class="btn-pay whatsapp">
+                   <a href="#" target="_blank" class="btn-pay whatsapp">
                        Envie o comprovante pelo WhatsApp
                    </a>
 
@@ -94,30 +94,34 @@
     </div>
 
     <script>
-        let atletaNome = 'Atleta Desconhecido'; 
-
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const atleta = params.get('atleta');
             const categoria = params.get('categoria');
+            // Converte o valor recebido na URL para float
             const valor = parseFloat(params.get('valor')); 
+            // Formata para 2 casas decimais, tratando caso seja inválido
             const valorFormatado = (isNaN(valor) ? '0.00' : valor.toFixed(2));
             
+            // Verifica se os dados necessários foram recebidos
             if (atleta && categoria && !isNaN(valor)) {
-                atletaNome = atleta; 
+                // Atualiza os elementos de resumo
                 document.getElementById('nome-atleta').innerText = atleta;
                 document.getElementById('categoria-atleta').innerText = categoria;
-              
+                // Exibe o valor formatado para Real
                 document.getElementById('valor-pagamento').innerText = `R$ ${valorFormatado.replace('.', ',')}`;
-
-              
+                
+                // --- Atualiza o link do WhatsApp ---
                 const whatsappLink = document.querySelector('.btn-pay.whatsapp');
                 if (whatsappLink) {
-                    const baseText = "Ol%C3%A1%2C%20segue%20o%20comprovante%20de%20pagamento%20da%20inscri%C3%A7%C3%A3o%20do%20atleta%20" + encodeURIComponent(atletaNome) + "%20para%20o%20BBC%20Open%20de%20Jiu-Jitsu.";
-                    whatsappLink.href = `https://api.whatsapp.com/send?phone=SEU_NUMERO_WHATSAPP&text=${baseText}`;
+                    // Texto base da mensagem, usando o nome do atleta (URI-encoded para a URL)
+                    const baseText = "Ol%C3%A1%2C%20segue%20o%20comprovante%20de%20pagamento%20da%20inscri%C3%A7%C3%A3o%20do%20atleta%20" + encodeURIComponent(atleta) + "%20para%20o%20BBC%20Open%20de%20Jiu-Jitsu.";
+                    // Número da organização para recebimento de comprovante
+                    whatsappLink.href = `https://api.whatsapp.com/send?phone=5584987513740&text=${baseText}`;
                 }
 
             } else {
+                // Se falhar, exibe mensagem de erro
                 document.querySelector('.payment-summary').innerHTML = '<h2>Erro</h2><p>Não foi possível carregar os dados da inscrição. Por favor, volte e tente novamente.</p>';
                 document.querySelector('.payment-form').style.display = 'none';
             }
@@ -126,43 +130,14 @@
         const btnPix = document.getElementById('btn-pix');
         const pixContainer = document.getElementById('pix-container');
 
-        btnPix.addEventListener('click', async () => {
-           
-            
+        // Lógica para exibir o container PIX ao clicar no botão
+        btnPix.addEventListener('click', () => {
             btnPix.innerText = 'Informações PIX exibidas';
             btnPix.disabled = true;
             pixContainer.style.display = 'block';
-            
-            
         });
 
-        document.getElementById('btn-copiar').addEventListener('click', () => {
-            const inputCopiaCola = document.getElementById('pix-copia-cola');
-            
-            
-            if(inputCopiaCola.value === "CÓDIGO_PIX_COPIA_E_COLA_SERA_GERADO_AQUI") {
-                alert('O código PIX real ainda não foi gerado. Se o sistema estiver no ar, o QR Code e o código aparecerão automaticamente.');
-                return;
-            }
-            
-            inputCopiaCola.select();
-            inputCopiaCola.setSelectionRange(0, 99999); 
-            
-            
-            if (navigator.clipboard) {
-                 navigator.clipboard.writeText(inputCopiaCola.value).then(() => {
-                    alert('Código PIX copiado!');
-                 }).catch(err => {
-                    
-                    document.execCommand('copy');
-                    alert('Código PIX copiado! (Fallback)');
-                 });
-            } else {
-               
-                document.execCommand('copy');
-                alert('Código PIX copiado! (Fallback)');
-            }
-        });
+        // Removidas as funções de copiar PIX que referenciavam elementos inexistentes
     </script>
 </body>
 </html>
