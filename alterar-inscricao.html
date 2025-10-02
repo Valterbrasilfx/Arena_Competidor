@@ -14,6 +14,7 @@
             --cor-fundo: #f8f9fa;
             --cor-texto: #495057;
             --cor-borda: #dee2e6;
+            --cor-alerta: #ffc107; /* Amarelo para destaque do aviso */
         }
 
         body {
@@ -58,9 +59,12 @@
             font-weight: 700;
         }
 
-        .formulario-acesso, .formulario-edicao {
-            background-color: #fff;
-            padding: 40px;
+        /* Novo estilo para a caixa de aviso */
+        .aviso-data {
+            background-color: #fff3cd; /* Amarelo claro de alerta */
+            border: 2px solid var(--cor-alerta);
+            color: #856404; /* Cor de texto escura para contraste */
+            padding: 30px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             text-align: center;
@@ -70,55 +74,18 @@
             margin-right: auto;
         }
 
-        .formulario-acesso .form-group, .formulario-edicao .form-group {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 20px;
-        }
-        
-        label {
-            font-weight: bold;
-            margin-bottom: 5px;
-            text-align: left;
+        .aviso-data h2 {
+            color: #856404;
+            margin-top: 0;
+            font-size: 1.8rem;
         }
 
-        input[type="text"], input[type="date"], select {
-            padding: 12px;
-            border: 1px solid var(--cor-borda);
-            border-radius: 4px;
-            font-size: 1rem;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: var(--cor-destaque);
-            color: #fff;
-            padding: 15px 20px;
-            border: none;
-            border-radius: 4px;
+        .aviso-data p {
             font-size: 1.2rem;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #218838;
+            font-weight: 500;
+            margin: 15px 0 0 0;
         }
         
-        .aviso-erro {
-            color: #dc3545;
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
-        .aviso-sucesso {
-            color: var(--cor-destaque);
-            font-weight: bold;
-            margin-top: 10px;
-        }
-
         .footer {
             margin-top: auto;
             padding: 20px 0;
@@ -128,11 +95,16 @@
             color: #6c757d;
         }
 
-        .nome-atleta {
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: var(--cor-secundaria);
-            margin-bottom: 15px;
+        @media (max-width: 600px) {
+            .aviso-data {
+                padding: 20px;
+            }
+            .aviso-data h2 {
+                font-size: 1.5rem;
+            }
+            .aviso-data p {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -145,98 +117,17 @@
     <div class="main-content">
         <h1>Alterar Inscrição</h1>
         
-        <div class="formulario-acesso" id="formularioAcesso">
-            <h2>Acessar Inscrição</h2>
-            <div class="form-group">
-                <label for="numeroInscricao">Número de Inscrição:</label>
-                <input type="text" id="numeroInscricao" required placeholder="Ex: A1B2">
-            </div>
-            <div class="form-group">
-                <label for="dataNascimento">Data de Nascimento:</label>
-                <input type="date" id="dataNascimento" required>
-            </div>
-            <button id="btnAcessar">Acessar e Alterar</button>
-            <p id="avisoValidacao" class="aviso-erro" style="display:none;"></p>
+        <div class="aviso-data">
+            <h2>🔒 Alterações Temporariamente Fechadas</h2>
+            <p>As alterações nas inscrições serão liberadas a partir de <b>10 de Novembro</b>.</p>
+            <p>Por favor, retorne nesta data para acessar e editar seus dados.</p>
         </div>
         
-        <div class="formulario-edicao" id="formularioEdicao" style="display:none;">
-            <h2>Editar Dados</h2>
-            <p class="aviso-sucesso">Dados encontrados!</p>
-            <p>Atleta: <span class="nome-atleta" id="nomeAtleta"></span></p>
-
-            <div class="form-group">
-                <label for="faixa">Faixa:</label>
-                <select id="faixa">
-                    <option value="branca">Branca</option>
-                    <option value="azul">Azul</option>
-                    <option value="roxa">Roxa</option>
-                    <option value="marrom">Marrom</option>
-                    <option value="preta">Preta</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="peso">Peso:</label>
-                <select id="peso">
-                    <option value="galo">Galo</option>
-                    <option value="pluma">Pluma</option>
-                    <option value="pena">Pena</option>
-                    <option value="leve">Leve</option>
-                    <option value="medio">Médio</option>
-                    <option value="meio-pesado">Meio-Pesado</option>
-                    <option value="pesado">Pesado</option>
-                    <option value="super-pesado">Super Pesado</option>
-                    <option value="pesadissimo">Pesadíssimo</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="categoria">Categoria de Idade:</label>
-                <select id="categoria">
-                    <option value="juvenil">Juvenil</option>
-                    <option value="adulto">Adulto</option>
-                    <option value="master">Master</option>
-                    </select>
-            </div>
-            <button id="btnSalvar">Salvar Alterações</button>
         </div>
-    </div>
     
     <div class="footer">
         &copy; 2025 Arena Competidor. Todos os direitos reservados.
     </div>
 
-    <script>
-        const btnAcessar = document.getElementById('btnAcessar');
-        const formularioAcesso = document.getElementById('formularioAcesso');
-        const formularioEdicao = document.getElementById('formularioEdicao');
-        const avisoValidacao = document.getElementById('avisoValidacao');
-        const nomeAtletaSpan = document.getElementById('nomeAtleta');
-
-        // Lógica de demonstração 
-        btnAcessar.addEventListener('click', function() {
-            const numeroInscricao = document.getElementById('numeroInscricao').value;
-            const dataNascimento = document.getElementById('dataNascimento').value;
-
-            // Simulação "fake"
-            if (numeroInscricao === 'A1B2' && dataNascimento === '1990-01-01') {
-               
-                formularioAcesso.style.display = 'none';
-
-               
-                formularioEdicao.style.display = 'block';
-
-                // Simulação
-                nomeAtletaSpan.innerText = 'Joãozinho';
-            } else {
-                formularioEdicao.style.display = 'none';
-                avisoValidacao.innerText = 'Número de inscrição ou data de nascimento incorretos.';
-                avisoValidacao.style.display = 'block';
-            }
-        });
-
-        const btnSalvar = document.getElementById('btnSalvar');
-        btnSalvar.addEventListener('click', function() {
-            alert('As alterações foram salvas com sucesso!');
-        });
-    </script>
-</body>
+    </body>
 </html>
