@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arena Competidor | Confirmação de Pagamento</title>
+    <title>Arena Competidor | Confirmação de Pagamento PIX</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
         :root { 
             --cor-primaria: #007bff; 
             --cor-secundaria: #343a40; 
-            --cor-destaque: #28a745; /* Verde de sucesso */
+            --cor-destaque: #28a745; 
             --cor-fundo: #f8f9fa; 
             --cor-texto: #495057; 
             --cor-borda: #dee2e6; 
@@ -25,10 +25,22 @@
         
         .confirmation-container { background-color: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; align-items: center; text-align: center; }
         
-        /* Box de Sucesso */
-        .success-box { background-color: var(--cor-sucesso); color: #155724; border: 1px solid #c3e6cb; padding: 20px; border-radius: 5px; margin-bottom: 30px; width: 100%; box-sizing: border-box; }
-        .success-box h2 { color: #155724; margin-top: 0; font-size: 1.8rem; }
-        .success-box p { font-size: 1.1rem; }
+        /* Box de Informação */
+        .info-box { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 20px; border-radius: 5px; margin-bottom: 30px; width: 100%; box-sizing: border-box; }
+        .info-box h2 { color: #856404; margin-top: 0; font-size: 1.8rem; }
+        .info-box p { font-size: 1.1rem; }
+
+        /* Campos de Preenchimento */
+        .input-fields { width: 100%; margin-bottom: 30px; text-align: left; }
+        .input-fields label { display: block; font-weight: bold; margin-bottom: 5px; color: var(--cor-secundaria); }
+        .input-fields input, .input-fields select { 
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 15px; 
+            border: 1px solid var(--cor-borda); 
+            border-radius: 4px; 
+            box-sizing: border-box; 
+        }
 
         /* Tabela de Resumo */
         .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
@@ -36,10 +48,6 @@
         .summary-table th { background-color: #f1f1f1; color: var(--cor-secundaria); font-weight: bold; }
         .summary-table .total-row th, .summary-table .total-row td { background-color: var(--cor-primaria); color: #fff; font-size: 1.2rem; font-weight: bold; }
         
-        /* Detalhes do Atleta */
-        .atleta-details { text-align: left; margin-bottom: 20px; padding: 15px; border: 1px dashed var(--cor-borda); border-radius: 5px; width: 100%; box-sizing: border-box; }
-        .atleta-details p strong { color: var(--cor-primaria); }
-
         /* PIX e WhatsApp */
         .pix-section { border-top: 2px solid var(--cor-destaque); padding-top: 30px; width: 100%; }
         .pix-section h2 { color: var(--cor-secundaria); font-size: 1.8rem; margin-bottom: 20px; text-align: center; }
@@ -48,36 +56,67 @@
         #pix-info strong { color: var(--cor-primaria); display: block; margin-top: 5px; }
         #pix-info .atencao { color: #cc0000; font-weight: bold; margin-top: 10px; display: block; font-size: 0.95rem; }
         
-        .whatsapp-btn { display: block; width: 100%; padding: 15px; font-size: 1.2rem; font-weight: bold; color: #fff; background-color: var(--cor-whatsapp); border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; text-decoration: none; text-align: center; box-sizing: border-box; margin-top: 20px; }
-        .whatsapp-btn:hover { background-color: #1DA851; }
+        .whatsapp-btn { 
+            display: block; 
+            width: 100%; 
+            padding: 15px; 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            color: #fff; 
+            background-color: var(--cor-whatsapp); 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+            text-decoration: none; 
+            text-align: center; 
+            box-sizing: border-box; 
+            margin-top: 20px; 
+            pointer-events: none; /* Desabilita até que os campos sejam preenchidos */
+            opacity: 0.5;
+        }
+        .whatsapp-btn.enabled {
+            pointer-events: auto;
+            opacity: 1;
+        }
+        .whatsapp-btn.enabled:hover { background-color: #1DA851; }
 
         .qrcode-container { text-align: center; margin-top: 20px; }
         .qrcode-container img { max-width: 200px; border: 1px solid #ccc; padding: 5px; }
 
         .footer { margin-top: auto; padding: 20px 0; width: 100%; text-align: center; font-size: 0.9rem; color: #6c757d; }
 
-        @media (max-width: 768px) { header { padding: 15px 0; position: static; } header img { max-width: 150px; } .main-content { margin-top: 30px; width: 95%; } h1 { font-size: 2rem; margin-bottom: 20px; } .confirmation-container { padding: 20px; box-shadow: none; } .success-box h2 { font-size: 1.5rem; } .summary-table th, .summary-table td { padding: 10px; font-size: 0.95rem; } .summary-table .total-row th, .summary-table .total-row td { font-size: 1.1rem; } }
+        @media (max-width: 768px) { header { padding: 15px 0; position: static; } header img { max-width: 150px; } .main-content { margin-top: 30px; width: 95%; } h1 { font-size: 2rem; margin-bottom: 20px; } .confirmation-container { padding: 20px; box-shadow: none; } .info-box h2 { font-size: 1.5rem; } .summary-table th, .summary-table td { padding: 10px; font-size: 0.95rem; } .summary-table .total-row th, .summary-table .total-row td { font-size: 1.1rem; } }
     </style>
 </head>
 <body>
 
     <header>
-        <img src="img/arena2.png" alt="Arena Competidor Logo">
+        <img src="../../img/arena2.png" alt="Arena Competidor Logo">
     </header>
 
     <div class="main-content">
-       <h1>Confirmação de Inscrição</h1>
+       <h1>Confirmação de Pagamento PIX</h1>
        <div class="confirmation-container">
            
-           <div class="success-box">
-               <h2>✅ Inscrição Salva com Sucesso!</h2>
-               <p>Seus dados foram registrados. Para validar sua participação, você precisa efetuar e comprovar o pagamento.</p>
-               <p style="font-weight: bold; color: var(--cor-secundaria);">Seu status atual na checagem é: <span style="color: var(--cor-alerta);">EM ANÁLISE</span></p>
+           <div class="info-box">
+               <h2>👋 Quase lá!</h2>
+               <p>Preencha os dados abaixo e efetue o PIX. Depois, clique no botão WhatsApp para enviar o comprovante.</p>
+               <p style="font-weight: bold; color: var(--cor-secundaria);">O status da sua inscrição será atualizado para <span style="color: var(--cor-alerta);">EM ANÁLISE</span> após o envio do comprovante.</p>
            </div>
            
-           <div class="atleta-details">
-               <p><strong>Atleta:</strong> <span id="nome-atleta">Carregando...</span></p>
-               <p><strong>Categoria de Idade:</strong> <span id="categoria-atleta">Carregando...</span></p>
+           <div class="input-fields">
+                <label for="nome-atleta">Seu Nome Completo:</label>
+                <input type="text" id="nome-atleta" placeholder="Nome Completo do Atleta" required>
+
+                <label for="numero-ordem">Seu Número de Ordem (CPF, etc.):</label>
+                <input type="text" id="numero-ordem" placeholder="Ex: CPF ou Número de Inscrição" required>
+
+                <label for="tipo-inscricao">Selecione o Tipo de Inscrição:</label>
+                <select id="tipo-inscricao">
+                    <option value="70.00">Apenas Categoria (R$ 70,00)</option>
+                    <option value="110.00">Categoria + Absoluto (R$ 110,00)</option>
+                </select>
            </div>
            
            <table class="summary-table">
@@ -112,16 +151,16 @@
                    <p><strong>Chave Pix:</strong> 62.810.446/0001-39 (CNPJ)</p>
                    <p><strong>Identificação:</strong> 62.810.446 VALTER SILVA BRASIL</p>
                    <strong class="atencao">IMPORTANTE:</strong>
-                   <p>Após realizar o pagamento, clique no botão abaixo para enviar o **Comprovante** para a organização via WhatsApp. A confirmação do status leva até 24h úteis.</p>
+                   <p>Após realizar o pagamento, clique no botão abaixo para enviar o <b>Comprovante</b> para a organização via WhatsApp. A confirmação do status leva até 24h úteis.</p>
                </div>
                
                <div class="qrcode-container">
                    <h3>Escaneie o QR Code</h3>
-                   <img id="pix-qrcode-img" src="img/IMG_5467.jpg" alt="PIX QR Code" style="max-width: 250px;">
+                   <img id="pix-qrcode-img" src="../../img/IMG_5467.jpg" alt="PIX QR Code" style="max-width: 200px;">
                </div>
                 
                <a id="whatsapp-link" href="#" target="_blank" class="whatsapp-btn">
-                   Envie o Comprovante pelo WhatsApp
+                   Preencha os campos para enviar o Comprovante
                </a>
 
            </div>
@@ -134,46 +173,59 @@
     </div>
 
     <script>
-        window.addEventListener('DOMContentLoaded', () => {
-            const params = new URLSearchParams(window.location.search);
-            const atleta = params.get('atleta');
-            const categoria = params.get('categoria');
-            // Converte o valor recebido na URL para float
-            const valor = parseFloat(params.get('valor')); 
-            
-            // Verifica se os dados necessários foram recebidos
-            if (atleta && categoria && !isNaN(valor)) {
-                // Atualiza os elementos de resumo
-                document.getElementById('nome-atleta').innerText = atleta;
-                document.getElementById('categoria-atleta').innerText = categoria;
-                
-                // Formata o valor para Real
-                const valorFormatado = valor.toFixed(2).replace('.', ',');
-                document.getElementById('valor-total').innerText = `R$ ${valorFormatado}`;
+        const nomeAtletaInput = document.getElementById('nome-atleta');
+        const numeroOrdemInput = document.getElementById('numero-ordem');
+        const tipoInscricaoSelect = document.getElementById('tipo-inscricao');
+        const linhaAbsoluto = document.getElementById('linha-absoluto');
+        const valorTotalElement = document.getElementById('valor-total');
+        const whatsappLink = document.getElementById('whatsapp-link');
+        
+        // --- FUNÇÃO PARA ATUALIZAR A TABELA E O LINK DO WHATSAPP ---
+        function atualizarDados() {
+            const valor = parseFloat(tipoInscricaoSelect.value);
+            const nome = nomeAtletaInput.value.trim();
+            const ordem = numeroOrdemInput.value.trim();
+            const valorFormatado = valor.toFixed(2).replace('.', ',');
 
-                // Lógica da Tabela (Absoluto)
-                const linhaAbsoluto = document.getElementById('linha-absoluto');
-                // Se o valor for 110.00 (70 + 40), mostra a linha do Absoluto
-                if (Math.abs(valor - 110.00) < 0.01) { 
-                    linhaAbsoluto.style.display = 'table-row';
-                } else {
-                    linhaAbsoluto.style.display = 'none';
-                }
-                
-                // --- Atualiza o link do WhatsApp ---
-                const whatsappLink = document.getElementById('whatsapp-link');
-                if (whatsappLink) {
-                    // Texto base da mensagem, usando o nome do atleta (URI-encoded para a URL)
-                    const baseText = `Ol%C3%A1%2C%20segue%20o%20comprovante%20de%20pagamento%20no%20valor%20de%20R%24%20${valorFormatado}%20da%20inscri%C3%A7%C3%A3o%20do%20atleta%20${encodeURIComponent(atleta)}%20para%20o%20BBC%20Open%20de%20Jiu-Jitsu.`;
-                    // Número da organização para recebimento de comprovante
-                    whatsappLink.href = `https://api.whatsapp.com/send?phone=5584987513740&text=${baseText}`;
-                }
-
+            // 1. Atualizar Tabela
+            valorTotalElement.innerText = `R$ ${valorFormatado}`;
+            if (Math.abs(valor - 110.00) < 0.01) { 
+                linhaAbsoluto.style.display = 'table-row';
             } else {
-                // Se falhar, exibe mensagem de erro
-                document.querySelector('.confirmation-container').innerHTML = '<h2>Erro</h2><p>Não foi possível carregar os dados da inscrição. Por favor, volte e tente novamente.</p>';
+                linhaAbsoluto.style.display = 'none';
             }
-        });
+
+            // 2. Atualizar Link do WhatsApp
+            if (nome && ordem) {
+                // Habilitar o botão
+                whatsappLink.classList.add('enabled');
+                whatsappLink.innerText = 'Envie o Comprovante pelo WhatsApp';
+                
+                // Mensagem personalizada para o WhatsApp
+                const mensagem = 
+                    `Olá, segue o comprovante de pagamento no valor de R$ ${valorFormatado} da inscrição do atleta ${nome}. ` +
+                    `\n\nIdentificação/Ordem: ${ordem}. ` +
+                    `\n\nEvento: BBC Open de Jiu-Jitsu.`;
+                    
+                const baseText = encodeURIComponent(mensagem);
+                const numeroOrg = '5584987513740'; // Número da organização
+                
+                whatsappLink.href = `https://api.whatsapp.com/send?phone=${numeroOrg}&text=${baseText}`;
+            } else {
+                // Desabilitar o botão
+                whatsappLink.classList.remove('enabled');
+                whatsappLink.href = '#';
+                whatsappLink.innerText = 'Preencha os campos para enviar o Comprovante';
+            }
+        }
+
+        // --- EVENT LISTENERS ---
+        nomeAtletaInput.addEventListener('input', atualizarDados);
+        numeroOrdemInput.addEventListener('input', atualizarDados);
+        tipoInscricaoSelect.addEventListener('change', atualizarDados);
+        
+        // Chamada inicial
+        document.addEventListener('DOMContentLoaded', atualizarDados);
     </script>
 </body>
 </html>
