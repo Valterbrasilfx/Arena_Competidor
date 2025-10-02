@@ -327,7 +327,7 @@
 
     <script>
         // ==========================================================
-        // 🚨 PASSO CRUCIAL: SUBSTITUA O VALOR ABAIXO PELO SEU URL DE IMPLANTAÇÃO!
+        // 🚨 URL DE IMPLANTAÇÃO DA PLANILHA GOOGLE
         const URL_GOOGLE_SCRIPT = 'https://script.google.com/macros/s/AKfycbzFnyZ2Dwfsz2IYS6eyDLP2yEULP7NO7tmlGcHuj5KAWllPeWyogClEYfhxiScUCnob/exec'; 
         // ==========================================================
 
@@ -420,24 +420,10 @@
             totalPagar.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
         }
         
-        // --- FUNÇÃO DE PAGAMENTO (CÓDIGO QUE VOCÊ ENVIOU) ---
-        // Se a sua função de pagamento tiver um nome diferente, MUDAR AQUI!
-        function pagamento() {
-            // Este é o código que você forneceu. 
-            // Ele será executado após o sucesso do envio para a planilha.
-            // Se ele for um código que depende de bibliotecas externas (ex: Mercado Pago SDK), 
-            // você deve garantir que essas bibliotecas estejam carregadas no seu HTML (na tag <head>).
-            alert("Atenção: A função de pagamento está sendo chamada!");
-            
-            // Exemplo de redirecionamento manual, caso a função de pagamento não o faça
-            // window.location.href = 'pagamentos.html'; 
-        }
-
-        // --- FUNÇÃO PRINCIPAL DE ENVIO DE DADOS ---
+        // --- FUNÇÃO PRINCIPAL DE ENVIO DE DADOS (CORRIGIDA PARA REDIRECIONAR) ---
         async function enviarParaPlanilha(event) {
             event.preventDefault(); 
 
-            // 1. Validação
             if (!inscricaoForm.checkValidity()) {
                 inscricaoForm.reportValidity(); 
                 return;
@@ -445,10 +431,7 @@
 
             feedbackElement.textContent = 'Enviando dados... por favor, aguarde.';
             
-            // 2. Coletar os dados
             const formData = new FormData(inscricaoForm);
-            
-            // Adicionar dados calculados (extras para registro)
             formData.append('valor_total', totalPagar.innerText); 
             
             if (!absolutoCheckbox.checked) {
@@ -458,7 +441,6 @@
             const params = new URLSearchParams(formData).toString();
 
             try {
-                // 3. Enviar a requisição POST para o Google Sheets
                 const response = await fetch(URL_GOOGLE_SCRIPT, {
                     method: 'POST',
                     headers: {
@@ -470,19 +452,20 @@
                 const data = await response.json();
 
                 if (data.resultado === "sucesso") {
-                    feedbackElement.textContent = '✅ Inscrição salva na planilha! Iniciando o Pagamento...';
+                    feedbackElement.textContent = '✅ Inscrição salva na planilha! Redirecionando para o Pagamento...';
                     feedbackElement.style.backgroundColor = '#d4edda';
                     feedbackElement.style.color = '#155724';
                     
-                    // 🎯 CHAMADA DA FUNÇÃO DE PAGAMENTO APÓS SALVAR OS DADOS
-                    pagamento(); 
-                    
-                    // Se a função 'pagamento()' não redirecionar automaticamente
-                    // (por exemplo, para o Mercado Pago ou PagSeguro), 
-                    // a página permanecerá aqui. Se precisar forçar um redirecionamento
-                    // para uma página intermediária, descomente a linha abaixo:
-                    // window.location.href = 'pagamentos.html'; 
+                    // 🎯 CAPTURA E PASSA DADOS PARA pagamentos.html VIA URL
+                    const nomeAtleta = document.getElementById('nome').value;
+                    const categoriaIdade = document.getElementById('categoriaIdade').value;
+                    // Pega o valor total (ex: "R$ 110,00"), formata para a URL (ex: "110.00")
+                    const totalPagarValor = totalPagar.innerText.replace('R$ ', '').replace(',', '.'); 
 
+                    const urlPagamento = `pagamentos.html?atleta=${encodeURIComponent(nomeAtleta)}&categoria=${encodeURIComponent(categoriaIdade)}&valor=${totalPagarValor}`;
+
+                    window.location.href = urlPagamento; 
+                    
                 } else {
                     feedbackElement.textContent = '❌ Erro ao salvar na planilha. Tente novamente.';
                     feedbackElement.style.backgroundColor = '#f8d7da';
