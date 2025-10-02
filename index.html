@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arena Competidor | Inscrições de Jiu-Jitsu</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        :root {
+            --cor-primaria: #007bff;
+            --cor-secundaria: #343a40;
+            --cor-destaque: #28a745;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #495057;
+            --cor-borda: #dee2e6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            background-color: #000;
+            position: fixed; 
+            top: 0;
+            left: 0;
+            z-index: 1000; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header img {
+            max-width: 200px;
+        }
+
+        .main-content {
+            margin-top: 100px; /* Alterado de 150px para 100px */
+            width: 90%;
+            max-width: 1200px; 
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        h1 {
+            color: var(--cor-secundaria);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 40px;
+        }
+
+        .event-list {
+            display: flex; 
+            justify-content: center; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+        }
+        
+        .event-container {
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            margin-bottom: 30px;
+            max-width: 280px; 
+            width: 100%; 
+        }
+        
+        .event-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .event-banner {
+            display: block;
+        }
+
+        .event-banner img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .event-info {
+            padding: 20px;
+            background-color: #fff;
+            text-align: center;
+        }
+
+        .event-info h2 {
+            margin: 0 0 5px 0;
+            font-size: 1.8rem;
+            color: var(--cor-secundaria);
+        }
+
+        .event-info p {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--cor-destaque);
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 20px 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+       
+        
+        
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="img/arena2.png" alt="Arena Competidor Logo">
+    </header>
+
+    <div class="main-content">
+       <h1>Próximos Eventos</h1>
+       <div class="event-list">
+           <div class="event-container">
+                <a href="menu-evento.html" class="event-banner">
+                    <img src="img/BBC.jpg" alt="Banner do BBC Open de Jiu-Jitsu">
+                </a>
+                <div class="event-info">
+                    <h2>BBC Open de Jiu-Jitsu</h2>
+                    <p>Clique para se inscrever!</p>
+                </div>
+            </div>
+             <div class="event-container">
+                <a href="meu-evento-agd.html" class="event-banner">
+                    <img src="img/senogicaico.JPG" alt="Banner do Senogi Caicó">
+                </a>
+                <div class="event-info">
+                    <h2>SENOGI - Etapa Caicó/RN</h2>
+                    <p>Inscrições em breve!</p>
+                </div>
+            </div>
+            <div class="event-container">
+                <a href="meu-evento-agd.html" class="event-banner">
+                    <img src="img/senogipatos.jpeg" alt="Banner do Senogi Patos">
+                </a>
+                <div class="event-info">
+                    <h2>SENOGI - Etapa Patos/PB</h2>
+                    <p>Inscrições em breve!</p>
+                </div>
+            </div>
+            <div class="event-container">
+                <a href="meu-evento-agd.html" class="event-banner">
+                    <img src="img/senogicurrais.jpeg" alt="Banner do Senogi currais">
+                </a>
+                <div class="event-info">
+                    <h2>SENOGI - Currais Novos/RN</h2>
+                    <p>Inscrições em breve!</p>
+                </div>
+            </div>
+            <div class="event-container">
+                <a href="meu-evento-agd.html" class="event-banner">
+                    <img src="img/IMG_2151.JPG" alt="Banner do Open caico">
+                </a>
+                <div class="event-info">
+                    <h2>10º Open Caicó de Jiu-jitsu</h2>
+                    <p>Inscrições em breve!</p>
+                </div>
+            </div>
+             <div class="event-container">
+                <a href="meu-evento-agd.html" class="event-banner">
+                    <img src="img/IMG_2150.JPG" alt="Banner do Open caico">
+                </a>
+                <div class="event-info">
+                    <h2>NOGI - 10º Open Caicó de Jiu-jitsu</h2>
+                    <p>Inscrições em breve!</p>
+                </div>
+            </div>
+          
+       </div>
+        <div class="footer">
+            &copy; 2025 Arena Competidor. Todos os direitos reservados.
+        </div>
+    </div>
+    
+    
+
+</body>
+</html>
