@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checagem de Inscritos | Arena Competidor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        :root {
+            --cor-primaria: #007bff;
+            --cor-secundaria: #343a40;
+            --cor-destaque: #28a745;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #495057;
+            --cor-borda: #dee2e6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            background-color: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header img {
+            max-width: 200px;
+        }
+
+        .main-content {
+            margin-top: 150px;
+            width: 95%;
+            max-width: 1200px;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        h1 {
+            color: var(--cor-secundaria);
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+        }
+
+        .filtros {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .filtro-grupo {
+            display: flex;
+            flex-direction: column;
+            margin: 10px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        select {
+            padding: 8px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        
+        .category-group, .sub-group {
+            background-color: transparent;
+            box-shadow: none;
+            padding: 0;
+            margin-bottom: 0;
+        }
+        
+        
+        .accordion-item {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        
+        .accordion-header {
+            background-color: var(--cor-secundaria);
+            color: #fff;
+            padding: 15px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.2em;
+            text-align: left;
+            user-select: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .accordion-header:hover {
+            background-color: #212529;
+        }
+        
+        .accordion-header::after {
+            content: '+';
+            font-weight: bold;
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+        }
+
+        .accordion-header.active::after {
+            content: '-';
+        }
+
+        .accordion-content {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: max-height 0.3s ease-out, padding 0.3s ease-out;
+            max-height: 0;
+            padding: 0 20px;
+        }
+
+        .accordion-content.open {
+            max-height: 500px; 
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: #fff;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        thead {
+            background-color: #e9ecef;
+            color: var(--cor-secundaria);
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .status-pago { color: var(--cor-destaque); font-weight: bold; }
+        .status-pendente { color: #dc3545; font-weight: bold; }
+
+        .footer {
+            margin-top: auto;
+            padding: 20px 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        
+        @media (max-width: 768px) {
+            .main-content {
+                margin-top: 100px;
+                width: 98%;
+                padding: 0 10px;
+            }
+            
+            header {
+                padding: 10px 0;
+                position: static;
+            }
+
+            header img {
+                max-width: 150px;
+            }
+
+            .filtros {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 15px;
+            }
+
+            .filtro-grupo {
+                margin: 8px 0;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+                margin-bottom: 20px;
+            }
+            
+            .accordion-header {
+                padding: 10px 15px;
+                font-size: 1.1rem;
+            }
+
+            
+            table {
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                border-spacing: 0;
+                background-color: transparent;
+                padding: 0;
+            }
+            
+            thead {
+                display: none;
+            }
+
+            tr {
+                display: flex;
+                flex-direction: column;
+                background-color: #fff;
+                border-radius: 8px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                padding: 15px;
+                margin-bottom: 10px;
+            }
+            
+            td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid #eee;
+                padding: 10px 0;
+                width: 100%;
+            }
+            
+            td:last-child {
+                border-bottom: none;
+            }
+
+            td::before {
+                content: attr(data-label);
+                font-weight: bold;
+                flex-shrink: 0;
+                text-align: left;
+            }
+
+            .status-pago, .status-pendente {
+                flex-grow: 1;
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="img/arena2.png" alt="Arena Competidor Logo">
+    </header>
+
+    <div class="main-content">
+        <h1>Checagem de Inscritos</h1>
+
+        <div class="filtros">
+            <div class="filtro-grupo">
+                <label for="filtroGenero">Gênero:</label>
+                <select id="filtroGenero">
+                    <option value="todos">Todos</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                </select>
+            </div>
+            <div class="filtro-grupo">
+                <label for="filtroCategoria">Categoria de Idade:</label>
+                <select id="filtroCategoria">
+                    <option value="todos">Todos</option>
+                    <option value="adulto">Adulto</option>
+                    <option value="master">Master</option>
+                </select>
+            </div>
+            <div class="filtro-grupo">
+                <label for="filtroFaixa">Faixa:</label>
+                <select id="filtroFaixa">
+                    <option value="todos">Todos</option>
+                    <option value="branca">Branca</option>
+                    <option value="roxa">Roxa</option>
+                    <option value="preta">Preta</option>
+                </select>
+            </div>
+            <div class="filtro-grupo">
+                <label for="filtroPeso">Peso:</label>
+                <select id="filtroPeso">
+                    <option value="todos">Todos</option>
+                    <option value="pena">Pena</option>
+                    <option value="meio-pesado">Meio-Pesado</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="listaInscritos">
+            <div class="accordion-item sub-group" data-sexo="masculino" data-categoria="adulto" data-faixa="roxa" data-peso="pena">
+                <div class="accordion-header">
+                    ADULTO - FAIXA ROXA - PENA - MASCULINO
+                </div>
+                <div class="accordion-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Equipe</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td data-label="Nome">Carlos Oliveira</td><td data-label="Equipe">Equipe C</td><td data-label="Status" class="status-pago">Pago</td></tr>
+                            <tr><td data-label="Nome">Ana Costa</td><td data-label="Equipe">Equipe A</td><td data-label="Status" class="status-pago">Pago</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="accordion-item sub-group" data-sexo="masculino" data-categoria="adulto" data-faixa="branca" data-peso="pena">
+                <div class="accordion-header">
+                    ADULTO - FAIXA BRANCA - PENA - MASCULINO
+                </div>
+                <div class="accordion-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Equipe</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td data-label="Nome">João Silva</td><td data-label="Equipe">Equipe A</td><td data-label="Status" class="status-pago">Pago</td></tr>
+                            <tr><td data-label="Nome">Ricardo Lima</td><td data-label="Equipe">Equipe B</td><td data-label="Status" class="status-pendente">Pendente</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="accordion-item sub-group" data-sexo="masculino" data-categoria="master" data-faixa="preta" data-peso="meio-pesado">
+                <div class="accordion-header">
+                    MASTER - FAIXA PRETA - MEIO-PESADO - MASCULINO
+                </div>
+                <div class="accordion-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Equipe</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td data-label="Nome">André Souza</td><td data-label="Equipe">Equipe D</td><td data-label="Status" class="status-pago">Pago</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="accordion-item sub-group" data-sexo="feminino" data-categoria="juvenil" data-faixa="azul" data-peso="pena">
+                <div class="accordion-header">
+                    JUVENIL - FAIXA AZUL - PENA - FEMININO
+                </div>
+                <div class="accordion-content">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Equipe</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td data-label="Nome">Maria Santos</td><td data-label="Equipe">Equipe B</td><td data-label="Status" class="status-pago">Pago</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Arena Competidor. Todos os direitos reservados.
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const filtroGenero = document.getElementById('filtroGenero');
+            const filtroCategoria = document.getElementById('filtroCategoria');
+            const filtroFaixa = document.getElementById('filtroFaixa');
+            const filtroPeso = document.getElementById('filtroPeso');
+            const subGroups = document.querySelectorAll('.sub-group');
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+
+            function atualizarVisibilidade() {
+                const generoSelecionado = filtroGenero.value;
+                const categoriaSelecionada = filtroCategoria.value;
+                const faixaSelecionada = filtroFaixa.value;
+                const pesoSelecionado = filtroPeso.value;
+
+                subGroups.forEach(group => {
+                    const grupoGenero = group.dataset.sexo;
+                    const grupoCategoria = group.dataset.categoria;
+                    const grupoFaixa = group.dataset.faixa;
+                    const grupoPeso = group.dataset.peso;
+
+                    const showGenero = generoSelecionado === 'todos' || grupoGenero === generoSelecionado;
+                    const showCategoria = categoriaSelecionada === 'todos' || grupoCategoria === categoriaSelecionada;
+                    const showFaixa = faixaSelecionada === 'todos' || grupoFaixa === faixaSelecionada;
+                    const showPeso = pesoSelecionado === 'todos' || grupoPeso === pesoSelecionado;
+
+                    if (showGenero && showCategoria && showFaixa && showPeso) {
+                        group.style.display = 'block';
+                    } else {
+                        group.style.display = 'none';
+                    }
+                });
+            }
+
+            function setupAccordion() {
+                accordionHeaders.forEach(header => {
+                    header.addEventListener('click', () => {
+                        const content = header.nextElementSibling;
+                        
+                        
+                        accordionHeaders.forEach(otherHeader => {
+                            if (otherHeader !== header && otherHeader.classList.contains('active')) {
+                                otherHeader.classList.remove('active');
+                                otherHeader.nextElementSibling.classList.remove('open');
+                            }
+                        });
+
+                        
+                        header.classList.toggle('active');
+                        content.classList.toggle('open');
+                    });
+                });
+            }
+
+            filtroGenero.addEventListener('change', atualizarVisibilidade);
+            filtroCategoria.addEventListener('change', atualizarVisibilidade);
+            filtroFaixa.addEventListener('change', atualizarVisibilidade);
+            filtroPeso.addEventListener('change', atualizarVisibilidade);
+
+            atualizarVisibilidade();
+            setupAccordion();
+        });
+    </script>
+</body>
+</html>

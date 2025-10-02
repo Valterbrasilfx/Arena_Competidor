@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterar Inscrição | Arena Competidor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        :root {
+            --cor-primaria: #007bff;
+            --cor-secundaria: #343a40;
+            --cor-destaque: #28a745;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #495057;
+            --cor-borda: #dee2e6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            background-color: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header img {
+            max-width: 200px;
+        }
+
+        .main-content {
+            margin-top: 150px;
+            width: 90%;
+            max-width: 800px;
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--cor-secundaria);
+            font-weight: 700;
+        }
+
+        .formulario-acesso, .formulario-edicao {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            margin-bottom: 30px;
+            max-width: 500px; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .formulario-acesso .form-group, .formulario-edicao .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        input[type="text"], input[type="date"], select {
+            padding: 12px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: var(--cor-destaque);
+            color: #fff;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+        
+        .aviso-erro {
+            color: #dc3545;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .aviso-sucesso {
+            color: var(--cor-destaque);
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding: 20px 0;
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .nome-atleta {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--cor-secundaria);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="img/arena2.png" alt="Arena Competidor Logo">
+    </header>
+
+    <div class="main-content">
+        <h1>Alterar Inscrição</h1>
+        
+        <div class="formulario-acesso" id="formularioAcesso">
+            <h2>Acessar Inscrição</h2>
+            <div class="form-group">
+                <label for="numeroInscricao">Número de Inscrição:</label>
+                <input type="text" id="numeroInscricao" required placeholder="Ex: A1B2">
+            </div>
+            <div class="form-group">
+                <label for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" id="dataNascimento" required>
+            </div>
+            <button id="btnAcessar">Acessar e Alterar</button>
+            <p id="avisoValidacao" class="aviso-erro" style="display:none;"></p>
+        </div>
+        
+        <div class="formulario-edicao" id="formularioEdicao" style="display:none;">
+            <h2>Editar Dados</h2>
+            <p class="aviso-sucesso">Dados encontrados!</p>
+            <p>Atleta: <span class="nome-atleta" id="nomeAtleta"></span></p>
+
+            <div class="form-group">
+                <label for="faixa">Faixa:</label>
+                <select id="faixa">
+                    <option value="branca">Branca</option>
+                    <option value="azul">Azul</option>
+                    <option value="roxa">Roxa</option>
+                    <option value="marrom">Marrom</option>
+                    <option value="preta">Preta</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="peso">Peso:</label>
+                <select id="peso">
+                    <option value="galo">Galo</option>
+                    <option value="pluma">Pluma</option>
+                    <option value="pena">Pena</option>
+                    <option value="leve">Leve</option>
+                    <option value="medio">Médio</option>
+                    <option value="meio-pesado">Meio-Pesado</option>
+                    <option value="pesado">Pesado</option>
+                    <option value="super-pesado">Super Pesado</option>
+                    <option value="pesadissimo">Pesadíssimo</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="categoria">Categoria de Idade:</label>
+                <select id="categoria">
+                    <option value="juvenil">Juvenil</option>
+                    <option value="adulto">Adulto</option>
+                    <option value="master">Master</option>
+                    </select>
+            </div>
+            <button id="btnSalvar">Salvar Alterações</button>
+        </div>
+    </div>
+    
+    <div class="footer">
+        &copy; 2025 Arena Competidor. Todos os direitos reservados.
+    </div>
+
+    <script>
+        const btnAcessar = document.getElementById('btnAcessar');
+        const formularioAcesso = document.getElementById('formularioAcesso');
+        const formularioEdicao = document.getElementById('formularioEdicao');
+        const avisoValidacao = document.getElementById('avisoValidacao');
+        const nomeAtletaSpan = document.getElementById('nomeAtleta');
+
+        // Lógica de demonstração 
+        btnAcessar.addEventListener('click', function() {
+            const numeroInscricao = document.getElementById('numeroInscricao').value;
+            const dataNascimento = document.getElementById('dataNascimento').value;
+
+            // Simulação "fake"
+            if (numeroInscricao === 'A1B2' && dataNascimento === '1990-01-01') {
+               
+                formularioAcesso.style.display = 'none';
+
+               
+                formularioEdicao.style.display = 'block';
+
+                // Simulação
+                nomeAtletaSpan.innerText = 'Joãozinho';
+            } else {
+                formularioEdicao.style.display = 'none';
+                avisoValidacao.innerText = 'Número de inscrição ou data de nascimento incorretos.';
+                avisoValidacao.style.display = 'block';
+            }
+        });
+
+        const btnSalvar = document.getElementById('btnSalvar');
+        btnSalvar.addEventListener('click', function() {
+            alert('As alterações foram salvas com sucesso!');
+        });
+    </script>
+</body>
+</html>
