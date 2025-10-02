@@ -10,10 +10,12 @@
         :root {
             --cor-primaria: #007bff;
             --cor-secundaria: #343a40;
-            --cor-destaque: #28a745;
+            --cor-destaque: #28a745; /* Verde Pago/Confirmado */
             --cor-fundo: #f8f9fa;
             --cor-texto: #495057;
             --cor-borda: #dee2e6;
+            --status-analise: #ffc107;
+            --status-confirmado: var(--cor-destaque);
         }
 
         body {
@@ -59,13 +61,18 @@
             margin-bottom: 30px;
         }
         
-        
+        /* Lista de Equipes */
+        #listaEquipes {
+            width: 100%;
+        }
+
         .accordion-item {
             background-color: #fff;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             margin-bottom: 30px;
+            width: 100%;
         }
         
         .accordion-header {
@@ -102,7 +109,7 @@
 
         .accordion-header.active::after {
             content: '-';
-            transform: rotate(180deg);
+            transform: rotate(0deg); /* Ajustado para não girar de forma estranha */
         }
 
         .accordion-content {
@@ -113,7 +120,7 @@
         }
 
         .accordion-content.open {
-            max-height: 1000px; 
+            max-height: 2000px; /* Valor alto para listas grandes */
             padding-top: 20px;
         }
 
@@ -137,14 +144,18 @@
             background-color: #f1f1f1;
         }
 
-        .status-pago {
-            color: var(--cor-destaque);
-            font-weight: bold;
+        /* Statuses */
+        .status-pago, .status-confirmado { 
+            color: var(--cor-destaque); 
+            font-weight: bold; 
         }
-        
-        .status-pendente {
-            color: #dc3545;
-            font-weight: bold;
+        .status-pendente { 
+            color: #dc3545; 
+            font-weight: bold; 
+        }
+        .status-em-analise { 
+            color: var(--status-analise); 
+            font-weight: bold; 
         }
 
         .link-voltar {
@@ -162,6 +173,12 @@
             background-color: #212529;
         }
 
+        #loading-message {
+            margin-top: 50px;
+            font-size: 1.5rem;
+            color: var(--cor-primaria);
+        }
+        
         .footer {
             margin-top: auto;
             padding: 20px 0;
@@ -205,7 +222,6 @@
             .accordion-header p {
                 font-size: 1rem;
             }
-
             
             table {
                 display: flex;
@@ -250,7 +266,7 @@
                 text-align: left;
             }
 
-            .status-pago, .status-pendente {
+            .status-pago, .status-pendente, .status-em-analise, .status-confirmado {
                 flex-grow: 1;
                 text-align: right;
             }
@@ -266,78 +282,10 @@
     <div class="main-content">
         <h1>Checagem por Equipes</h1>
 
-        <div class="accordion-item">
-            <div class="accordion-header">
-                <h2>Equipe A</h2>
-                <p>Total de Inscritos: 2</p>
+        <div id="loading-message">Carregando dados da planilha...</div>
+        <div id="listaEquipes">
             </div>
-            <div class="accordion-content">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome do Atleta</th>
-                            <th>Faixa</th>
-                            <th>Peso</th>
-                            <th>Categoria</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-label="Nome do Atleta">Ana Costa</td>
-                            <td data-label="Faixa">Roxa</td>
-                            <td data-label="Peso">Pena</td>
-                            <td data-label="Categoria">Adulto</td>
-                            <td data-label="Status" class="status-pago">Pago</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Nome do Atleta">João Silva</td>
-                            <td data-label="Faixa">Branca</td>
-                            <td data-label="Peso">Pena</td>
-                            <td data-label="Categoria">Adulto</td>
-                            <td data-label="Status" class="status-pago">Pago</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="accordion-item">
-            <div class="accordion-header">
-                <h2>Equipe B</h2>
-                <p>Total de Inscritos: 2</p>
-            </div>
-            <div class="accordion-content">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nome do Atleta</th>
-                            <th>Faixa</th>
-                            <th>Peso</th>
-                            <th>Categoria</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td data-label="Nome do Atleta">Maria Santos</td>
-                            <td data-label="Faixa">Azul</td>
-                            <td data-label="Peso">Pluma</td>
-                            <td data-label="Categoria">Juvenil</td>
-                            <td data-label="Status" class="status-pago">Pago</td>
-                        </tr>
-                        <tr>
-                            <td data-label="Nome do Atleta">Ricardo Lima</td>
-                            <td data-label="Faixa">Branca</td>
-                            <td data-label="Peso">Pena</td>
-                            <td data-label="Categoria">Adulto</td>
-                            <td data-label="Status" class="status-pendente">Pendente</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
+        
         <a href="checagem.html" class="link-voltar">Voltar para Opções de Checagem</a>
     </div>
 
@@ -346,27 +294,184 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const accordionHeaders = document.querySelectorAll('.accordion-header');
+        // 🚨 URL DO CSV DA PLANILHA GOOGLE
+        // ATUALIZE ESTA URL COM O LINK PÚBLICO DA SUA PLANILHA
+        const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQi4LRK6fnA7WKgf-z-vK5KOZelez2sd0rHat3eDz-pkxiNAsCZuuBTmPbnyJud0nP-RVQIi5uNZ9SR/pub?output=csv';
+        
+        const listaEquipesDiv = document.getElementById('listaEquipes');
+        const loadingMessage = document.getElementById('loading-message');
+        
+        let inscritosPorEquipe = {};
 
-            accordionHeaders.forEach(header => {
-                header.addEventListener('click', () => {
-                    const content = header.nextElementSibling;
-                    
-                    
-                    accordionHeaders.forEach(otherHeader => {
-                        if (otherHeader !== header && otherHeader.classList.contains('active')) {
-                            otherHeader.classList.remove('active');
-                            otherHeader.nextElementSibling.classList.remove('open');
-                        }
+        // Funções de Normalização
+        function normalizeText(text) {
+            return text.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().replace(/\s+/g, '-');
+        }
+        
+        function normalizeStatus(text) {
+            let status = normalizeText(text.replace(' ', '-'));
+            if (status === 'pago') return 'status-pago';
+            if (status === 'confirmado') return 'status-confirmado'; 
+            if (status === 'pendente') return 'status-pendente';
+            if (status.includes('analise')) return 'status-em-analise'; 
+            return 'status-pendente'; 
+        }
+        
+        // Função Principal de Processamento do CSV
+        async function fetchAndProcessData() {
+            loadingMessage.textContent = 'Carregando dados da planilha...';
+            try {
+                const response = await fetch(CSV_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                
+                const csvText = await response.text();
+                const lines = csvText.split('\n').filter(line => line.trim() !== '');
+                if (lines.length < 2) {
+                    loadingMessage.textContent = 'Nenhum dado encontrado na planilha.';
+                    return;
+                }
+                
+                // Mapeia os cabeçalhos
+                const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+                
+                // Converte CSV para JSON
+                const todosInscritos = lines.slice(1)
+                    .map(line => {
+                        const values = line.split(','); 
+                        const atleta = {};
+                        headers.forEach((header, i) => {
+                            atleta[header] = values[i] ? values[i].replace(/"/g, '').trim() : '';
+                        });
+                        return atleta;
                     });
 
-                    
-                    header.classList.toggle('active');
-                    content.classList.toggle('open');
-                });
+                groupAndRenderEquipes(todosInscritos);
+
+            } catch (error) {
+                console.error('Erro ao buscar ou processar CSV:', error);
+                loadingMessage.textContent = '❌ Erro ao carregar dados. Verifique o link ou a permissão da planilha.';
+            }
+        }
+        
+        function groupAndRenderEquipes(data) {
+            inscritosPorEquipe = {};
+
+            data.forEach(atleta => {
+                const nomeEquipe = atleta['SUA EQUIPE'] || 'SEM EQUIPE';
+                
+                if (!inscritosPorEquipe[nomeEquipe]) {
+                    inscritosPorEquipe[nomeEquipe] = {
+                        atletas: [],
+                        total: 0
+                    };
+                }
+                inscritosPorEquipe[nomeEquipe].atletas.push(atleta);
+                inscritosPorEquipe[nomeEquipe].total++;
             });
-        });
+            
+            loadingMessage.style.display = 'none';
+            renderEquipeList();
+        }
+
+        function renderEquipeList() {
+            listaEquipesDiv.innerHTML = ''; 
+            
+            // Colunas da planilha que serão exibidas
+            const NOME_COLUNA_NOME = 'NOME COMPLETO';
+            const NOME_COLUNA_FAIXA = 'SUA FAIXA';
+            const NOME_COLUNA_PESO = 'SEU PESO';
+            const NOME_COLUNA_CATEGORIA = 'SUA CATEGORIA';
+            const NOME_COLUNA_STATUS = 'STATUS DO PAGAMENTO'; 
+            
+            // Ordena as chaves do grupo (opcional, mas ajuda na organização)
+            // Ordem: Alfabética por nome da equipe
+            Object.keys(inscritosPorEquipe).sort().forEach(key => {
+                const groupData = inscritosPorEquipe[key];
+                
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'accordion-item';
+                
+                const header = document.createElement('div');
+                header.className = 'accordion-header';
+                header.innerHTML = `
+                    <h2>${key}</h2>
+                    <p>Total de Inscritos: ${groupData.total}</p>
+                `; 
+                
+                const content = document.createElement('div');
+                content.className = 'accordion-content';
+                
+                const table = document.createElement('table');
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Nome do Atleta</th>
+                            <th>Faixa</th>
+                            <th>Peso</th>
+                            <th>Categoria</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                `;
+                const tbody = table.querySelector('tbody');
+
+                // Itera sobre os atletas da equipe e preenche a tabela
+                groupData.atletas.forEach(atleta => {
+                    const statusText = atleta[NOME_COLUNA_STATUS] || 'Pendente';
+                    const statusClass = normalizeStatus(statusText);
+                    
+                    const row = document.createElement('tr');
+                    
+                    row.innerHTML = `
+                        <td data-label="Nome do Atleta">${atleta[NOME_COLUNA_NOME]}</td>
+                        <td data-label="Faixa">${atleta[NOME_COLUNA_FAIXA]}</td>
+                        <td data-label="Peso">${atleta[NOME_COLUNA_PESO]}</td>
+                        <td data-label="Categoria">${atleta[NOME_COLUNA_CATEGORIA]}</td>
+                        <td data-label="Status" class="${statusClass}">${statusText}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+                
+                content.appendChild(table);
+                accordionItem.appendChild(header);
+                accordionItem.appendChild(content);
+                listaEquipesDiv.appendChild(accordionItem);
+            });
+            
+            setupAccordion(); 
+        }
+        
+        // --- Lógica de Acordeão (Reutilizada) ---
+
+        function setupAccordion() {
+            const accordionHeaders = listaEquipesDiv.querySelectorAll('.accordion-header');
+            
+            accordionHeaders.forEach(header => {
+                header.removeEventListener('click', handleAccordionClick); 
+                header.addEventListener('click', handleAccordionClick);
+            });
+        }
+        
+        function handleAccordionClick(event) {
+             const header = event.currentTarget;
+             const content = header.nextElementSibling;
+                        
+            // Fecha outros acordeões abertos
+            listaEquipesDiv.querySelectorAll('.accordion-header').forEach(otherHeader => {
+                if (otherHeader !== header && otherHeader.classList.contains('active')) {
+                    otherHeader.classList.remove('active');
+                    otherHeader.nextElementSibling.classList.remove('open');
+                }
+            });
+
+            // Abre/Fecha o atual
+            header.classList.toggle('active');
+            content.classList.toggle('open');
+        }
+
+        // Inicializa o carregamento dos dados ao carregar a página
+        document.addEventListener('DOMContentLoaded', fetchAndProcessData);
     </script>
 </body>
 </html>
