@@ -78,7 +78,16 @@
             font-size: 1rem;
             width: 100%;
             box-sizing: border-box;
+            /* Estilo para campos desabilitados */
+            background-color: #f1f1f1; 
+            cursor: not-allowed;
         }
+        
+        select:enabled {
+             background-color: #fff;
+             cursor: pointer;
+        }
+
 
         input[type="checkbox"] {
             width: auto;
@@ -271,41 +280,30 @@
                 <label for="professor">Professor:</label>
                 <input type="text" id="professor" name="professor" required>
             </div>
+            
+            <div class="form-group">
+                <label for="categoria">Sua Categoria de Idade:</label>
+                <select id="categoria" name="categoria" required disabled>
+                    <option value="">Preencha o Sexo e a Data de Nasc.</option>
+                </select>
+                <input type="hidden" id="categoriaIdade" name="categoriaIdade">
+            </div>
 
             <div class="form-group">
                 <label for="faixa">Sua Faixa:</label>
-                <select id="faixa" name="faixa" required>
-                    <option value="">Selecione...</option>
-                    <option value="branca">Branca</option>
-                    <option value="azul">Azul</option>
-                    <option value="roxa">Roxa</option>
-                    <option value="marrom">Marrom</option>
-                    <option value="preta">Preta</option>
+                <select id="faixa" name="faixa" required disabled>
+                    <option value="">Selecione a Categoria</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="peso">Seu Peso:</label>
-                <select id="peso" name="peso" required>
-                    <option value="">Selecione...</option>
-                    <option value="galo">Galo</option>
-                    <option value="pluma">Pluma</option>
-                    <option value="pena">Pena</option>
-                    <option value="leve">Leve</option>
-                    <option value="medio">Médio</option>
-                    <option value="meio-pesado">Meio-Pesado</option>
-                    <option value="pesado">Pesado</option>
-                    <option value="super-pesado">Super Pesado</option>
-                    <option value="pesadissimo">Pesadíssimo</option>
+                <label for="peso">Seu Peso (Divisão):</label>
+                <select id="peso" name="peso" required disabled>
+                    <option value="">Selecione a Faixa</option>
                 </select>
             </div>
             
-            <div class="form-group">
-                <label for="categoriaIdade">Sua Categoria de Idade:</label>
-                <input type="text" id="categoriaIdadeDisplay" disabled value="" style="background-color: #f1f1f1;">
-                <input type="hidden" id="categoriaIdade" name="categoriaIdade"> 
-            </div>
-
+            
             <div class="form-group checkbox-group" id="absolutoContainer" style="display:none;">
                 <input type="checkbox" id="absoluto" name="absoluto" value="Sim">
                 <label for="absoluto">Participar do Absoluto (+ R$ 40,00)</label>
@@ -332,8 +330,9 @@
         // ==========================================================
 
         const dataNascimentoInput = document.getElementById('dataNascimento');
-        const categoriaIdadeInput = document.getElementById('categoriaIdade');
-        const categoriaIdadeDisplay = document.getElementById('categoriaIdadeDisplay');
+        const sexoInput = document.getElementById('sexo'); 
+        const categoriaSelect = document.getElementById('categoria'); 
+        const categoriaIdadeInput = document.getElementById('categoriaIdade'); 
         const absolutoContainer = document.getElementById('absolutoContainer');
         const absolutoCheckbox = document.getElementById('absoluto');
         const extratoAbsoluto = document.getElementById('extratoAbsoluto');
@@ -344,7 +343,192 @@
         const inscricaoForm = document.getElementById('inscricaoForm');
         const feedbackElement = document.getElementById('feedback');
         
-        // --- Funções de Cálculo ---
+        // ==========================================================
+        // 1. REGRAS DE DIVISÃO E TABELAS DE PESO/FAIXA (SUAS IDEIAS)
+        // ==========================================================
+
+        /**
+         * Retorna a divisão de idade ou uma lista de categorias Master se for o caso.
+         * @param {number} idade 
+         * @returns {string | string[] | null} 
+         */
+        function obterDivisao(idade) {
+            if (idade === 4) return "Pré-Mirim 1";
+            if (idade === 5) return "Pré-Mirim 2";
+            if (idade === 6) return "Pré-Mirim 3";
+            if (idade === 7) return "Mirim 1";
+            if (idade === 8) return "Mirim 2";
+            if (idade === 9) return "Mirim 3";
+            if (idade === 10) return "Infantil 1";
+            if (idade === 11) return "Infantil 2";
+            if (idade === 12) return "Infantil 3";
+            if (idade === 13) return "Infanto-Juvenil 1";
+            if (idade === 14) return "Infanto-Juvenil 2";
+            if (idade === 15) return "Infanto-Juvenil 3";
+            if (idade >= 16 && idade <= 17) return "Juvenil";
+            if (idade >= 18 && idade <= 29) return "Adulto";
+            if (idade >= 30) {
+                return obterMastersPermitidos(idade);
+            }
+            return null; 
+        }
+
+        /**
+         * Retorna as categorias Master permitidas com base na idade.
+         * @param {number} idade - A idade do atleta.
+         * @returns {string[]} Um array de categorias Master (incluindo Adulto).
+         */
+        function obterMastersPermitidos(idade) {
+            if (idade < 30) return [];
+            const masters = [];
+            // A ordem é importante, pois o "Adulto" deve vir como última opção, se não for o único.
+            if (idade >= 61) masters.push("Master 7");
+            if (idade >= 56) masters.push("Master 6");
+            if (idade >= 51) masters.push("Master 5");
+            if (idade >= 46) masters.push("Master 4");
+            if (idade >= 41) masters.push("Master 3");
+            if (idade >= 36) masters.push("Master 2");
+            if (idade >= 30) masters.push("Master 1");
+            
+            // Adulto é sempre uma opção para Masters (IBJJF Rules)
+            masters.push("Adulto"); 
+            // Remove duplicatas e inverte a ordem para aparecer do mais novo para o mais velho (Adulto, Master 1, Master 2...)
+            // Mas para o Master, a ordem correta na lista de seleção é: Master 1, Master 2... Adulto.
+            // Para isso, faremos a inserção na ordem desejada:
+            const categoriasUnicas = ["Adulto"];
+            if (idade >= 30 && !categoriasUnicas.includes("Master 1")) categoriasUnicas.push("Master 1");
+            if (idade >= 36 && !categoriasUnicas.includes("Master 2")) categoriasUnicas.push("Master 2");
+            if (idade >= 41 && !categoriasUnicas.includes("Master 3")) categoriasUnicas.push("Master 3");
+            if (idade >= 46 && !categoriasUnicas.includes("Master 4")) categoriasUnicas.push("Master 4");
+            if (idade >= 51 && !categoriasUnicas.includes("Master 5")) categoriasUnicas.push("Master 5");
+            if (idade >= 56 && !categoriasUnicas.includes("Master 6")) categoriasUnicas.push("Master 6");
+            if (idade >= 61 && !categoriasUnicas.includes("Master 7")) categoriasUnicas.push("Master 7");
+            
+            return masters.filter((v, i, a) => a.indexOf(v) === i);
+        }
+
+
+        /**
+         * Objeto com pesos por divisão e sexo (MANTIDO)
+         */
+        const pesosPorDivisao = {
+            "Pré-Mirim 1": {
+                masculino: ["Pluma/Light-Feather até 17,9kg", "Pena/Feather até 20kg", "Leve/Light até 23kg", "Médio/Middle até 26kg", "Meio-Pesado/Medium-Heavy até 29kg", "Pesado/Heavy até 32kg", "Super-Pesado/Super-Heavy até 35kg", "Pesadíssimo/Ultra-Heavy acima de 35kg"],
+                feminino: ["Pluma/Light-Feather até 17,9kg", "Pena/Feather até 20kg", "Leve/Light até 23kg", "Médio/Middle até 26kg", "Meio-Pesado/Medium-Heavy até 29kg", "Pesado/Heavy até 32kg", "Super-Pesado/Super-Heavy até 35kg", "Pesadíssimo/Ultra-Heavy acima de 35kg"]
+            },
+            "Pré-Mirim 2": {
+                masculino: ["Pluma/Light-Feather até 17,9kg", "Pena/Feather até 20kg", "Leve/Light até 23kg", "Médio/Middle até 26kg", "Meio-Pesado/Medium-Heavy até 29kg", "Pesado/Heavy até 32kg", "Super-Pesado/Super-Heavy até 35kg", "Pesadíssimo/Ultra-Heavy acima de 35kg"],
+                feminino: ["Pluma/Light-Feather até 17,9kg", "Pena/Feather até 20kg", "Leve/Light até 23kg", "Médio/Middle até 26kg", "Meio-Pesado/Medium-Heavy até 29kg", "Pesado/Heavy até 32kg", "Super-Pesado/Super-Heavy até 35kg", "Pesadíssimo/Ultra-Heavy acima de 35kg"]
+            },
+            "Pré-Mirim 3": {
+                masculino: ["Pluma/Light-Feather até 21kg", "Pena/Feather até 24kg", "Leve/Light até 27,2kg", "Médio/Middle até 30,2kg", "Meio-Pesado/Medium-Heavy até 33,2kg", "Pesado/Heavy até 36,2kg", "Super-Pesado/Super-Heavy até 39,3kg", "Pesadíssimo/Ultra-Heavy acima de 39,3kg"],
+                feminino: ["Pluma/Light-Feather até 21kg", "Pena/Feather até 24kg", "Leve/Light até 27,2kg", "Médio/Middle até 30,2kg", "Meio-Pesado/Medium-Heavy até 33,2kg", "Pesado/Heavy até 36,2kg", "Super-Pesado/Super-Heavy até 39,3kg", "Pesadíssimo/Ultra-Heavy acima de 39,3kg"]
+            },
+            "Mirim 1": {
+                masculino: ["Pluma/Light-Feather até 21kg", "Pena/Feather até 24kg", "Leve/Light até 27,2kg", "Médio/Middle até 30,2kg", "Meio-Pesado/Medium-Heavy até 33,2kg", "Pesado/Heavy até 36,2kg", "Super-Pesado/Super-Heavy até 39,3kg", "Pesadíssimo/Ultra-Heavy acima de 39,3kg"],
+                feminino: ["Pluma/Light-Feather até 21kg", "Pena/Feather até 24kg", "Leve/Light até 27,2kg", "Médio/Middle até 30,2kg", "Meio-Pesado/Medium-Heavy até 33,2kg", "Pesado/Heavy até 36,2kg", "Super-Pesado/Super-Heavy até 39,3kg", "Pesadíssimo/Ultra-Heavy acima de 39,3kg"]
+            },
+            "Mirim 2": {
+                masculino: ["Galo/Rooster até 24kg", "Pluma/Light-Feather até 27kg", "Pena/Feather até 30,2kg", "Leve/Light até 33,2kg", "Médio/Middle até 36,2kg", "Meio-Pesado/Medium-Heavy até 39,3kg", "Pesado/Heavy até 42,3kg", "Super-Pesado/Super-Heavy até 45,3kg", "Pesadíssimo/Ultra-Heavy acima de 45,3kg"],
+                feminino: ["Galo/Rooster até 24kg", "Pluma/Light-Feather até 27kg", "Pena/Feather até 30,2kg", "Leve/Light até 33,2kg", "Médio/Middle até 36,2kg", "Meio-Pesado/Medium-Heavy até 39,3kg", "Pesado/Heavy até 42,3kg", "Super-Pesado/Super-Heavy até 45,3kg", "Pesadíssimo/Ultra-Heavy acima de 45,3kg"]
+            },
+            "Mirim 3": {
+                masculino: ["Galo/Rooster até 24kg", "Pluma/Light-Feather até 27kg", "Pena/Feather até 30,2kg", "Leve/Light até 33,2kg", "Médio/Middle até 36,2kg", "Meio-Pesado/Medium-Heavy até 39,3kg", "Pesado/Heavy até 42,3kg", "Super-Pesado/Super-Heavy até 45,3kg", "Pesadíssimo/Ultra-Heavy acima de 45,3kg"],
+                feminino: ["Galo/Rooster até 24kg", "Pluma/Light-Feather até 27kg", "Pena/Feather até 30,2kg", "Leve/Light até 33,2kg", "Médio/Middle até 36,2kg", "Meio-Pesado/Medium-Heavy até 39,3kg", "Pesado/Heavy até 42,3kg", "Super-Pesado/Super-Heavy até 45,3kg", "Pesadíssimo/Ultra-Heavy acima de 45,3kg"]
+            },
+            "Infantil 1": {
+                masculino: ["Galo/Rooster até 32,2kg", "Pluma/Light-Feather até 36,2kg", "Pena/Feather até 40,3kg", "Leve/Light até 44,3kg", "Médio/Middle até 48,3kg", "Meio-Pesado/Medium-Heavy até 52,5kg", "Pesado/Heavy até 56,5kg", "Super-Pesado/Super-Heavy até 60,5kg", "Pesadíssimo/Ultra-Heavy acima de 60,5kg"],
+                feminino: ["Galo/Rooster até 32,2kg", "Pluma/Light-Feather até 36,2kg", "Pena/Feather até 40,3kg", "Leve/Light até 44,3kg", "Médio/Middle até 48,3kg", "Meio-Pesado/Medium-Heavy até 52,5kg", "Pesado/Heavy até 56,5kg", "Super-Pesado/Super-Heavy até 60,5kg", "Pesadíssimo/Ultra-Heavy acima de 60,5kg"]
+            },
+            "Infantil 2": {
+                masculino: ["Galo/Rooster até 32,2kg", "Pluma/Light-Feather até 36,2kg", "Pena/Feather até 40,3kg", "Leve/Light até 44,3kg", "Médio/Middle até 48,3kg", "Meio-Pesado/Medium-Heavy até 52,5kg", "Pesado/Heavy até 56,5kg", "Super-Pesado/Super-Heavy até 60,5kg", "Pesadíssimo/Ultra-Heavy acima de 60,5kg"],
+                feminino: ["Galo/Rooster até 32,2kg", "Pluma/Light-Feather até 36,2kg", "Pena/Feather até 40,3kg", "Leve/Light até 44,3kg", "Médio/Middle até 48,3kg", "Meio-Pesado/Medium-Heavy até 52,5kg", "Pesado/Heavy até 56,5kg", "Super-Pesado/Super-Heavy até 60,5kg", "Pesadíssimo/Ultra-Heavy acima de 60,5kg"]
+            },
+            "Infantil 3": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Infanto-Juvenil 1": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Infanto-Juvenil 2": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Infanto-Juvenil 3": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Juvenil": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Adulto": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Master 1": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Master 2": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Master 3": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Master 4": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Master 5": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Master 6": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+            "Master 7": {
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"],
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"]
+            },
+        };
+
+        /**
+         * Objeto com faixas por divisão (categoria de idade) (MANTIDO)
+         */
+        const faixasPorDivisao = {
+            "Pré-Mirim 1": ["Branca", "Cinza"],
+            "Pré-Mirim 2": ["Branca", "Cinza"],
+            "Pré-Mirim 3": ["Branca", "Cinza"],
+            "Mirim 1": ["Branca", "Cinza", "Amarela"],
+            "Mirim 2": ["Branca", "Cinza", "Amarela"],
+            "Mirim 3": ["Branca", "Cinza", "Amarela"],
+            "Infantil 1": ["Branca", "Cinza", "Amarela", "Laranja"],
+            "Infantil 2": ["Branca", "Cinza", "Amarela", "Laranja"],
+            "Infantil 3": ["Branca", "Cinza", "Amarela", "Laranja"],
+            "Infanto-Juvenil 1": ["Branca", "Cinza", "Amarela", "Laranja", "Verde"],
+            "Infanto-Juvenil 2": ["Branca", "Cinza", "Amarela", "Laranja", "Verde"],
+            "Infanto-Juvenil 3": ["Branca", "Cinza", "Amarela", "Laranja", "Verde"],
+            "Juvenil": ["Branca", "Azul"],
+            "Adulto": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 1": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 2": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 3": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 4": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 5": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 6": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 7": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+        };
+
+        // ==========================================================
+        // 2. FUNÇÕES DE CÁLCULO E POPULAMENTO DE DROPDOWNS (CORRIGIDAS)
+        // ==========================================================
+        
         function calcularIdade(dataNascimento) {
             const hoje = new Date();
             const nascimento = new Date(dataNascimento);
@@ -356,71 +540,144 @@
             return idade;
         }
 
-        function definirCategoria(idade) {
-            if (idade >= 4 && idade <= 5) return 'Pré-Mirim';
-            if (idade >= 6 && idade <= 7) return 'Mirim';
-            if (idade >= 8 && idade <= 9) return 'Infantil I';
-            if (idade >= 10 && idade <= 11) return 'Infantil II';
-            if (idade >= 12 && idade <= 13) return 'Infanto-Juvenil I';
-            if (idade >= 14 && idade <= 15) return 'Infanto-Juvenil II';
-            if (idade >= 16 && idade <= 17) return 'Juvenil';
-            if (idade >= 18 && idade <= 29) return 'Adulto';
-            if (idade >= 18 && idade <= 35) return 'Master 1';
-            if (idade >= 18 && idade <= 40) return 'Master 2';
-            if (idade >= 18 && idade <= 45) return 'Master 3';
-            if (idade >= 18 && idade <= 50) return 'Master 4';
-            if (idade >= 18 && idade <= 55) return 'Master 5';
-            if (idade >= 18 && idade <= 60) return 'Master 6';
-            if (idade >= 18) return 'Master 7';
-            return 'Idade inválida';
+        /**
+         * Limpa e desabilita um select.
+         */
+        function limparOpcoesSelect(selectElement, defaultText, disable = true) {
+            selectElement.innerHTML = `<option value="">${defaultText}</option>`;
+            selectElement.disabled = disable;
+            selectElement.required = !disable; 
+            if (selectElement.id === 'categoria') {
+                // Ao limpar a categoria, garante que os dependentes também sejam limpos e desabilitados
+                limparOpcoesSelect(faixaInput, 'Selecione a Categoria', true);
+                limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
+            }
+            if (selectElement.id === 'faixa') {
+                limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
+            }
         }
 
-        function atualizarUI() {
+        function popularCategorias() {
             const dataNasc = dataNascimentoInput.value;
-            if (dataNasc) {
-                const idade = calcularIdade(dataNasc);
-                const categoria = definirCategoria(idade);
-                
-                categoriaIdadeInput.value = categoria; 
-                categoriaIdadeDisplay.value = categoria;
-
-                if (['Juvenil', 'Adulto', 'Master 1', 'Master 2', 'Master 3', 'Master 4', 'Master 5', 'Master 6', 'Master 7'].includes(categoria)) {
-                    absolutoContainer.style.display = 'flex';
-                } else {
-                    absolutoContainer.style.display = 'none';
-                    absolutoCheckbox.checked = false;
-                }
-            } else {
-                categoriaIdadeInput.value = '';
-                categoriaIdadeDisplay.value = '';
-                absolutoContainer.style.display = 'none';
-            }
+            const sexo = sexoInput.value;
+            const idade = dataNasc ? calcularIdade(dataNasc) : null;
             
+            // Limpa o estado atual
+            limparOpcoesSelect(categoriaSelect, 'Preencha o Sexo e a Data de Nasc.', true);
+            absolutoContainer.style.display = 'none';
+            absolutoCheckbox.checked = false;
+
+            if (!dataNasc || !sexo || idade < 4) {
+                atualizarExtrato();
+                return;
+            }
+
+            const categorias = obterDivisao(idade);
+
+            if (categorias) {
+                categoriaSelect.disabled = false;
+                categoriaSelect.required = true;
+
+                // Se for um array (Master/Adulto), adiciona as opções
+                if (Array.isArray(categorias)) {
+                    limparOpcoesSelect(categoriaSelect, 'Selecione uma categoria', false);
+                    categorias.forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat;
+                        option.textContent = cat;
+                        categoriaSelect.appendChild(option);
+                    });
+                } else {
+                    // Se for uma string (Juvenil e menores)
+                    categoriaSelect.innerHTML = `<option value="${categorias}">${categorias}</option>`;
+                    categoriaSelect.value = categorias; // Seleciona automaticamente
+                    // Se a categoria for preenchida, já pode popular as faixas imediatamente
+                    popularFaixas();
+                }
+            }
             atualizarExtrato();
         }
 
+        function popularFaixas() {
+            const categoria = categoriaSelect.value;
+            // Limpa as opções de faixa e peso, desabilitando-os
+            limparOpcoesSelect(faixaInput, 'Selecione a Categoria', true);
+            limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
+            
+            // Controle do Absoluto
+            const permiteAbsoluto = ['Juvenil', 'Adulto', 'Master 1', 'Master 2', 'Master 3', 'Master 4', 'Master 5', 'Master 6', 'Master 7'].includes(categoria);
+            absolutoContainer.style.display = permiteAbsoluto ? 'flex' : 'none';
+            if (!permiteAbsoluto) {
+                absolutoCheckbox.checked = false;
+            }
+
+            if (categoria && faixasPorDivisao[categoria]) {
+                faixaInput.disabled = false;
+                faixaInput.required = true;
+                limparOpcoesSelect(faixaInput, 'Selecione sua faixa', false);
+                
+                faixasPorDivisao[categoria].forEach(faixa => {
+                    const option = document.createElement('option');
+                    option.value = faixa.toLowerCase();
+                    option.textContent = faixa;
+                    faixaInput.appendChild(option);
+                });
+            }
+
+            atualizarExtrato();
+        }
+
+        function popularPesos() {
+            const categoria = categoriaSelect.value;
+            const sexo = sexoInput.value;
+            const faixa = faixaInput.value; // Não usado no filtro, mas garante que a faixa foi selecionada
+            
+            // Limpa as opções de peso, desabilitando-o
+            limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
+
+            if (categoria && sexo && faixa && pesosPorDivisao[categoria] && pesosPorDivisao[categoria][sexo]) {
+                pesoInput.disabled = false;
+                pesoInput.required = true;
+                limparOpcoesSelect(pesoInput, 'Selecione seu peso (Divisão)', false);
+                
+                pesosPorDivisao[categoria][sexo].forEach(peso => {
+                    const option = document.createElement('option');
+                    // Cria um valor (value) simplificado (ex: Galo/Rooster -> galo)
+                    const value = peso.split('/')[0].trim().toLowerCase().replace(' ', '-'); 
+                    option.value = value;
+                    option.textContent = peso;
+                    pesoInput.appendChild(option);
+                });
+            }
+            atualizarExtrato();
+        }
+        
+        // --- FUNÇÕES DE EXTRACTO E ENVIO ---
+
         function atualizarExtrato() {
             let total = 70.00;
-            const faixa = faixaInput.options[faixaInput.selectedIndex].text;
-            const peso = pesoInput.options[pesoInput.selectedIndex].text;
-            const categoriaIdade = categoriaIdadeInput.value;
+            const categoria = categoriaSelect.value || 'Aguardando...';
+            const faixa = faixaInput.options[faixaInput.selectedIndex]?.text || 'Aguardando...';
+            const peso = pesoInput.options[pesoInput.selectedIndex]?.text || 'Aguardando...';
             const valorAbsoluto = 40.00;
 
-            if (absolutoCheckbox.checked) {
+            // Define o valor do campo hidden para ser enviado
+            categoriaIdadeInput.value = categoria;
+            
+            const permiteAbsoluto = ['Juvenil', 'Adulto', 'Master 1', 'Master 2', 'Master 3', 'Master 4', 'Master 5', 'Master 6', 'Master 7'].includes(categoria);
+
+            if (absolutoCheckbox.checked && permiteAbsoluto) {
                 total += valorAbsoluto;
                 extratoAbsoluto.style.display = 'flex';
             } else {
                 extratoAbsoluto.style.display = 'none';
             }
 
-            const faixaTexto = faixa !== 'Selecione...' ? faixa : 'Aguardando...';
-            const pesoTexto = peso !== 'Selecione...' ? peso : 'Aguardando...';
-
-            extratoCategoriaSpan.innerText = `${categoriaIdade}, ${faixaTexto}, ${pesoTexto}`;
+            extratoCategoriaSpan.innerText = `${categoria}, ${faixa}, ${peso}`;
             totalPagar.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
         }
         
-        // --- FUNÇÃO PRINCIPAL DE ENVIO DE DADOS (CORRIGIDA PARA REDIRECIONAR) ---
+        // --- FUNÇÃO PRINCIPAL DE ENVIO DE DADOS (MANTIDA) ---
         async function enviarParaPlanilha(event) {
             event.preventDefault(); 
 
@@ -434,8 +691,13 @@
             const formData = new FormData(inscricaoForm);
             formData.append('valor_total', totalPagar.innerText); 
             
-            if (!absolutoCheckbox.checked) {
-                formData.append('absoluto', 'Não');
+            const categoriaSelecionada = categoriaSelect.value;
+            const permiteAbsoluto = ['Juvenil', 'Adulto', 'Master 1', 'Master 2', 'Master 3', 'Master 4', 'Master 5', 'Master 6', 'Master 7'].includes(categoriaSelecionada);
+
+            if (absolutoCheckbox.checked && permiteAbsoluto) {
+                formData.set('absoluto', 'Sim');
+            } else {
+                formData.set('absoluto', 'Não');
             }
             
             const params = new URLSearchParams(formData).toString();
@@ -452,14 +714,13 @@
                 const data = await response.json();
 
                 if (data.resultado === "sucesso") {
-                    feedbackElement.textContent = '✅ Inscrição salva na planilha! Redirecionando para o Pagamento...';
+                    feedbackElement.textContent = '✅ Inscrição salva! Redirecionando para o Pagamento...';
                     feedbackElement.style.backgroundColor = '#d4edda';
                     feedbackElement.style.color = '#155724';
                     
                     // 🎯 CAPTURA E PASSA DADOS PARA pagamentos.html VIA URL
                     const nomeAtleta = document.getElementById('nome').value;
-                    const categoriaIdade = document.getElementById('categoriaIdade').value;
-                    // Pega o valor total (ex: "R$ 110,00"), formata para a URL (ex: "110.00")
+                    const categoriaIdade = categoriaSelect.value;
                     const totalPagarValor = totalPagar.innerText.replace('R$ ', '').replace(',', '.'); 
 
                     const urlPagamento = `../../pagamentos.html?atleta=${encodeURIComponent(nomeAtleta)}&categoria=${encodeURIComponent(categoriaIdade)}&valor=${totalPagarValor}`;
@@ -483,14 +744,18 @@
 
 
         // --- Event Listeners ---
-        dataNascimentoInput.addEventListener('change', atualizarUI);
+        dataNascimentoInput.addEventListener('change', popularCategorias);
+        sexoInput.addEventListener('change', popularCategorias); 
+        categoriaSelect.addEventListener('change', popularFaixas); 
+        faixaInput.addEventListener('change', popularPesos); 
+
+        // O peso e absoluto só precisam atualizar o extrato
+        pesoInput.addEventListener('change', atualizarExtrato); 
         absolutoCheckbox.addEventListener('change', atualizarExtrato);
-        faixaInput.addEventListener('change', atualizarExtrato);
-        pesoInput.addEventListener('change', atualizarExtrato);
         
         inscricaoForm.addEventListener('submit', enviarParaPlanilha);
         
-        atualizarUI(); 
+        popularCategorias(); // Inicia a UI, garantindo que os campos estejam desabilitados inicialmente.
     </script>
 </body>
 </html>
