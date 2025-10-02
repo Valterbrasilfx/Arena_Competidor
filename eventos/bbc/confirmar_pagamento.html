@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arena Competidor | Pagamento de Inscrição</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        :root { --cor-primaria: #007bff; --cor-secundaria: #343a40; --cor-destaque: #28a745; --cor-fundo: #f8f9fa; --cor-texto: #495057; --cor-borda: #dee2e6; --cor-whatsapp: #25D366; } 
+        body { font-family: 'Roboto', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        header { width: 100%; text-align: center; padding: 20px 0; background-color: #000; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+        header img { max-width: 200px; }
+        .main-content { margin-top: 100px; width: 90%; max-width: 800px; flex-grow: 1; }
+        h1 { color: var(--cor-secundaria); font-weight: 700; font-size: 2.5rem; text-align: center; margin-bottom: 40px; }
+        .payment-container { background-color: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; align-items: center; text-align: center; }
+        .payment-summary { border-bottom: 2px solid var(--cor-borda); padding-bottom: 20px; margin-bottom: 20px; width: 100%; }
+        .payment-summary h2, .payment-form h2 { color: var(--cor-secundaria); font-size: 1.8rem; margin-bottom: 15px; }
+        .payment-details p { font-size: 1.1rem; margin: 10px 0; text-align: left; }
+        .payment-details p strong { color: var(--cor-primaria); }
+        .payment-status { font-size: 1.2rem; font-weight: bold; color: #ffc107; margin-top: 10px; }
+        .payment-form { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .payment-form .form-group { margin-bottom: 10px; width: 100%; }
+        .payment-form .btn-pay { display: block; width: 100%; padding: 15px; font-size: 1.2rem; font-weight: bold; color: #fff; background-color: var(--cor-primaria); border: none; border-radius: 5px; cursor: pointer; transition: background-color 0.3s ease; text-decoration: none; text-align: center; box-sizing: border-box; }
+        .payment-form .btn-pay:hover { background-color: #0056b3; }
+        .payment-form .btn-pay.whatsapp { background-color: var(--cor-whatsapp); margin-top: 15px; } 
+        .payment-form .btn-pay.whatsapp:hover { background-color: #1DA851; }
+        .payment-form .note { font-size: 0.9rem; color: #888; margin-top: 10px; }
+        .footer { margin-top: auto; padding: 20px 0; width: 100%; text-align: center; font-size: 0.9rem; color: #6c757d; }
+        
+        
+        #pix-info { background-color: #f1f8ff; border: 1px solid #b3d9ff; padding: 15px; border-radius: 5px; margin-top: 20px; text-align: left; font-size: 1rem; width: 100%; box-sizing: border-box; }
+        #pix-info strong { color: var(--cor-primaria); display: block; margin-top: 5px; }
+        #pix-info .atencao { color: #cc0000; font-weight: bold; margin-top: 10px; display: block; font-size: 0.95rem; }
+
+        @media (max-width: 768px) { header { padding: 15px 0; position: static; } header img { max-width: 150px; } .main-content { margin-top: 30px; width: 95%; } h1 { font-size: 2rem; margin-bottom: 20px; } .payment-container { padding: 20px; box-shadow: none; } .payment-summary h2, .payment-form h2 { font-size: 1.5rem; } .payment-details p { font-size: 1rem; text-align: center; } .payment-status { font-size: 1.1rem; } .payment-form .btn-pay { font-size: 1.1rem; padding: 12px; } }
+        @media (max-width: 480px) { .main-content { width: 98%; padding: 0 5px; } h1 { font-size: 1.6rem; } .payment-container { padding: 15px; } .payment-summary { padding-bottom: 15px; margin-bottom: 15px; } }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="img/arena2.png" alt="Arena Competidor Logo">
+    </header>
+
+    <div class="main-content">
+       <h1>Concluir Pagamento</h1>
+       <div class="payment-container">
+           <div class="payment-summary">
+               <h2>Resumo da Inscrição</h2>
+               <div class="payment-details">
+                   <p><strong>Evento:</strong> BBC Open de Jiu-Jitsu</p>
+                   <p><strong>Atleta:</strong> <span id="nome-atleta">Carregando...</span></p>
+                   <p><strong>Categoria:</strong> <span id="categoria-atleta">Carregando...</span></p>
+                   <p><strong>Valor:</strong> <span id="valor-pagamento">Carregando...</span></p>
+               </div>
+               <p class="payment-status">Status: Pagamento Pendente</p>
+           </div>
+           
+           <div class="payment-form">
+               <h2>Método de Pagamento</h2>
+               <div class="form-group">
+                   <p>Clique abaixo para exibir as informações de pagamento via PIX.</p>
+               </div>
+               
+               <button id="btn-pix" class="btn-pay">Pagar com PIX</button>
+               
+               <div id="pix-container" style="display:none; margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px; width: 100%;">
+                   
+                   <div id="pix-info">
+                       <p><strong>Evento:</strong> BBC Open de Jiu-Jitsu</p>
+                       <p>O pagamento será através de <b>Pix</b> para a seguinte conta:</p>
+                       <p><strong>Chave Pix:</strong> 62.810.446/0001-39 (CNPJ)</p>
+                       <p><strong>Identificação:</strong> 62.810.446 VALTER SILVA BRASIL</p>
+                       <strong class="atencao">ATENÇÃO:</strong>
+                       <p>Enviar o <b>Comprovante do Pagamento</b> clicando no botão abaixo. A validação é feita pela organização do campeonato (BBC OPEN), favor aguardar. Ao enviar o comprovante, a situação do pagamento fica <b>Em Análise</b> na página de checagem, depois de confirmada pela organização passa para o status de Confirmada.</p>
+                   </div>
+                   
+                   <h3>Escaneie o QR Code</h3>
+                   <img id="pix-qrcode-img" src="img/IMG_5467.jpg" alt="PIX QR Code Simulado" style="max-width: 250px; border: 1px solid #ccc; padding: 5px; display: block; margin: 0 auto;">
+                   
+                
+                   <a href="#" target="_blank" class="btn-pay whatsapp">
+                       Envie o comprovante pelo WhatsApp
+                   </a>
+
+               </div>
+               
+           </div>
+       </div>
+    </div>
+
+    <div class="footer">
+        &copy; 2025 Arena Competidor. Todos os direitos reservados.
+    </div>
+
+    <script>
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const atleta = params.get('atleta');
+            const categoria = params.get('categoria');
+            // Converte o valor recebido na URL para float
+            const valor = parseFloat(params.get('valor')); 
+            // Formata para 2 casas decimais, tratando caso seja inválido
+            const valorFormatado = (isNaN(valor) ? '0.00' : valor.toFixed(2));
+            
+            // Verifica se os dados necessários foram recebidos
+            if (atleta && categoria && !isNaN(valor)) {
+                // Atualiza os elementos de resumo
+                document.getElementById('nome-atleta').innerText = atleta;
+                document.getElementById('categoria-atleta').innerText = categoria;
+                // Exibe o valor formatado para Real
+                document.getElementById('valor-pagamento').innerText = `R$ ${valorFormatado.replace('.', ',')}`;
+                
+                // --- Atualiza o link do WhatsApp ---
+                const whatsappLink = document.querySelector('.btn-pay.whatsapp');
+                if (whatsappLink) {
+                    // Texto base da mensagem, usando o nome do atleta (URI-encoded para a URL)
+                    const baseText = "Ol%C3%A1%2C%20segue%20o%20comprovante%20de%20pagamento%20da%20inscri%C3%A7%C3%A3o%20do%20atleta%20" + encodeURIComponent(atleta) + "%20para%20o%20BBC%20Open%20de%20Jiu-Jitsu.";
+                    // Número da organização para recebimento de comprovante
+                    whatsappLink.href = `https://api.whatsapp.com/send?phone=5584987513740&text=${baseText}`;
+                }
+
+            } else {
+                // Se falhar, exibe mensagem de erro
+                document.querySelector('.payment-summary').innerHTML = '<h2>Erro</h2><p>Não foi possível carregar os dados da inscrição. Por favor, volte e tente novamente.</p>';
+                document.querySelector('.payment-form').style.display = 'none';
+            }
+        });
+
+        const btnPix = document.getElementById('btn-pix');
+        const pixContainer = document.getElementById('pix-container');
+
+        // Lógica para exibir o container PIX ao clicar no botão
+        btnPix.addEventListener('click', () => {
+            btnPix.innerText = 'Informações PIX exibidas';
+            btnPix.disabled = true;
+            pixContainer.style.display = 'block';
+        });
+
+        // Removidas as funções de copiar PIX que referenciavam elementos inexistentes
+    </script>
+</body>
+</html>
