@@ -302,7 +302,7 @@
         
         // Função Principal de Processamento do CSV
         async function fetchAndProcessData() {
-            loadingMessage.textContent = 'Carregando dados da planilha...';
+            loadingMessage.textContent = 'Carregando dados...';
             try {
                 const response = await fetch(CSV_URL);
                 if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -310,7 +310,7 @@
                 const csvText = await response.text();
                 const lines = csvText.split('\n').filter(line => line.trim() !== '');
                 if (lines.length < 2) {
-                    loadingMessage.textContent = 'Nenhum dado encontrado na planilha.';
+                    loadingMessage.textContent = 'Nenhum dado encontrado.';
                     return;
                 }
                 
@@ -335,7 +335,7 @@
 
             } catch (error) {
                 console.error('Erro ao buscar ou processar CSV:', error);
-                loadingMessage.textContent = '❌ Erro ao carregar dados. Verifique o link ou a permissão da planilha.';
+                loadingMessage.textContent = '❌ Erro ao carregar dados. Verifique o banco de dados.';
             }
         }
         
