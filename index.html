@@ -34,10 +34,10 @@
             text-align: center;
             padding: 20px 0;
             background-color: #000;
-            position: fixed; 
+            position: fixed;
             top: 0;
             left: 0;
-            z-index: 1000; 
+            z-index: 1000;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
@@ -46,9 +46,9 @@
         }
 
         .main-content {
-            margin-top: 100px; /* Alterado de 150px para 100px */
+            margin-top: 100px;
             width: 90%;
-            max-width: 1200px; 
+            max-width: 1200px;
             text-align: center;
             flex-grow: 1;
         }
@@ -61,12 +61,12 @@
         }
 
         .event-list {
-            display: flex; 
-            justify-content: center; 
-            gap: 20px; 
-            flex-wrap: wrap; 
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
         }
-        
+
         .event-container {
             border-radius: 8px;
             overflow: hidden;
@@ -74,10 +74,11 @@
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             position: relative;
             margin-bottom: 30px;
-            max-width: 280px; 
-            width: 100%; 
+            /* MODIFICAÇÃO 1: Tamanho do container diminuído */
+            max-width: 250px; 
+            width: 100%;
         }
-        
+
         .event-container:hover {
             transform: translateY(-5px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
@@ -100,16 +101,35 @@
         }
 
         .event-info h2 {
-            margin: 0 0 5px 0;
-            font-size: 1.8rem;
+            /* Ajuste de margem para acomodar data e local */
+            margin: 0 0 10px 0;
+            font-size: 1.5rem; 
             color: var(--cor-secundaria);
         }
+        
+        /* MODIFICAÇÃO 2: Estilo para Data e Local */
+        .event-detail {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95rem;
+            color: var(--cor-texto);
+            margin-bottom: 5px; 
+        }
+
+        .event-detail .icon {
+            margin-right: 5px;
+            font-size: 1.1rem; 
+            color: var(--cor-primaria);
+        }
+        /* Fim da Modificação 2 */
 
         .event-info p {
             margin: 0;
             font-size: 1.1rem;
             font-weight: bold;
             color: var(--cor-destaque);
+            margin-top: 10px; /* Adicionado um pouco de espaço acima do status de inscrição */
         }
 
         .footer {
@@ -120,11 +140,6 @@
             font-size: 0.9rem;
             color: #6c757d;
         }
-
-       
-        
-        
-
     </style>
 </head>
 <body>
@@ -134,70 +149,121 @@
     </header>
 
     <div class="main-content">
-       <h1>Próximos Eventos</h1>
-       <div class="event-list">
-           <div class="event-container">
-                <a href="eventos/bbc/menu-evento.html" class="event-banner">
-                    <img src="img/BBCOPENAC.jpeg" alt="Banner do BBC Open de Jiu-Jitsu">
-                </a>
-                <div class="event-info">
-                    <h2>BBC Open de Jiu-Jitsu</h2>
-                    <p>Inscrições Abertas!</p>
-                </div>
-            </div>
-             <div class="event-container">
+        <h1>Próximos Eventos</h1>
+        <div class="event-list">
+            <div class="event-container">
                 <a href="meu-evento-agd.html" class="event-banner">
                     <img src="img/SENOGICAICOAC.jpeg" alt="Banner do Senogi Caicó">
                 </a>
                 <div class="event-info">
                     <h2>SENOGI - Etapa Caicó/RN</h2>
+                    <div class="event-detail">
+                        <span class="icon">🗓️</span> 
+                        <span><b>23/11/2025</b></span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="icon">📍</span> 
+                        <span><b>Caicó/RN</b></span>
+                    </div>
                     <p>Inscrições em breve!</p>
                 </div>
             </div>
+            <div class="event-container">
+                <a href="eventos/bbc/menu-evento.html" class="event-banner">
+                    <img src="img/BBCOPENAC.jpeg" alt="Banner do BBC Open de Jiu-Jitsu">
+                </a>
+                <div class="event-info">
+                    <h2>BBC Open de Jiu-Jitsu</h2>
+                    <div class="event-detail">
+                        <span class="icon">🗓️</span> 
+                        <span><b>14/12/2025</b></span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="icon">📍</span> 
+                        <span><b>Belém do Brejo do Cruz/PB</b></span>
+                    </div>
+                    <p>Inscrições Abertas!</p>
+                </div>
+            </div>
+            
+            
+            
             <div class="event-container">
                 <a href="meu-evento-agd.html" class="event-banner">
                     <img src="img/SENOGIPATOSAC.jpeg" alt="Banner do Senogi Patos">
                 </a>
                 <div class="event-info">
                     <h2>SENOGI - Etapa Patos/PB</h2>
+                    <div class="event-detail">
+                        <span class="icon">🗓️</span> 
+                        <span><b>25/01/2026</b></span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="icon">📍</span> 
+                        <span><b>Patos/PB</b></span>
+                    </div>
                     <p>Inscrições em breve!</p>
                 </div>
             </div>
+            
             <div class="event-container">
                 <a href="meu-evento-agd.html" class="event-banner">
                     <img src="img/SENOGICURRAISNOVOSAC.jpeg" alt="Banner do Senogi currais">
                 </a>
                 <div class="event-info">
                     <h2>SENOGI - Currais Novos/RN</h2>
+                    <div class="event-detail">
+                        <span class="icon">🗓️</span> 
+                        <span><b>22/03/2026</b></span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="icon">📍</span> 
+                        <span><b>Currais Novos/RN</b></span>
+                    </div>
                     <p>Inscrições em breve!</p>
                 </div>
             </div>
+            
             <div class="event-container">
                 <a href="meu-evento-agd.html" class="event-banner">
                     <img src="img/IMG_2151.JPG" alt="Banner do Open caico">
                 </a>
                 <div class="event-info">
                     <h2>10º Open Caicó de Jiu-jitsu</h2>
+                    <div class="event-detail">
+                        <span class="icon">🗓️</span> 
+                        <span><b>Maio/2026</b></span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="icon">📍</span> 
+                        <span><b>Caicó/RN</b></span>
+                    </div>
                     <p>Inscrições em breve!</p>
                 </div>
             </div>
-             <div class="event-container">
+            
+            <div class="event-container">
                 <a href="meu-evento-agd.html" class="event-banner">
                     <img src="img/IMG_2150.JPG" alt="Banner do Open caico">
                 </a>
                 <div class="event-info">
                     <h2>NOGI - 10º Open Caicó de Jiu-jitsu</h2>
+                    <div class="event-detail">
+                        <span class="icon">🗓️</span> 
+                        <span><b>Maio/2026</b></span>
+                    </div>
+                    <div class="event-detail">
+                        <span class="icon">📍</span> 
+                        <span><b>Caicó/RN</b></span>
+                    </div>
                     <p>Inscrições em breve!</p>
                 </div>
             </div>
-          
-       </div>
+        </div>
+        
         <div class="footer">
             &copy; 2025 Arena Competidor. Todos os direitos reservados.
         </div>
     </div>
-    
-    
-
 </body>
 </html>
