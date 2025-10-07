@@ -272,15 +272,57 @@
             </div>
 
             <div class="form-group">
-                <label for="equipe">Sua Equipe:</label>
-                <input type="text" id="equipe" name="equipe" required>
-            </div>
-
-            <div class="form-group">
-                <label for="professor">Professor:</label>
-                <input type="text" id="professor" name="professor" required>
+                <label for="equipeSelect">Sua Equipe:</label>
+                <select id="equipeSelect" required>
+                    <option value="">Selecione a Equipe...</option>
+                    <option value="Avanti Jiu-jitsu">Avanti Jiu-jitsu</option>
+                    <option value="BTT">BTT</option>
+                    <option value="Cascão Jiu Jitsu">Cascão Jiu Jitsu</option>
+                    <option value="Checkmat">Checkmat</option>
+                    <option value="Gadelha Team">Gadelha Team</option>
+                    <option value="Infantaria BJJ">Infantaria BJJ</option>
+                    <option value="SZT SN">SZT SN</option>
+                    <option value="Nova Geração Nordeste">Nova Geração Nordeste</option>                  
+                    <option value="Pitbull Brothers">Pitbull Brothers</option>
+                    <option value="ROX BJJ">ROX BJJ</option>
+                    <option value="SZT">SZT</option>
+                    <option value="Team Fernando Alves">Team Fernando Alves</option>
+                    <option value="Outra">Outra (Digitar abaixo)</option>
+                </select>
             </div>
             
+            <div class="form-group" id="equipeOutraContainer" style="display:none;">
+                <label for="equipeOutra">Nome da Equipe (Digite):</label>
+                <input type="text" id="equipeOutra">
+            </div>
+            <input type="hidden" id="equipe" name="equipe" required>
+            <div class="form-group">
+                <label for="professorSelect">Professor:</label>
+                <select id="professorSelect" required>
+                    <option value="">Selecione o Professor...</option>
+                    <option value="Baixinho">Baixinho</option>
+                    <option value="Carly Fran">Carly Fran</option>
+                    <option value="Cleyton Moura">Cleyton Moura</option>
+                    <option value="Danilo Marques">Danilo Marques</option>
+                    <option value="Elenilson Peixotinho">Elenilson Peixotinho</option>
+                    <option value="Felipe Bunes">Felipe Bunes</option>
+                    <option value="Gelson Teixeira">Gelson Teixeira</option>
+                    <option value="George Costa">George Costa</option>
+                    <option value="José Victor">José Victor</option>
+                    <option value="Josenilson Albino">Josenilson Albino</option>
+                    <option value="Lázaro Fernandes">Lázaro Fernandes</option>
+                    <option value="Matheus Gadelha">Matheus Gadelha</option>
+                    <option value="Pablo Forlan">Pablo Forlan</option>
+                    <option value="Wellinson Medeiros">Wellinson Medeiros</option>
+                    <option value="Outro">Outro (Digitar abaixo)</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="professorOutroContainer" style="display:none;">
+                <label for="professorOutro">Nome do Professor (Digite):</label>
+                <input type="text" id="professorOutro">
+            </div>
+            <input type="hidden" id="professor" name="professor" required>
             <div class="form-group">
                 <label for="categoria">Sua Categoria de Idade:</label>
                 <select id="categoria" name="categoria" required disabled>
@@ -343,6 +385,13 @@
         const inscricaoForm = document.getElementById('inscricaoForm');
         const feedbackElement = document.getElementById('feedback');
         
+        // NOVAS CONSTANTES PARA EQUIPE E PROFESSOR
+        const equipeSelect = document.getElementById('equipeSelect');
+        const equipeOutraInput = document.getElementById('equipeOutra');
+        const professorSelect = document.getElementById('professorSelect');
+        const professorOutroInput = document.getElementById('professorOutro');
+        // FIM NOVAS CONSTANTES
+
         // ==========================================================
         // 1. REGRAS DE DIVISÃO E TABELAS DE PESO/FAIXA (SUAS IDEIAS)
         // ==========================================================
@@ -515,14 +564,14 @@
             "Infanto-Juvenil 2": ["Branca", "Cinza", "Amarela", "Laranja", "Verde"],
             "Infanto-Juvenil 3": ["Branca", "Cinza", "Amarela", "Laranja", "Verde"],
             "Juvenil": ["Branca", "Azul"],
-            "Adulto": ["Branca", "Azul", "Roxa", "Marrom"],
-            "Master 1": ["Branca", "Azul", "Roxa", "Marrom"],
-            "Master 2": ["Branca", "Azul", "Roxa", "Marrom"],
-            "Master 3": ["Branca", "Azul", "Roxa", "Marrom"],
-            "Master 4": ["Branca", "Azul", "Roxa", "Marrom"],
-            "Master 5": ["Branca", "Azul", "Roxa", "Marrom"],
-            "Master 6": ["Branca", "Azul", "Roxa", "Marrom"],
-            "Master 7": ["Branca", "Azul", "Roxa", "Marrom"],
+            "Adulto": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 1": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 2": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 3": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 4": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 5": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 6": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
+            "Master 7": ["Branca", "Azul", "Roxa", "Marrom", "Preta"],
         };
 
         // ==========================================================
@@ -652,6 +701,55 @@
             atualizarExtrato();
         }
         
+        // --- FUNÇÕES PARA GERENCIAR SELECT/OUTRA (ADICIONADAS) ---
+        function gerenciarEquipe() {
+            const equipeOutraContainer = document.getElementById('equipeOutraContainer');
+            const equipeHiddenInput = document.getElementById('equipe');
+            const valorSelecionado = equipeSelect.value;
+
+            if (valorSelecionado === 'Outra') {
+                // Se for "Outra", mostra o campo de digitação e o torna obrigatório
+                equipeOutraContainer.style.display = 'flex';
+                equipeOutraInput.required = true;
+                // O valor final é o que for digitado no campo extra
+                equipeHiddenInput.value = equipeOutraInput.value;
+            } else {
+                // Se for uma equipe pré-definida, esconde o campo e o limpa
+                equipeOutraContainer.style.display = 'none';
+                equipeOutraInput.required = false;
+                equipeOutraInput.value = '';
+                
+                // O valor final é o do select
+                equipeHiddenInput.value = valorSelecionado;
+            }
+            
+            // Garante que o hidden input seja required se o select não for selecionado.
+            equipeHiddenInput.required = valorSelecionado === '' ? true : false;
+        }
+
+        function gerenciarProfessor() {
+            const professorOutroContainer = document.getElementById('professorOutroContainer');
+            const professorHiddenInput = document.getElementById('professor');
+            const valorSelecionado = professorSelect.value;
+
+            if (valorSelecionado === 'Outro') {
+                professorOutroContainer.style.display = 'flex';
+                professorOutroInput.required = true;
+                // O valor final é o que for digitado no campo extra
+                professorHiddenInput.value = professorOutroInput.value;
+            } else {
+                professorOutroContainer.style.display = 'none';
+                professorOutroInput.required = false;
+                professorOutroInput.value = '';
+                
+                // O valor final é o do select
+                professorHiddenInput.value = valorSelecionado;
+            }
+
+            professorHiddenInput.required = valorSelecionado === '' ? true : false;
+        }
+        // --- FIM FUNÇÕES SELECT/OUTRA ---
+        
         // --- FUNÇÕES DE EXTRACTO E ENVIO ---
 
         function atualizarExtrato() {
@@ -680,6 +778,10 @@
         // --- FUNÇÃO PRINCIPAL DE ENVIO DE DADOS (MANTIDA) ---
         async function enviarParaPlanilha(event) {
             event.preventDefault(); 
+            
+            // AJUSTE CRUCIAL: Chama as funções para atualizar o valor final dos campos antes de enviar
+            gerenciarEquipe();
+            gerenciarProfessor();
 
             if (!inscricaoForm.checkValidity()) {
                 inscricaoForm.reportValidity(); 
@@ -748,6 +850,14 @@
         sexoInput.addEventListener('change', popularCategorias); 
         categoriaSelect.addEventListener('change', popularFaixas); 
         faixaInput.addEventListener('change', popularPesos); 
+
+        // NOVOS LISTENERS PARA EQUIPE E PROFESSOR
+        equipeSelect.addEventListener('change', gerenciarEquipe);
+        equipeOutraInput.addEventListener('input', gerenciarEquipe); // Atualiza o hidden input enquanto digita
+
+        professorSelect.addEventListener('change', gerenciarProfessor);
+        professorOutroInput.addEventListener('input', gerenciarProfessor); // Atualiza o hidden input enquanto digita
+        // FIM NOVOS LISTENERS
 
         // O peso e absoluto só precisam atualizar o extrato
         pesoInput.addEventListener('change', atualizarExtrato); 
