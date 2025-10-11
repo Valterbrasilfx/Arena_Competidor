@@ -9,7 +9,7 @@
         :root { 
             --cor-primaria: #007bff; 
             --cor-secundaria: #343a40; 
-            --cor-destaque: #28a745; 
+            --cor-destaque: #28a745; /* Verde para PIX Direto */
             --cor-fundo: #f8f9fa; 
             --cor-texto: #495057; 
             --cor-borda: #dee2e6; 
@@ -27,6 +27,7 @@
             align-items: center; 
             min-height: 100vh; 
         }
+        /* --- ESTILOS DA HEADER E LOGO ATUALIZADOS --- */
         header { 
             width: 100%; 
             text-align: center; 
@@ -38,7 +39,13 @@
             z-index: 1000; 
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
         }
-        header img { max-width: 200px; }
+        header img { 
+            width: auto; 
+            max-height: 80px; 
+            max-width: 250px; 
+        }
+        /* --- FIM ESTILOS DA HEADER E LOGO ATUALIZADOS --- */
+
         .main-content { margin-top: 100px; width: 90%; max-width: 800px; flex-grow: 1; }
         h1 { color: var(--cor-secundaria); font-weight: 700; font-size: 2.5rem; text-align: center; margin-bottom: 40px; }
         .payment-container { 
@@ -78,7 +85,6 @@
         .payment-form .btn-pay.whatsapp { background-color: var(--cor-whatsapp); margin-top: 15px; } 
         .payment-form .btn-pay.whatsapp:hover { background-color: #1DA851; }
         .payment-form .note { font-size: 0.9rem; color: #888; margin-top: 10px; }
-        .footer { margin-top: auto; padding: 20px 0; width: 100%; text-align: center; font-size: 0.9rem; color: #6c757d; }
         
         /* ESTILO DO BOTÃO COPIA E COLA PIX */
         .pix-copia-btn {
@@ -100,6 +106,7 @@
         }
         .pix-copia-btn:hover { background-color: #e67e22; }
 
+        /* Estilo da caixa de informação PIX */
         #pix-info { 
             background-color: #f1f8ff; 
             border: 1px solid #b3d9ff; 
@@ -114,23 +121,87 @@
         #pix-info strong { color: var(--cor-primaria); display: block; margin-top: 5px; }
         #pix-info .atencao { color: #cc0000; font-weight: bold; margin-top: 10px; display: block; font-size: 0.95rem; }
 
-        @media (max-width: 768px) { 
-            header { padding: 15px 0; position: static; } 
-            header img { max-width: 150px; } 
-            .main-content { margin-top: 30px; width: 95%; } 
-            h1 { font-size: 2rem; margin-bottom: 20px; } 
-            .payment-container { padding: 20px; box-shadow: none; } 
-            .payment-summary h2, .payment-form h2 { font-size: 1.5rem; } 
-            .payment-details p { font-size: 1rem; text-align: center; } 
-            .payment-status { font-size: 1.1rem; } 
-            .payment-form .btn-pay { font-size: 1.1rem; padding: 12px; } 
-            .pix-copia-btn { font-size: 1rem; padding: 12px; }
+        /* --- CSS PARA O GRID DE OPÇÕES DE PAGAMENTO --- */
+        .payment-options-grid {
+            display: grid;
+            grid-template-columns: 1fr; 
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 20px;
         }
-        @media (max-width: 480px) { 
-            .main-content { width: 98%; padding: 0 5px; } 
-            h1 { font-size: 1.6rem; } 
-            .payment-container { padding: 15px; } 
-            .payment-summary { padding-bottom: 15px; margin-bottom: 15px; } 
+        .payment-option-card {
+            border: 1px solid var(--cor-borda);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 0px 0px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+        .payment-option-card:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .btn-action {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            text-decoration: none;
+            margin-top: 15px;
+            box-sizing: border-box;
+        }
+        .btn-pix-toggle {
+            background-color: var(--cor-destaque);
+        }
+        .btn-pix-toggle:hover {
+            background-color: #218838;
+        }
+        .btn-mpago {
+            background-color: #009ee3;
+        }
+        .btn-mpago:hover {
+            background-color: #007bbd;
+        }
+        .btn-mpago:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+        
+        /* Estilo da nota de taxa centralizada (NOVA POSIÇÃO E ESTILO) */
+        .tax-note-outside {
+            font-size: 0.9rem;
+            color: #cc0000;
+            font-weight: bold;
+            margin: 20px 0; /* Espaço para separar do grid e do container PIX */
+            text-align: center;
+            width: 100%;
+        }
+        /* --- FIM CSS DE OPÇÕES --- */
+
+
+        @media (min-width: 600px) {
+            .payment-options-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 768px) { 
+            header { 
+                padding: 15px 0; 
+                position: static; 
+            } 
+            header img { 
+                max-width: 180px; 
+                max-height: 50px;
+            } 
+            .main-content { margin-top: 30px; width: 95%; } 
+            /* ... o restante do media query ... */
         }
     </style>
 </head>
@@ -146,7 +217,7 @@
             <div class="payment-summary">
                 <h2>Resumo da Inscrição</h2>
                 <div class="payment-details">
-                    <p><strong>Evento:</strong> SENOGI - Etapa Caicó</p>
+                    <p><strong>Evento:</strong> SENOGI ETAPA CAICÓ</p>
                     <p><strong>Atleta:</strong> <span id="nome-atleta">Carregando...</span></p>
                     <p><strong>Categoria:</strong> <span id="categoria-atleta">Carregando...</span></p>
                     <p><strong>Valor:</strong> <span id="valor-pagamento">Carregando...</span></p>
@@ -155,17 +226,32 @@
             </div>
             
             <div class="payment-form">
-                <h2>Método de Pagamento</h2>
-                <div class="form-group">
-                    <p>Clique abaixo para exibir as informações de pagamento via PIX.</p>
+                <h2>Selecione o Método de Pagamento</h2>
+                
+                <div class="payment-options-grid">
+                    <div class="payment-option-card">
+                        <h3>PIX Direto (Sem Taxa)</h3>
+                        <p>Pagamento instantâneo via chave PIX CNPJ. Envie o comprovante via WhatsApp.</p>
+                        <button id="btn-pix-direto" class="btn-action btn-pix-toggle">Pagar com PIX</button>
+                    </div>
+                
+                    <div class="payment-option-card" id="mp-card-container">
+                        <h3>Cartão de Crédito / PIX (c/ Taxa)</h3>
+                        <p>Use seu cartão de crédito ou PIX do Mercado Pago. A taxa de serviço é inclusa.</p>
+                        <a href="#" target="_blank" class="btn-action btn-mpago" id="btn-mercado-pago">
+                            Pagar com Cartão/Mercado Pago
+                        </a>
+                    </div>
                 </div>
-                
-                <button id="btn-pix" class="btn-pay">Pagar com PIX</button>
-                
+
+                <p class="tax-note-outside">
+                    *O valor final da transação será recalculado pelo Mercado Pago com a inclusão das taxas de serviço/cartão.
+                </p>
+
                 <div id="pix-container" style="display:none; margin-top: 20px; border-top: 1px solid #ccc; padding-top: 20px; width: 100%;">
                     
                     <div id="pix-info">
-                        <p><strong>Evento:</strong> SENOGI - ETAPA CAICÓ</p>
+                        <p><strong>Evento:</strong> SENOGI - Etapa Caicó</p>
                         <p>O pagamento será através de <b>Pix</b> para a seguinte conta:</p>
                         <p><strong>Chave Pix:</strong> 62.810.446/0001-39 (CNPJ)</p>
                         <p><strong>Identificação:</strong> 62.810.446 VALTER SILVA BRASIL</p>
@@ -176,7 +262,7 @@
                     <h3>Escaneie o QR Code</h3>
                     <img id="pix-qrcode-img" src="../../img/IMG_5482.jpg" alt="PIX QR Code Simulado" style="max-width: 250px; border: 1px solid #ccc; padding: 5px; display: block; margin: 0 auto;">
                     
-                    <div id="pix-copia-e-cola-container">
+                    <div id="pix-copia-e-cola-container" style="width: 100%;">
                         <button class="pix-copia-btn" onclick="copiarPix()">
                             <span id="copia-text">Copiar Código Pix Copia e Cola</span> 📋
                         </button>
@@ -199,31 +285,55 @@
         // Código PIX Copia e Cola (A string que será copiada)
         const pixCopiaECola = '00020126360014br.gov.bcb.pix0114628104460001395204000053039865802BR592462.810.446 VALTER SILVA 6009Sao Paulo610901227-20062240520daqr27030924361048376304C2FA';
         const copiaText = document.getElementById('copia-text');
+        
+        // Mapeamento dos links do Mercado Pago por valor (USANDO PONTO PARA FLOAT)
+        // NOVOS VALORES E LINKS AQUI: 90.00 e 140.00
+        const mercadoPagoLinks = {
+            90.00: 'https://mpago.la/1jChcci',  // Novo link para R$ 90,00
+            140.00: 'https://mpago.la/1qbtrgj'  // Novo link para R$ 140,00
+        };
+
+        // Elementos HTML 
+        const btnPixDireto = document.getElementById('btn-pix-direto');
+        const pixContainer = document.getElementById('pix-container');
+        const paymentOptionsGrid = document.querySelector('.payment-options-grid');
+        const btnMercadoPago = document.getElementById('btn-mercado-pago');
+        const mpCardContainer = document.getElementById('mp-card-container');
+        let atletaNome = ''; // Para uso global no link do WhatsApp
 
         // --- FUNÇÃO PARA COPIAR O CÓDIGO PIX ---
         function copiarPix() {
-            // Verifica se a API do Clipboard está disponível (navegadores modernos)
             if (navigator.clipboard && navigator.clipboard.writeText) {
                 navigator.clipboard.writeText(pixCopiaECola).then(() => {
-                    // Feedback visual de sucesso
                     copiaText.innerText = 'Copiado! ✅ Cole no seu App do Banco';
                     setTimeout(() => {
-                        // Retorna ao texto original após 3 segundos
                         copiaText.innerText = 'Copiar Código Pix Copia e Cola';
                     }, 3000);
                 }).catch(err => {
-                    // Fallback para caso de erro
                     alert(`Não foi possível copiar automaticamente. Copie o código abaixo:\n\n${pixCopiaECola}`);
                 });
             } else {
-                // Fallback para navegadores antigos (requer que o usuário selecione e copie manualmente)
                 alert(`Seu navegador não suporta cópia automática. Copie o código abaixo:\n\n${pixCopiaECola}`);
             }
         }
-        
-        // Permite que a função seja chamada pelo 'onclick' no HTML
         window.copiarPix = copiarPix;
 
+        // --- Lógica para exibir o container PIX ao clicar no botão ---
+        btnPixDireto.addEventListener('click', () => {
+            // Oculta o grid de opções e exibe os detalhes do PIX
+            paymentOptionsGrid.style.display = 'none';
+            pixContainer.style.display = 'block'; 
+            document.querySelector('.tax-note-outside').style.display = 'none'; /* Oculta a nota de taxa ao exibir o PIX */
+            
+            btnPixDireto.innerText = 'Informações PIX Exibidas';
+            btnPixDireto.disabled = true;
+            btnPixDireto.style.opacity = 0.8;
+            // Scroll suave para a seção PIX
+            pixContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+
+        // --- CARREGAMENTO INICIAL E CONFIGURAÇÃO DE LINKS (Incluindo MP) ---
         window.addEventListener('DOMContentLoaded', () => {
             const params = new URLSearchParams(window.location.search);
             const atleta = params.get('atleta');
@@ -232,32 +342,39 @@
             const valorFormatado = (isNaN(valor) ? '0.00' : valor.toFixed(2));
             
             if (atleta && categoria && !isNaN(valor)) {
+                atletaNome = atleta; // Armazena globalmente
+                
                 document.getElementById('nome-atleta').innerText = atleta;
                 document.getElementById('categoria-atleta').innerText = categoria;
                 document.getElementById('valor-pagamento').innerText = `R$ ${valorFormatado.replace('.', ',')}`;
+
+                // --- Lógica do Mercado Pago ---
+                const valorExato = parseFloat(valorFormatado); 
+                const linkMP = mercadoPagoLinks[valorExato];
+
+                if (linkMP) {
+                    btnMercadoPago.href = linkMP;
+                } else {
+                    // Fallback para quando o link não é mapeado (ou se for 90 ou 140, mas por algum erro o link não foi encontrado)
+                    mpCardContainer.innerHTML = `
+                        <h3>Cartão de Crédito / PIX (c/ Taxa)</h3>
+                        <p>O valor de R$ ${valorFormatado.replace('.', ',')} não possui um link de checkout automático configurado. Por favor, utilize o PIX Direto.</p>
+                        <button class="btn-action btn-mpago" disabled>Indisponível</button>
+                    `;
+                }
                 
                 // --- Atualiza o link do WhatsApp ---
                 const whatsappLink = document.getElementById('whatsapp-link'); 
                 if (whatsappLink) {
-                    // Mensagem pré-preenchida para o WhatsApp
-                    const baseText = "Ol%C3%A1%2C%20segue%20o%20comprovante%20de%20pagamento%20da%20inscri%C3%A7%C3%A3o%20do%20atleta%20" + encodeURIComponent(atleta) + "%20para%20o%20SENOGI%20Etapa%20Caicó%20de%20Jiu-Jitsu%20SEM%20KIMONO.";
+                    const baseText = "Ol%C3%A1%2C%20segue%20o%20comprovante%20de%20pagamento%20da%20inscri%C3%A7%C3%A3o%20do%20atleta%20" + encodeURIComponent(atletaNome) + "%20para%20o%20SENOGI%20ETAPA%20CAICÓ.";
                     whatsappLink.href = `https://api.whatsapp.com/send?phone=5584987513740&text=${baseText}`;
                 }
 
             } else {
-                document.querySelector('.payment-summary').innerHTML = '<h2>Erro</h2><p>Não foi possível carregar os dados da inscrição. Por favor, volte e tente novamente.</p>';
+                // Caso os parâmetros falhem
+                document.querySelector('.payment-summary').innerHTML = '<h2>❌ Erro</h2><p>Não foi possível carregar os dados da inscrição. Por favor, volte e tente novamente.</p>';
                 document.querySelector('.payment-form').style.display = 'none';
             }
-        });
-
-        const btnPix = document.getElementById('btn-pix');
-        const pixContainer = document.getElementById('pix-container');
-
-        // Lógica para exibir o container PIX (com QR Code e botão de cópia) ao clicar no botão
-        btnPix.addEventListener('click', () => {
-            btnPix.innerText = 'Informações PIX exibidas';
-            btnPix.disabled = true;
-            pixContainer.style.display = 'block';
         });
 
     </script>
