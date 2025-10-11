@@ -174,7 +174,7 @@
             pointer-events: none;
         }
         
-        /* Estilo da nota de taxa centralizada (NOVA POSIÇÃO E ESTILO) */
+        /* Estilo da nota de taxa centralizada */
         .tax-note-outside {
             font-size: 0.9rem;
             color: #cc0000;
@@ -201,7 +201,6 @@
                 max-height: 50px;
             } 
             .main-content { margin-top: 30px; width: 95%; } 
-            /* ... o restante do media query ... */
         }
     </style>
 </head>
@@ -236,7 +235,7 @@
                     </div>
                 
                     <div class="payment-option-card" id="mp-card-container">
-                        <h3>Cartão de Crédito / PIX (c/ Taxa)</h3>
+                        <h3>Mercado Pago</h3>
                         <p>Use seu cartão de crédito ou PIX do Mercado Pago. A taxa de serviço é inclusa.</p>
                         <a href="#" target="_blank" class="btn-action btn-mpago" id="btn-mercado-pago">
                             Pagar com Cartão/Mercado Pago
@@ -290,7 +289,9 @@
         const mercadoPagoLinks = {
             110.00: 'https://mpago.li/2j96ckj',
             70.00: 'https://mpago.la/1rd8ztF',
-            60.00: 'https://mpago.la/2jwFdiz'
+            60.00: 'https://mpago.la/2jwFdiz',
+            // NOVO LINK ADICIONADO ABAIXO:
+            100.00: 'https://mpago.la/175GChE' 
         };
 
         // Elementos HTML 
@@ -366,6 +367,7 @@
                 // --- Atualiza o link do WhatsApp ---
                 const whatsappLink = document.getElementById('whatsapp-link'); 
                 if (whatsappLink) {
+                    // Texto do WhatsApp atualizado para "BBC Open de Jiu-Jitsu"
                     const baseText = "Ol%C3%A1%2C%20segue%20o%20comprovante%20de%20pagamento%20da%20inscri%C3%A7%C3%A3o%20do%20atleta%20" + encodeURIComponent(atletaNome) + "%20para%20o%20BBC%20Open%20de%20Jiu-Jitsu.";
                     whatsappLink.href = `https://api.whatsapp.com/send?phone=5584987513740&text=${baseText}`;
                 }
