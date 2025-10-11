@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arena Competidor | Confirmação de Inscrição (Apenas Formulário)</title>
+    <title>Arena Competidor | Pagamento e Confirmação</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
         :root { 
@@ -16,6 +16,9 @@
             --cor-whatsapp: #25D366; 
             --cor-alerta: #ffc107; 
             --cor-sucesso: #d4edda;
+            --cor-mpago: #009ee3; /* Cor do Mercado Pago */
+            --cor-pix-direto: var(--cor-destaque);
+            --cor-copia: #6c757d; /* Cinza para botão de Copiar */
         } 
         body { font-family: 'Roboto', sans-serif; background-color: var(--cor-fundo); color: var(--cor-texto); margin: 0; padding: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
         header { width: 100%; text-align: center; padding: 20px 0; background-color: #000; position: fixed; top: 0; left: 0; z-index: 1000; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
@@ -26,8 +29,8 @@
         .confirmation-container { background-color: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); display: flex; flex-direction: column; align-items: center; text-align: center; }
         
         /* Box de Informação */
-        .info-box { background-color: #d4edda; /* Cor de sucesso/confirmação */ color: #155724; border: 1px solid #c3e6cb; padding: 20px; border-radius: 5px; margin-bottom: 30px; width: 100%; box-sizing: border-box; }
-        .info-box h2 { color: #155724; margin-top: 0; font-size: 1.8rem; }
+        .info-box { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; padding: 20px; border-radius: 5px; margin-bottom: 30px; width: 100%; box-sizing: border-box; }
+        .info-box h2 { color: #856404; margin-top: 0; font-size: 1.8rem; }
         .info-box p { font-size: 1.1rem; }
 
         /* Campos de Preenchimento */
@@ -42,21 +45,24 @@
             box-sizing: border-box; 
         }
 
-        /* Tabela de Resumo (Mantida, mas simplificada) */
+        /* Tabela de Resumo */
         .summary-table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
         .summary-table th, .summary-table td { border: 1px solid var(--cor-borda); padding: 12px 15px; text-align: left; }
         .summary-table th { background-color: #f1f1f1; color: var(--cor-secundaria); font-weight: bold; }
         .summary-table .total-row th, .summary-table .total-row td { background-color: var(--cor-primaria); color: #fff; font-size: 1.2rem; font-weight: bold; }
         
-        /* Botão do WhatsApp (Envio de Comprovante) */
-        .whatsapp-btn { 
+        /* Seção de Ações */
+        .pix-section { border-top: 2px solid var(--cor-destaque); padding-top: 30px; width: 100%; }
+        
+        /* Botão Principal de Ação (Pagar) */
+        .btn-action-main {
             display: block; 
             width: 100%; 
             padding: 18px; 
             font-size: 1.3rem; 
             font-weight: bold; 
             color: #fff; 
-            background-color: var(--cor-whatsapp); 
+            background-color: var(--cor-mpago); 
             border: none; 
             border-radius: 8px; 
             cursor: pointer; 
@@ -64,7 +70,29 @@
             text-decoration: none; 
             text-align: center; 
             box-sizing: border-box; 
-            margin-top: 25px; 
+            margin: 25px 0 15px 0; 
+        }
+        .btn-action-main:hover { background-color: #007bbd; }
+        .btn-action-main.pix-direto { background-color: var(--cor-pix-direto); }
+        .btn-action-main.pix-direto:hover { background-color: #218838; }
+
+        /* Botão do WhatsApp (Envio de Comprovante) */
+        .whatsapp-btn { 
+            display: block; 
+            width: 100%; 
+            padding: 15px; 
+            font-size: 1.2rem; 
+            font-weight: bold; 
+            color: #fff; 
+            background-color: var(--cor-whatsapp); 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease; 
+            text-decoration: none; 
+            text-align: center; 
+            box-sizing: border-box; 
+            margin-top: 20px; 
             pointer-events: none; 
             opacity: 0.5;
         }
@@ -73,6 +101,37 @@
             opacity: 1;
         }
         .whatsapp-btn.enabled:hover { background-color: #1DA851; }
+
+        /* Detalhes do PIX Direto */
+        #pix-direto-details { 
+            display: none; 
+            margin-top: 20px; 
+            padding-top: 15px; 
+            border-top: 1px solid #ccc; 
+            background-color: #f1f8ff; 
+            padding: 20px; 
+            border-radius: 8px;
+        }
+        #pix-direto-details h3 { color: var(--cor-primaria); margin-top: 0; }
+        
+        /* Botões de Copia */
+        .copy-button {
+            background-color: var(--cor-copia);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .copy-button:hover {
+            background-color: #5a6268;
+        }
+        .qrcode-container { text-align: center; margin-top: 20px; }
+        .qrcode-container img { max-width: 200px; border: 1px solid #ccc; padding: 5px; }
 
         .footer { margin-top: auto; padding: 20px 0; width: 100%; text-align: center; font-size: 0.9rem; color: #6c757d; }
 
@@ -86,14 +145,15 @@
     </header>
 
     <div class="main-content">
-       <h1>Confirmação de Inscrição e Sinalização de Pagamento</h1>
+       <h1>Pagamento e Confirmação de Inscrição</h1>
        <div class="confirmation-container">
            
            <div class="info-box">
-               <h2>✅ Inscrição Realizada</h2>
-               <p>Preencha seus dados abaixo para enviar a sinalização de pagamento à organização do evento via WhatsApp.</p>
-               <p style="font-weight: bold;">Este formulário é apenas para <b>CONFIRMAÇÃO</b>.</p>
-               <p style="font-weight: bold; color: #cc0000; margin-top: 15px;"><b>IMPORTANTE:</b> Se você ainda não efetuou o pagamento, sua inscrição não será validada.</p>
+               <h2>👋 Próximos Passos</h2>
+               <p>1. Preencha os dados do atleta e escolha o <b>Tipo de Inscrição</b>.</p>
+               <p>2. Se ainda não pagou, use um dos <b>botões de pagamento</b> abaixo da tabela.</p>
+               <p>3. Após o pagamento, preencha o <b>Método de Pagamento</b> e clique no botão <b>Enviar Comprovante pelo WhatsApp</b>.</p>
+               <p style="font-weight: bold; color: var(--cor-secundaria); margin-top: 15px;">O status da sua inscrição será atualizado para <span style="color: var(--cor-alerta);">EM ANÁLISE</span> após o envio do comprovante.</p>
            </div>
            
            <div class="input-fields">
@@ -103,45 +163,81 @@
                 <label for="numero-ordem">Seu Número de Ordem (CPF, etc.):</label>
                 <input type="text" id="numero-ordem" placeholder="Ex: CPF ou Número de Inscrição" required>
 
-                <label for="tipo-inscricao">Selecione o Tipo de Inscrição Paga:</label>
+                <label for="tipo-inscricao">Selecione o Tipo de Inscrição:</label>
                 <select id="tipo-inscricao">
                     <option value="90.00">Categoria (R$ 90,00)</option>
                     <option value="140.00">Categoria + Absoluto (R$ 140,00)</option>
-            
                 </select>
 
                 <label for="metodo-pagamento">Método de Pagamento Utilizado:</label>
                 <select id="metodo-pagamento" required>
-                    <option value="" disabled selected>Selecione um método</option>
+                    <option value="" disabled selected>Selecione um método (para comprovante)</option>
                     <option value="PIX Direto">PIX Direto (CNPJ)</option>
-                    <option value="PIX Mercado Pago">PIX Mercado Pago</option>
-                    <option value="Cartão de Crédito Mercado Pago">Cartão de Crédito MP</option>
+                    <option value="PIX Mercado Pago">PIX Mercado Pago (QR Code/Link)</option>
+                    <option value="Cartão de Crédito Mercado Pago">Cartão de Crédito Mercado Pago</option>
                     <option value="Saldo Mercado Pago">Saldo do Mercado Pago</option>
                     <option value="Boleto Mercado Pago">Boleto Mercado Pago</option>
-                    <option value="Transferencia/Outro">Transferência/Outro</option>
                 </select>
            </div>
            
            <table class="summary-table">
                <thead>
                    <tr>
-                       <th>Inscrição Selecionada</th>
-                       <th>Valor Total Sinalizado</th>
+                       <th>Descrição</th>
+                       <th>Valor</th>
                    </tr>
                </thead>
                <tbody>
                    <tr>
-                       <td id="linha-categoria-desc" colspan="2">Categoria (R$ 90,00)</td>
+                       <td id="linha-categoria-desc">Inscrição (Categoria + Peso)</td>
+                       <td id="linha-categoria-valor">R$ 90,00</td>
+                   </tr>
+                   <tr id="linha-absoluto" style="display:none;">
+                       <td>Absoluto</td>
+                       <td id="linha-absoluto-valor">R$ 50,00</td>
                    </tr>
                    <tr class="total-row">
-                       <th colspan="1">Valor Informado</th>
+                       <th>Total a Pagar</th>
                        <td id="valor-total">R$ 90,00</td>
                    </tr>
                </tbody>
            </table>
            
+           <a href="#" target="_blank" id="btn-pagar-agora" class="btn-action-main">
+               Pagar R$ 90,00 com Mercado Pago (Cartão/PIX c/ Taxa)
+           </a>
+           <p style="font-size: 0.85rem; color: #888; margin-top: -10px;">
+               *Se optar por PIX Direto (sem taxa), use o botão abaixo.
+           </p>
+
+           <button id="btn-toggle-pix-direto" class="btn-action-main pix-direto" style="background-color: var(--cor-pix-direto); font-size: 1.1rem; padding: 15px; margin-top: 0;">
+               Pagar R$ 90,00 com PIX Direto (Sem Taxa)
+           </button>
+           
+           <div id="pix-direto-details">
+                <div id="pix-info">
+                   <h3>Informações PIX Direto (CNPJ)</h3>
+                   <p>Use o Copia e Cola, ou o QR Code. O valor a ser pago deve ser o mesmo da tabela acima (<span id="pix-valor-info" style="font-weight: bold;">R$ 90,00</span>).</p>
+                   
+                   <p><strong>Chave Pix:</strong> <span id="chave-pix-cnpj">62.810.446/0001-39</span> (CNPJ)</p>
+                   <button id="btn-copy-chave" class="copy-button">Copiar Chave PIX (CNPJ)</button>
+                   
+                   <p style="margin-top: 15px;"><strong>Identificação:</strong> 62.810.446 VALTER SILVA BRASIL</p>
+                </div>
+               
+               <div class="qrcode-container">
+                   <h4>Escaneie o QR Code</h4>
+                   <img id="pix-qrcode-img" src="../../img/IMG_5467.jpg" alt="PIX QR Code" style="max-width: 200px;">
+                   
+                   <input type="hidden" id="pix-copia-cola-code" value="00020126360014br.gov.bcb.pix0114628104460001395204000053039865802BR592462.810.446 VALTER SILVA 6009Sao Paulo610901227-20062240520daqr27030924361048376304C2FA">
+                   
+                   <button id="btn-copy-qrcode" class="copy-button">Copiar PIX Copia e Cola</button>
+                   <p style="font-size: 0.8rem; color: #cc0000; margin-top: 5px;">*Atenção: Você precisará digitar o valor exato no seu App bancário.</p>
+               </div>
+           </div>
+
            <a id="whatsapp-link" href="#" target="_blank" class="whatsapp-btn">
-               Preencha os campos para enviar a Confirmação
+               Preencha os campos para enviar o Comprovante (Após o Pagamento)
            </a>
            
        </div>
@@ -156,11 +252,30 @@
         const numeroOrdemInput = document.getElementById('numero-ordem');
         const tipoInscricaoSelect = document.getElementById('tipo-inscricao');
         const metodoPagamentoSelect = document.getElementById('metodo-pagamento'); 
+        const linhaAbsoluto = document.getElementById('linha-absoluto');
         const linhaCategoriaDesc = document.getElementById('linha-categoria-desc');
+        const linhaCategoriaValor = document.getElementById('linha-categoria-valor');
+        const linhaAbsolutoValor = document.getElementById('linha-absoluto-valor');
         const valorTotalElement = document.getElementById('valor-total');
         const whatsappLink = document.getElementById('whatsapp-link');
 
-        // --- FUNÇÃO PARA ATUALIZAR A TABELA E O LINK DO WHATSAPP ---
+        const btnPagarAgora = document.getElementById('btn-pagar-agora');
+        const btnTogglePixDireto = document.getElementById('btn-toggle-pix-direto');
+        const pixDiretoDetails = document.getElementById('pix-direto-details');
+        const pixValorInfo = document.getElementById('pix-valor-info');
+        const btnCopyChave = document.getElementById('btn-copy-chave');
+        const chavePixCnpj = document.getElementById('chave-pix-cnpj');
+        const btnCopyQrcode = document.getElementById('btn-copy-qrcode');
+        const pixCopiaEColaCode = document.getElementById('pix-copia-cola-code');
+
+        
+        // Mapeamento dos links do Mercado Pago (c/ Taxa) - ATUALIZADO
+        const mercadoPagoLinks = {
+            90.00: 'https://mpago.la/1jChcci', // Novo link para R$ 90,00
+            140.00: 'https://mpago.la/1qbtrgj'  // Novo link para R$ 140,00
+        };
+
+        // --- FUNÇÃO PARA ATUALIZAR A TABELA E OS BOTÕES ---
         function atualizarDados() {
             const valorTotal = parseFloat(tipoInscricaoSelect.value);
             const nome = nomeAtletaInput.value.trim();
@@ -168,39 +283,121 @@
             const metodo = metodoPagamentoSelect.value;
             const valorFormatado = valorTotal.toFixed(2).replace('.', ',');
             
-            // Atualizar Descrição na Tabela
-            const inscricaoDesc = tipoInscricaoSelect.options[tipoInscricaoSelect.selectedIndex].text;
-            linhaCategoriaDesc.innerText = inscricaoDesc;
-            valorTotalElement.innerText = `R$ ${valorFormatado}`;
+            let catValor = 90.00; // Novo valor base
+            let absolutoValor = 50.00; // 140 - 90 = 50
+            let catDesc = 'Inscrição (Categoria + Peso)';
+
+            // 1. Atualizar Tabela de Resumo
+            if (Math.abs(valorTotal - 140.00) < 0.01) { // R$ 140
+                catValor = 90.00;
+                absolutoValor = 50.00;
+                catDesc = 'Inscrição (Categoria + Peso)';
+                linhaAbsoluto.style.display = 'table-row';
+            } else { // R$ 90 (Default)
+                catValor = 90.00;
+                absolutoValor = 0.00;
+                catDesc = 'Inscrição (Categoria + Peso)';
+                linhaAbsoluto.style.display = 'none';
+            }
             
-            // 2. Atualizar Link do WhatsApp (Todos os campos obrigatórios)
+            // O valor do Absoluto é sempre a diferença, mas vamos manter a exibição simplificada
+            // Para R$ 140: Categoria (R$ 90,00) + Absoluto (R$ 50,00)
+            linhaCategoriaDesc.innerText = catDesc;
+            linhaCategoriaValor.innerText = `R$ ${catValor.toFixed(2).replace('.', ',')}`;
+            linhaAbsolutoValor.innerText = `R$ ${absolutoValor.toFixed(2).replace('.', ',')}`;
+            
+            valorTotalElement.innerText = `R$ ${valorFormatado}`;
+            pixValorInfo.innerText = `R$ ${valorFormatado}`; // Atualiza o valor na seção PIX
+            
+            // 2. Atualizar Botões de Ação de Pagamento
+            
+            // Botão Mercado Pago (Ação Principal)
+            const linkMP = mercadoPagoLinks[valorTotal];
+            const inscricaoDesc = tipoInscricaoSelect.options[tipoInscricaoSelect.selectedIndex].text;
+            
+            if (linkMP) {
+                btnPagarAgora.href = linkMP;
+                btnPagarAgora.innerText = `Pagar R$ ${valorFormatado} com Cartão/PIX Mercado Pago (${inscricaoDesc} - c/ Taxa)`;
+                btnPagarAgora.style.display = 'block';
+            } else {
+                btnPagarAgora.href = '#';
+                btnPagarAgora.innerText = `Valor R$ ${valorFormatado} - Link Mercado Pago Indisponível`;
+                btnPagarAgora.style.display = 'none'; 
+            }
+
+            // Botão PIX Direto (Toggle)
+            btnTogglePixDireto.innerText = `Pagar R$ ${valorFormatado} com PIX Direto (Sem Taxa)`;
+            
+            // 3. Atualizar Link do WhatsApp (Todos os campos obrigatórios)
             if (nome && ordem && metodo) {
                 // Habilitar o botão
                 whatsappLink.classList.add('enabled');
-                whatsappLink.innerText = 'Enviar Confirmação de Pagamento pelo WhatsApp';
+                whatsappLink.innerText = 'Envie o Comprovante e Detalhes (Após o Pagamento)';
                 
                 // Mensagem personalizada para o WhatsApp
                 const mensagem = 
-                    `✅ SINALIZAÇÃO DE PAGAMENTO ENVIADA\n\n` +
-                    `➡️ Evento: SENOGI - ETAPA CAICÓ\n` +
+                    `✅ COMPROVANTE DE PAGAMENTO ENVIADO\n\n` +
+                    `➡️ Evento: SENOGI ETAPA CAICÓ\n` +
                     `👤 Atleta: ${nome}\n` +
                     `🆔 Ordem/Inscrição: ${ordem}\n` +
-                    `📝 Tipo de Inscrição: ${inscricaoDesc}\n` +
-                    `💰 Valor Informado: R$ ${valorFormatado}\n` +
-                    `💳 Método Utilizado: ${metodo}\n\n` +
-                    `*Por favor, anexe o comprovante de pagamento nesta conversa.`;
+                    `💰 Valor Pago: R$ ${valorFormatado}\n` +
+                    `💳 Método: ${metodo}\n` +
+                    `📝 Detalhes: ${inscricaoDesc}`;
                     
                 const baseText = encodeURIComponent(mensagem);
-                const numeroOrg = '5584987513740'; // Mantenha o número da organização
+                const numeroOrg = '5584987513740'; 
                 
                 whatsappLink.href = `https://api.whatsapp.com/send?phone=${numeroOrg}&text=${baseText}`;
             } else {
                 // Desabilitar o botão
                 whatsappLink.classList.remove('enabled');
                 whatsappLink.href = '#';
-                whatsappLink.innerText = 'Preencha todos os campos para enviar a Confirmação';
+                whatsappLink.innerText = 'Preencha todos os campos para enviar o Comprovante (Após o Pagamento)';
             }
         }
+
+        // --- Lógica para mostrar/esconder PIX Direto ---
+        btnTogglePixDireto.addEventListener('click', () => {
+            const isVisible = pixDiretoDetails.style.display === 'block';
+            if (isVisible) {
+                pixDiretoDetails.style.display = 'none';
+                btnTogglePixDireto.innerText = btnTogglePixDireto.innerText.replace(' (Ocultar Detalhes)', '');
+            } else {
+                pixDiretoDetails.style.display = 'block';
+                btnTogglePixDireto.innerText = btnTogglePixDireto.innerText + ' (Ocultar Detalhes)';
+                // Scroll suave para a seção PIX
+                pixDiretoDetails.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        });
+
+        // --- Lógica para Copiar Chave PIX CNPJ (Chave Principal) ---
+        btnCopyChave.addEventListener('click', () => {
+            const textToCopy = chavePixCnpj.innerText;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = btnCopyChave.innerText;
+                btnCopyChave.innerText = 'Chave Copiada! (PIX CNPJ)';
+                setTimeout(() => {
+                    btnCopyChave.innerText = originalText;
+                }, 2000);
+            }).catch(err => {
+                alert('Erro ao copiar a chave PIX: ' + err);
+            });
+        });
+        
+        // --- Lógica para Copiar PIX Copia e Cola (String Completa) ---
+        btnCopyQrcode.addEventListener('click', () => {
+            const textToCopy = pixCopiaEColaCode.value; // Pega o valor do input hidden
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                const originalText = btnCopyQrcode.innerText;
+                btnCopyQrcode.innerText = 'Copiado! Cole no seu App Bancário.';
+                setTimeout(() => {
+                    btnCopyQrcode.innerText = originalText;
+                }, 2000);
+            }).catch(err => {
+                alert('Erro ao copiar o código PIX Copia e Cola: ' + err);
+            });
+        });
+
 
         // --- EVENT LISTENERS ---
         nomeAtletaInput.addEventListener('input', atualizarDados);
