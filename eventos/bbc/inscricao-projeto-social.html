@@ -673,7 +673,7 @@
             limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
             
             // Controle do Absoluto
-            const permiteAbsoluto = ['Juvenil', 'Adulto', 'Master 1', 'Master 2', 'Master 3', 'Master 4', 'Master 5', 'Master 6', 'Master 7'].includes(categoria);
+            const permiteAbsoluto = ['Adulto', 'Master 1', 'Master 2', 'Master 3', 'Master 4', 'Master 5', 'Master 6', 'Master 7'].includes(categoria);
             absolutoContainer.style.display = permiteAbsoluto ? 'flex' : 'none';
             if (!permiteAbsoluto) {
                 absolutoCheckbox.checked = false;
