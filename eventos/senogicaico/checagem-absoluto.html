@@ -347,8 +347,17 @@
             data.forEach(atleta => {
                 const sexo = atleta['SEXO'];
                 // Usamos 'SUA FAIXA' e 'SUA CATEGORIA' (que contém a idade/peso) para agrupar
-                const categoriaIdade = atleta['SUA CATEGORIA']; 
+                let categoriaIdade = atleta['SUA CATEGORIA']; 
                 const faixa = atleta['SUA FAIXA'];
+                
+                // 🎯 MODIFICAÇÃO PARA UNIFICAR TODAS AS CATEGORIAS MASTER
+                const categoriaUpper = categoriaIdade.toUpperCase();
+
+                if (categoriaUpper.includes('MASTER')) {
+                    // Substitui a categoria específica (Master 1, Master 2, etc.) por uma unificada
+                    categoriaIdade = 'MASTER (TODAS AS IDADES)'; 
+                }
+                // FIM DA MODIFICAÇÃO PARA UNIFICAR MASTER
                 
                 // Chave de agrupamento: ABSOLUTO - FAIXA - CATEGORIA - SEXO
                 const key = `ABSOLUTO - FAIXA ${faixa.toUpperCase()} - ${categoriaIdade.toUpperCase()} - ${sexo.toUpperCase()}`;
@@ -439,7 +448,7 @@
         function handleAccordionClick(event) {
              const header = event.currentTarget;
              const content = header.nextElementSibling;
-                        
+                      
             // Fecha outros acordeões abertos
             listaInscritosDiv.querySelectorAll('.accordion-header').forEach(otherHeader => {
                 if (otherHeader !== header && otherHeader.classList.contains('active')) {
