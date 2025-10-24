@@ -5,6 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BBC Open de Jiu-jitsu | Arena Competidor</title>
     <style>
+        /* Estilo do Botão Flutuante (Formato Pílula com Texto Fixo) */
+.whatsapp-fixed-text-button {
+    /* Posição Fixa no canto inferior direito */
+    position: fixed;
+    bottom: 25px; 
+    right: 25px; 
+    z-index: 9999;
+    
+    /* Estilo do Container (Pílula) */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 20px; /* Preenchimento (altura e largura) */
+    border-radius: 50px; /* Borda bem arredondada (formato de pílula) */
+    background-color: #25D366; /* Verde WhatsApp */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+/* Efeito ao passar o mouse */
+.whatsapp-fixed-text-button:hover {
+    transform: scale(1.05);
+    background-color: #128C7E; /* Verde escuro ao passar o mouse */
+}
+
+/* Estilo do Ícone (Visível apenas como um charme) */
+.whatsapp-icon-only {
+    width: 24px;
+    height: 24px;
+    color: white;
+    margin-right: 10px;
+    /* Adiciona uma pequena animação de pulso no ícone */
+    animation: pulse 1.5s infinite;
+}
+
+/* Estilo do Texto Fixo */
+.whatsapp-text-visible {
+    color: white;
+    font-size: 17px;
+    font-weight: bold;
+    font-family: Arial, sans-serif; /* Fonte legível */
+    white-space: nowrap;
+}
+
+/* Animação para o ícone */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* **Responsividade (Mobile)** */
+@media (max-width: 768px) {
+    .whatsapp-fixed-text-button {
+        /* Transforma a pílula em bolha */
+        width: 55px;
+        height: 55px;
+        padding: 0; 
+        border-radius: 50%; /* Bolha perfeita */
+        bottom: 15px;
+        right: 15px;
+    }
+
+    /* Oculta o texto no celular */
+    .whatsapp-text-visible {
+        display: none;
+    }
+
+    /* Centraliza e aumenta o ícone na bolha (mobile) */
+    .whatsapp-icon-only {
+        margin-right: 0;
+        width: 30px;
+        height: 30px;
+    }
+}
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
         :root {
