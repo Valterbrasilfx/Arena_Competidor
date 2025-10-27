@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nós | Arena Competidor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        :root {
+            --cor-primaria: #007bff;
+            --cor-secundaria: #343a40;
+            --cor-destaque: #28a745;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #495057;
+            --cor-borda: #dee2e6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        header {
+            width: 100%;
+            text-align: center;
+            padding: 20px 0;
+            background-color: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        header img {
+            max-width: 200px;
+            display: block;
+            margin: 0 auto 10px auto;
+        }
+
+        nav {
+            background-color: #1a1a1a;
+            padding: 10px 0;
+        }
+
+        nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap; /* Adicionado para responsividade */
+        }
+
+        nav ul li {
+            margin: 5px 10px; /* Ajustado para responsividade */
+        }
+
+        nav ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: 400;
+            padding: 5px 10px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            display: block; /* Garante que o padding funcione corretamente */
+        }
+
+        nav ul li a:hover {
+            background-color: var(--cor-primaria);
+        }
+
+        .main-content {
+            /* O valor 180px era para a área fixa do header. Vamos ajustar para ser mais dinâmico em mobile */
+            margin-top: 180px; 
+            width: 90%;
+            max-width: 800px;
+            flex-grow: 1;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        /* Estilos Específicos do Sobre */
+        .sobre-box {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+
+        .sobre-box h1 {
+            color: var(--cor-secundaria);
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--cor-borda);
+            padding-bottom: 10px;
+        }
+
+        .sobre-box p {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 15px;
+        }
+        
+        .footer {
+            margin-top: auto;
+            padding: 20px 10px; /* Adicionado padding lateral */
+            width: 100%;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        /* ------------------------------------------------------------------- */
+        /* MEDIA QUERIES PARA RESPONSIVIDADE MOBILE */
+        /* ------------------------------------------------------------------- */
+
+        @media (max-width: 768px) {
+            
+            header img {
+                max-width: 150px; /* Diminui o logo em telas menores */
+            }
+
+            .main-content {
+                /* Ajusta a margem superior para o novo tamanho do header em mobile */
+                margin-top: 150px; 
+                width: 95%; /* Usa mais largura da tela */
+                padding: 10px 0;
+            }
+
+            .sobre-box {
+                padding: 20px; /* Diminui o padding interno da caixa */
+            }
+
+            .sobre-box h1 {
+                font-size: 1.8rem; /* Diminui o tamanho do título */
+            }
+
+            .sobre-box p {
+                font-size: 1rem; /* Diminui o tamanho do parágrafo */
+                line-height: 1.6;
+            }
+        }
+
+        @media (max-width: 576px) {
+            /* Ajuste fino para telas de celular */
+
+            header {
+                padding: 15px 0;
+            }
+
+            header img {
+                max-width: 120px;
+            }
+
+            nav ul {
+                flex-direction: column; /* Coloca os itens do menu um abaixo do outro */
+                padding: 0 10px;
+            }
+
+            nav ul li {
+                margin: 5px 0; /* Ajusta a margem */
+                width: 100%; /* Faz o link ocupar toda a largura */
+                text-align: center;
+            }
+            
+            nav ul li a {
+                padding: 10px 0; /* Aumenta a área de clique */
+            }
+
+            .main-content {
+                /* O header agora é mais alto por causa da navegação em coluna */
+                margin-top: 70px; 
+            }
+            
+            .sobre-box {
+                padding: 15px;
+            }
+
+            .sobre-box h1 {
+                font-size: 1.5rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="img/arena2.png" alt="Arena Competidor Logo">
+       
+        
+    </header>
+
+    <div class="main-content">
+        <div class="sobre-box">
+            <h1>Sobre a Arena Competidor</h1>
+            <p>A Arena Competidor nasceu com a missão de elevar o nível das competições de artes marciais no Brasil, focando em modalidades como Jiu-Jitsu, Nogi e Judô. Somos uma plataforma completa dedicada a atletas, organizadores e fãs.</p>
+            <p>Nosso objetivo principal é facilitar o processo de inscrição em eventos esportivos, garantindo transparência, segurança e agilidade. Além disso, somos a casa oficial de rankings de prestígio, oferecendo aos atletas a chance de acompanhar sua evolução e conquistar reconhecimento em sua jornada esportiva.</p>
+            <p>Acreditamos no poder do esporte para transformar vidas e nos dedicamos a fornecer as melhores ferramentas para que organizadores possam realizar eventos de sucesso e para que competidores possam focar no que fazem de melhor: lutar e vencer.</p>
+        </div>
+    </div>
+    
+    <div class="footer">
+        &copy; 2025 Arena Competidor. Todos os direitos reservados.
+    </div>
+
+</body>
+</html>
