@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscrição - EMA CUP de Jiu-Jitsu | Arena Competidor</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+        :root {
+            --cor-primaria: #007bff;
+            --cor-secundaria: #343a40;
+            --cor-destaque: #28a745;
+            --cor-fundo: #f8f9fa;
+            --cor-texto: #495057;
+            --cor-borda: #dee2e6;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--cor-fundo);
+            color: var(--cor-texto);
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            background-color: #000;
+            border-bottom: 2px solid var(--cor-borda);
+            border-radius: 8px 8px 0 0; 
+        }
+
+        header img {
+            max-width: 200px;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--cor-secundaria);
+            font-weight: 700;
+        }
+        
+        h1 {
+            margin-top: 0;
+        }
+
+        form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            padding: 12px;
+            border: 1px solid var(--cor-borda);
+            border-radius: 4px;
+            font-size: 1rem;
+            width: 100%;
+            box-sizing: border-box;
+            /* Estilo para campos desabilitados */
+            background-color: #f1f1f1; 
+            cursor: not-allowed;
+        }
+        
+        select:enabled {
+             background-color: #fff;
+             cursor: pointer;
+        }
+        
+        /* Estilos de feedback do CPF */
+        .cpf-valido {
+            color: var(--cor-destaque); /* Verde */
+            font-weight: bold;
+        }
+
+        .cpf-invalido {
+            color: #dc3545; /* Vermelho */
+            font-weight: bold;
+        }
+        /* Fim estilos de feedback do CPF */
+
+
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 10px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .extrato {
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .extrato h2 {
+            margin-top: 0;
+            text-align: left;
+            border-bottom: 1px solid var(--cor-borda);
+            padding-bottom: 10px;
+        }
+
+        .extrato p, .extrato h3 {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+
+        .extrato h3 {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: var(--cor-destaque);
+        }
+
+        button {
+            background-color: var(--cor-destaque);
+            color: #fff;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 30px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        /* Feedback de envio */
+        #feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* --- Estilos para Responsividade --- */
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                padding: 15px;
+                border-radius: 0;
+                box-shadow: none;
+            }
+
+            header {
+                border-radius: 0;
+                margin-bottom: 20px;
+                padding: 15px 0;
+            }
+            
+            header img {
+                max-width: 150px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            h2 {
+                font-size: 1.5rem;
+            }
+
+            form {
+                gap: 15px;
+            }
+            
+            input, select {
+                padding: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+
+            header img {
+                max-width: 120px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            .extrato p, .extrato h3 {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            
+            .extrato h3 {
+                font-size: 1.2rem;
+            }
+
+            button {
+                font-size: 1rem;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <img src="../../img/arena2.png" alt="Arena Competidor Logo">
+        </header>
+
+        <h1>EMA CUP de Jiu-Jitsu</h1>
+        
+        <form id="inscricaoForm">
+            <div class="form-group">
+                <label for="nome">Nome Completo:</label>
+                <input type="text" id="nome" name="nome" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cpf">CPF:</label>
+                <input type="text" id="cpf" name="cpf" maxlength="14" required>
+                <p id="cpfFeedback" style="font-size: 0.9em; margin-top: 5px;"></p>
+            </div>
+
+            <div class="form-group">
+                <label for="sexo">Sexo:</label>
+                <select id="sexo" name="sexo" required>
+                    <option value="">Selecione...</option>
+                    <option value="masculino">Masculino</option>
+                    <option value="feminino">Feminino</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="dataNascimento">Data de Nascimento:</label>
+                <input type="date" id="dataNascimento" name="dataNascimento" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="ddd">DDD:</label>
+                <input type="text" id="ddd" name="ddd" maxlength="2" required>
+            </div>
+
+            <div class="form-group">
+                <label for="celular">Celular:</label>
+                <input type="text" id="celular" name="celular" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">E-mail:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+
+            <div class="form-group">
+                <label for="equipe">Sua Equipe:</label>
+                <input type="text" id="equipe" name="equipe" required>
+            </div>
+
+            <div class="form-group">
+                <label for="professor">Professor:</label>
+                <input type="text" id="professor" name="professor" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="categoria">Sua Categoria de Idade:</label>
+                <select id="categoria" name="categoria" required disabled>
+                    <option value="">Preencha o Sexo e a Data de Nasc.</option>
+                </select>
+                <input type="hidden" id="categoriaIdade" name="categoriaIdade">
+            </div>
+
+            <div class="form-group">
+                <label for="faixa">Sua Faixa:</label>
+                <select id="faixa" name="faixa" required disabled>
+                    <option value="">Selecione a Categoria</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="peso">Seu Peso (Divisão):</label>
+                <select id="peso" name="peso" required disabled>
+                    <option value="">Selecione a Faixa</option>
+                </select>
+            </div>
+            
+            
+            <div class="form-group checkbox-group" id="absolutoContainer" style="display:none;">
+                <input type="checkbox" id="absoluto" name="absoluto" value="Sim">
+                <label for="absoluto">Participar do Absoluto (+)</label>
+            </div>
+        </form>
+
+        <div class="extrato">
+            <h2>Extrato da Inscrição</h2>
+            <p><span>Categoria, Faixa e Peso:</span> <span id="extratoCategoria">Aguardando preenchimento</span></p>
+            <p><span>Valor da Inscrição:</span> <span id="valorCategoria">R$ 30,00</span></p>
+            <h3><span>Total a Pagar:</span> <span id="totalPagar">R$ 30,00</span></h3>
+        </div>
+
+        <button type="submit" form="inscricaoForm">Salvar Inscrição e Ir para o Pagamento</button>
+        
+        <p id="feedback"></p>
+    </div>
+
+    <script>
+        // ==========================================================
+        // 🚨 URL DE IMPLANTAÇÃO DA PLANILHA GOOGLE
+        const URL_GOOGLE_SCRIPT = 'https://script.google.com/macros/s/AKfycbxJsWa_tFoCwZLvGcE5vtyW-2WXB1ipwQSLe0hKuDPgSH7meFabrrElYIH5ZYg-oaiKmw/exec'; 
+        // ==========================================================
+
+        const dataNascimentoInput = document.getElementById('dataNascimento');
+        const sexoInput = document.getElementById('sexo'); 
+        const categoriaSelect = document.getElementById('categoria'); 
+        const categoriaIdadeInput = document.getElementById('categoriaIdade'); 
+        const absolutoContainer = document.getElementById('absolutoContainer');
+        const absolutoCheckbox = document.getElementById('absoluto');
+        const extratoAbsoluto = document.getElementById('extratoAbsoluto');
+        const totalPagar = document.getElementById('totalPagar');
+        const faixaInput = document.getElementById('faixa');
+        const pesoInput = document.getElementById('peso');
+        const extratoCategoriaSpan = document.getElementById('extratoCategoria');
+        const inscricaoForm = document.getElementById('inscricaoForm');
+        const feedbackElement = document.getElementById('feedback');
+        
+        // Novos elementos para CPF
+        const cpfInput = document.getElementById('cpf');
+        const cpfFeedback = document.getElementById('cpfFeedback');
+
+        // Novos elementos para Celular
+        const dddInput = document.getElementById('ddd');
+        const celularInput = document.getElementById('celular');
+        
+        // ==========================================================
+        // 1. REGRAS DE DIVISÃO E TABELAS DE PESO/FAIXA (AJUSTADAS)
+        // ==========================================================
+
+        /**
+         * Retorna a divisão de idade.
+         * @param {number} idade 
+         * @returns {string | null} 
+         */
+        function obterDivisao(idade) {
+            // As regras de faixa etária foram simplificadas conforme seu código anterior
+            if (idade >= 11 && idade <= 14) return "Infantil";
+            if (idade >= 15 && idade <= 17) return "Juvenil";
+            if (idade >= 18) return "Adulto"; // Qualquer um com 18 ou mais é Adulto
+            
+            return null;
+        }
+
+        /**
+         * Objeto com pesos por divisão e sexo
+         * (Mantido os pesos, exceto a faixa Azul e Roxa que será tratada à parte)
+         */
+        const pesosPorDivisao = {
+            "Infantil": {
+                masculino: ["Leve até 56,5kg", "Pesado acima de 56,5kg"],
+                feminino: ["Leve até 56,5kg", "Pesado acima de 56,5kg"]
+            },
+            "Juvenil": {
+                masculino: ["Leve até 69kg", "Pesado acima de 69kg até 89kg"],
+                feminino: ["Peso único de 74kg até 89,30"]
+            },
+            "Adulto": {
+                masculino: ["Leve até 76kg", "Pesado acima de 76kg"],
+                feminino: ["Leve até 69kg", "Pesado acima de 69kg"]
+            },
+        };
+
+        /**
+         * Objeto com faixas por divisão (categoria de idade)
+         */
+        const faixasPorDivisao = {
+        
+            "Infantil": ["Branca", "Cinza", "Amarela", "Laranja", "Verde"],
+            "Juvenil": ["Branca"],
+            // A faixa "Azul e Roxa" é tratada como uma opção única
+            "Adulto": ["Branca", "Azul e Roxa"], 
+        };
+
+        // ==========================================================
+        // 2. FUNÇÕES DE MÁSCARA E VALIDAÇÃO DE CPF/TELEFONE (AJUSTADAS)
+        // ==========================================================
+
+        /**
+         * Aplica a máscara de CPF (999.999.999-99) ao campo.
+         * @param {Event} e 
+         */
+        function aplicarMascaraCPF(e) {
+            let value = e.target.value.replace(/\D/g, ''); 
+            if (value.length > 11) value = value.substring(0, 11); 
+            value = value.replace(/(\d{3})(\d)/, '$1.$2'); 
+            value = value.replace(/(\d{3})(\d)/, '$1.$2');
+            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+            e.target.value = value;
+        }
+
+        /**
+         * Valida o CPF através do algoritmo dos dígitos verificadores.
+         */
+        function validarCPF(cpf) {
+            cpf = cpf.replace(/[^\d]+/g, '');
+            if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+
+            function calcularDigito(cpfParcial, fator) {
+                let soma = 0;
+                for (let i = 0; i < cpfParcial.length; i++) {
+                    soma += parseInt(cpfParcial.charAt(i)) * (fator - i);
+                }
+                let resto = (soma * 10) % 11;
+                return (resto === 10 || resto === 11) ? 0 : resto;
+            }
+
+            let digito1 = calcularDigito(cpf.substring(0, 9), 10);
+            if (digito1 !== parseInt(cpf.charAt(9))) return false;
+            let digito2 = calcularDigito(cpf.substring(0, 10), 11);
+            if (digito2 !== parseInt(cpf.charAt(10))) return false;
+
+            return true;
+        }
+
+        /**
+         * Combina a máscara e o feedback de validação do CPF.
+         */
+        function validarEFormatarCPF(e) {
+            aplicarMascaraCPF(e);
+            const cpfLimpo = e.target.value.replace(/[^\d]+/g, '');
+
+            if (cpfLimpo.length < 11 && cpfLimpo.length > 0) {
+                cpfFeedback.textContent = 'Aguardando 11 dígitos...';
+                cpfFeedback.className = '';
+                e.target.setCustomValidity("O CPF deve ter 11 dígitos.");
+                return;
+            } else if (cpfLimpo.length === 0) {
+                cpfFeedback.textContent = '';
+                e.target.setCustomValidity("Preencha este campo."); 
+                return;
+            }
+            
+            if (validarCPF(e.target.value)) {
+                cpfFeedback.textContent = '✅ CPF Válido.';
+                cpfFeedback.className = 'cpf-valido';
+                e.target.setCustomValidity(''); 
+            } else {
+                cpfFeedback.textContent = '❌ CPF Inválido.';
+                cpfFeedback.className = 'cpf-invalido';
+                e.target.setCustomValidity("CPF Inválido. Verifique o número digitado.");
+            }
+        }
+        
+        /**
+         * Aplica a máscara de telefone (99999-9999 ou 9999-9999) ao campo celular.
+         * Assumindo que o DDD é preenchido em outro campo.
+         */
+        function aplicarMascaraCelular(e) {
+            let value = e.target.value.replace(/\D/g, ''); 
+
+            // Formato para 9 dígitos (celular): 99999-9999
+            if (value.length > 4) {
+                value = value.replace(/^(\d{4,5})(\d)/, '$1-$2');
+            }
+            // Limita a 10 dígitos (9999-9999 ou 99999-9999)
+            if (value.length > 10 && value.includes('-')) {
+                 value = value.substring(0, 10);
+            } else if (value.length > 9 && !value.includes('-')) {
+                 value = value.substring(0, 9);
+            }
+
+            e.target.value = value;
+            
+            // Validação simples
+            if (value.length >= 9) {
+                e.target.setCustomValidity('');
+            } else {
+                e.target.setCustomValidity("O número deve ter no mínimo 8 ou 9 dígitos.");
+            }
+        }
+        
+        /**
+         * Garante que o DDD tenha exatamente 2 dígitos.
+         */
+        function aplicarMascaraDDD(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                value = value.substring(0, 2);
+            }
+            e.target.value = value;
+
+            if (value.length === 2) {
+                e.target.setCustomValidity('');
+            } else {
+                e.target.setCustomValidity("O DDD deve ter 2 dígitos.");
+            }
+        }
+
+
+        // ==========================================================
+        // 3. FUNÇÕES DE CÁLCULO E POPULAMENTO DE DROPDOWNS (AJUSTADAS)
+        // ==========================================================
+        
+        function calcularIdade(dataNascimento) {
+            const hoje = new Date();
+            const nascimento = new Date(dataNascimento);
+            let idade = hoje.getFullYear() - nascimento.getFullYear();
+            const mes = hoje.getMonth() - nascimento.getMonth();
+            if (mes < 0 || (mes === 0 && hoje.getDate() < nascimento.getDate())) {
+                idade--;
+            }
+            return idade;
+        }
+
+        /**
+         * Limpa e desabilita um select.
+         */
+        function limparOpcoesSelect(selectElement, defaultText, disable = true) {
+            selectElement.innerHTML = `<option value="">${defaultText}</option>`;
+            selectElement.disabled = disable;
+            selectElement.required = !disable; 
+            if (selectElement.id === 'categoria') {
+                limparOpcoesSelect(faixaInput, 'Selecione a Categoria', true);
+                limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
+            }
+            if (selectElement.id === 'faixa') {
+                limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
+            }
+        }
+
+        function popularCategorias() {
+            const dataNasc = dataNascimentoInput.value;
+            const sexo = sexoInput.value;
+            const idade = dataNasc ? calcularIdade(dataNasc) : null;
+            
+            limparOpcoesSelect(categoriaSelect, 'Preencha o Sexo e a Data de Nasc.', true);
+            absolutoContainer.style.display = 'none';
+            absolutoCheckbox.checked = false;
+
+            if (!dataNasc || !sexo || idade < 11) { // Idade mínima alterada para 11
+                atualizarExtrato();
+                return;
+            }
+
+            const categoria = obterDivisao(idade);
+
+            if (categoria) {
+                categoriaSelect.disabled = false;
+                categoriaSelect.required = true;
+                
+                // Popula a categoria automaticamente
+                categoriaSelect.innerHTML = `<option value="${categoria}">${categoria}</option>`;
+                categoriaSelect.value = categoria; 
+                
+                // Popula as faixas imediatamente
+                popularFaixas();
+            }
+            atualizarExtrato();
+        }
+
+        function popularFaixas() {
+            const categoria = categoriaSelect.value;
+            const sexo = sexoInput.value; // <-- Adiciona a leitura do sexo
+            
+            // Limpa as opções de faixa e peso, desabilitando-os
+            limparOpcoesSelect(faixaInput, 'Selecione a Categoria', true);
+            limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
+            
+            // Garante que o Absoluto esteja escondido ao mudar a faixa/categoria
+            absolutoContainer.style.display = 'none';
+            absolutoCheckbox.checked = false; 
+
+            if (categoria && faixasPorDivisao[categoria]) {
+                faixaInput.disabled = false;
+                faixaInput.required = true;
+                limparOpcoesSelect(faixaInput, 'Selecione sua faixa', false);
+                
+                // 🚨 LÓGICA DE RESTRIÇÃO PARA FEMININO ADULTO 🚨
+                let faixasDisponiveis = faixasPorDivisao[categoria];
+                
+                if (categoria === 'Adulto' && sexo === 'feminino') {
+                    // Se for Adulto e Feminino, restringe a lista APENAS para 'Branca'
+                    faixasDisponiveis = ["Branca"]; 
+                }
+                
+                // Usa a lista (original ou restrita) para popular o Select
+                faixasDisponiveis.forEach(faixa => {
+                    const option = document.createElement('option');
+                    // Cria um valor simplificado (ex: Azul e Roxa -> azul-e-roxa)
+                    const value = faixa.toLowerCase().replace(/\s+/g, '-'); 
+                    option.value = value;
+                    option.textContent = faixa;
+                    faixaInput.appendChild(option);
+                });
+            }
+
+            atualizarExtrato();
+        }
+
+        function popularPesos() {
+            const categoria = categoriaSelect.value;
+            const sexo = sexoInput.value;
+            const faixa = faixaInput.value;
+            
+            // Limpa as opções de peso, desabilitando-o
+            limparOpcoesSelect(pesoInput, 'Selecione a Faixa', true);
+            
+            // --- NOVA REGRA ABSOLUTO / PESO ---
+            const permiteAbsoluto = (categoria === 'Adulto' && faixa === 'azul-e-roxa');
+            
+            if (permiteAbsoluto) {
+                // Se for Adulto e Faixa Azul e Roxa:
+                // 1. O campo de peso é preenchido automaticamente com "Absoluto"
+                pesoInput.innerHTML = `<option value="absoluto">Absoluto</option>`;
+                pesoInput.value = 'absoluto';
+                pesoInput.disabled = true; // Desabilita para não permitir alteração
+                pesoInput.required = true;
+                
+                // 2. O checkbox do Absoluto é mostrado
+                absolutoContainer.style.display = 'flex'; 
+                absolutoCheckbox.checked = true; // Marca como padrão
+                
+            } else {
+                 // Para outras faixas/categorias: usa divisões de peso normais
+                absolutoContainer.style.display = 'none';
+                absolutoCheckbox.checked = false;
+                
+                const categoriaBasePeso = categoria; // Não é mais master, então usa a própria categoria
+                
+                if (categoriaBasePeso && sexo && faixa && pesosPorDivisao[categoriaBasePeso] && pesosPorDivisao[categoriaBasePeso][sexo]) {
+                    pesoInput.disabled = false;
+                    pesoInput.required = true;
+                    limparOpcoesSelect(pesoInput, 'Selecione seu peso (Divisão)', false);
+                    
+                    pesosPorDivisao[categoriaBasePeso][sexo].forEach(peso => {
+                        const option = document.createElement('option');
+                        const value = peso.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-'); 
+                        option.value = value;
+                        option.textContent = peso;
+                        pesoInput.appendChild(option);
+                    });
+                }
+            }
+
+            atualizarExtrato();
+        }
+        
+        // --- FUNÇÕES DE EXTRACTO E ENVIO ---
+
+        function atualizarExtrato() {
+            let total = 70.00;
+            const categoria = categoriaSelect.value || 'Aguardando...';
+            // Pega o texto da faixa/peso para o extrato (é mais fácil de ler)
+            const faixaText = faixaInput.options[faixaInput.selectedIndex]?.text || 'Aguardando...'; 
+            const pesoText = pesoInput.options[pesoInput.selectedIndex]?.text || 'Aguardando...'; 
+            
+            const valorAbsoluto = 40.00;
+
+            categoriaIdadeInput.value = categoria;
+            
+            // Verifica a regra exata para Absoluto
+            const isAbsolutoFaixa = (categoria === 'Adulto' && faixaInput.value === 'azul-e-roxa');
+
+            if (isAbsolutoFaixa) {
+                // Se for a faixa Absoluta, o valor do Absoluto é adicionado automaticamente
+                total += valorAbsoluto;
+                extratoAbsoluto.style.display = 'flex';
+                // Garante que a checkbox esteja marcada e desabilitada para forçar o Absoluto
+                absolutoCheckbox.checked = true;
+                absolutoCheckbox.disabled = true;
+            } else {
+                extratoAbsoluto.style.display = 'none';
+                absolutoCheckbox.checked = false;
+                absolutoCheckbox.disabled = false;
+            }
+
+            extratoCategoriaSpan.innerText = `${categoria}, ${faixaText}, ${pesoText}`;
+            totalPagar.innerText = `R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+        
+        // --- FUNÇÃO PRINCIPAL DE ENVIO DE DADOS ---
+        async function enviarParaPlanilha(event) {
+            event.preventDefault(); 
+            
+            validarEFormatarCPF({ target: cpfInput });
+            aplicarMascaraDDD({ target: dddInput });
+            aplicarMascaraCelular({ target: celularInput });
+            
+            if (!inscricaoForm.checkValidity()) {
+                inscricaoForm.reportValidity(); 
+                return;
+            }
+            
+            feedbackElement.textContent = 'Enviando dados... por favor, aguarde.';
+            
+            const formData = new FormData(inscricaoForm);
+            formData.append('valor_total', totalPagar.innerText); 
+            
+            const categoriaSelecionada = categoriaSelect.value;
+            const faixaSelecionada = faixaInput.value;
+
+            // Se for Adulto/Azul-Roxa, garante que o Absoluto seja 'Sim' no envio, mesmo se a checkbox estiver desabilitada
+            if (categoriaSelecionada === 'Adulto' && faixaSelecionada === 'azul-e-roxa') {
+                 formData.set('absoluto', 'Sim');
+            } else {
+                 formData.set('absoluto', 'Não');
+            }
+            
+            const params = new URLSearchParams(formData).toString();
+
+            try {
+                const response = await fetch(URL_GOOGLE_SCRIPT, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: params
+                });
+
+                const data = await response.json();
+
+                if (data.resultado === "sucesso") {
+                    feedbackElement.textContent = '✅ Inscrição salva! Redirecionando para o Pagamento...';
+                    feedbackElement.style.backgroundColor = '#d4edda';
+                    feedbackElement.style.color = '#155724';
+                    
+                    const nomeAtleta = document.getElementById('nome').value;
+                    const categoriaIdade = categoriaSelect.value;
+                    const totalPagarValor = totalPagar.innerText.replace('R$ ', '').replace(',', '.'); 
+
+                    const urlPagamento = `pagamentos.html?atleta=${encodeURIComponent(nomeAtleta)}&categoria=${encodeURIComponent(categoriaIdade)}&valor=${totalPagarValor}`;
+
+                    window.location.href = urlPagamento; 
+                    
+                } else {
+                    feedbackElement.textContent = '❌ Erro ao salvar na planilha. Tente novamente.';
+                    feedbackElement.style.backgroundColor = '#f8d7da';
+                    feedbackElement.style.color = '#721c24';
+                }
+
+            } catch (error) {
+                console.error('Erro de conexão ou Apps Script:', error);
+                feedbackElement.textContent = '❌ Erro de rede. Tente novamente.';
+                feedbackElement.style.backgroundColor = '#f8d7da';
+                feedbackElement.style.color = '#721c24';
+            }
+        }
+        // --- FIM DA FUNÇÃO DE ENVIO ---
+
+
+        // --- Event Listeners ---
+        dataNascimentoInput.addEventListener('change', popularCategorias);
+        // O listener de sexo foi mantido para popularCategorias, que por sua vez chama popularFaixas
+        sexoInput.addEventListener('change', popularCategorias); 
+        categoriaSelect.addEventListener('change', popularFaixas); 
+        faixaInput.addEventListener('change', popularPesos); 
+
+        // Listener no campo de peso também garante que o extrato seja atualizado
+        pesoInput.addEventListener('change', atualizarExtrato); 
+        
+        // NOVO: Máscara e Validação DDD/Celular
+        dddInput.addEventListener('input', aplicarMascaraDDD);
+        celularInput.addEventListener('input', aplicarMascaraCelular);
+
+        // Event Listeners para Máscara e Validação do CPF
+        cpfInput.addEventListener('input', validarEFormatarCPF);
+        cpfInput.addEventListener('blur', validarEFormatarCPF); 
+
+        // O absoluto é controlado pela regra, mas o listener está aqui se for necessário
+        // absolutoCheckbox.addEventListener('change', atualizarExtrato);
+        
+        inscricaoForm.addEventListener('submit', enviarParaPlanilha);
+        
+        // Chama a função inicial para configurar os campos
+        popularCategorias(); 
+    </script>
+</body>
+</html>
