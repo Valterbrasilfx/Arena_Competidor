@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Combate Oficial - Ultra Responsive TV</title>
+    <title>Painel de Combat Oficial - Ultra Responsive TV</title>
     <style>
         * {
             margin: 0;
@@ -24,7 +24,6 @@
             position: relative;
         }
 
-        
         #splash-screen {
             position: fixed;
             top: 0;
@@ -59,7 +58,6 @@
             animation: fadeInCredits 1.5s ease-in-out 0.8s forwards;
         }
 
-      
         @keyframes introPulse {
             0% { transform: scale(0.7); opacity: 0; filter: drop-shadow(0px 0px 0px rgba(0,0,0,0)); }
             35% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0px 0px 40px rgba(255, 0, 13, 0.6)); }
@@ -73,16 +71,15 @@
             100% { opacity: 0; }
         }
 
-        
         header {
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             position: relative;
-            height: 40vh; 
-            min-height: 140px;
-            padding-top: 4vh; 
+            height: 35vh; 
+            min-height: 130px;
+            padding-top: 2vh; 
         }
 
         .logo-container {
@@ -145,7 +142,6 @@
             line-height: 1;
         }
 
-        
         main {
             flex: 1;
             display: flex;
@@ -171,7 +167,7 @@
         .status-banner.paused { color: #ffffff; text-shadow: 0 0 30px rgba(255,204,0,0.4); }
 
         .main-timer {
-            font-size: 22vh; /* Aumentado levemente aproveitando o espaço útil */
+            font-size: 20vh;
             font-weight: 900;
             font-family: monospace;
             line-height: 0.8;
@@ -196,25 +192,41 @@
             line-height: 1;
         }
 
-        /* --- INFERIOR --- */
         footer {
             width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 1vh;
+            gap: 0.8vh;
             border-top: 2px solid #111;
-            padding-top: 1.2vh;
-            height: 18vh; /* Reduzido ligeiramente a altura da base do painel */
-            min-height: 120px;
+            padding-top: 1vh;
+            height: 24vh; /* Aumentado levemente para caber as duas fileiras de seleção */
+            min-height: 180px;
             position: relative;
+        }
+
+        .selection-group {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 950px;
+            gap: 0.4vh;
+        }
+
+        .selection-label {
+            font-size: 1.4vh;
+            font-weight: 800;
+            color: #333;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: left;
+            margin-left: 4px;
         }
 
         .time-options {
             display: flex;
             gap: 1vw;
             width: 100%;
-            max-width: 950px;
             justify-content: center;
         }
 
@@ -223,8 +235,8 @@
             background-color: #0c0c0c;
             color: #777;
             border: 2px solid #222;
-            padding: 1vh 0.5vw;
-            font-size: 1.1rem;
+            padding: 0.6vh 0.5vw;
+            font-size: 0.95rem;
             font-weight: 700;
             text-transform: uppercase;
             border-radius: 8px;
@@ -244,8 +256,14 @@
 
         .btn-option.active {
             background-color: #111;
-            border-color: #000000;
+            border-color: #ffcc00; /* Destaque levemente diferente */
             color: #ffffff;
+            box-shadow: inset 0 0 10px rgba(255, 204, 0, 0.2);
+        }
+
+        /* Cor diferenciada para o round ativo para ficar intuitivo */
+        .round-options .btn-option.active {
+            border-color: #ff000d;
             box-shadow: inset 0 0 10px rgba(229, 9, 20, 0.2);
         }
 
@@ -259,6 +277,7 @@
             gap: 1.5vw;
             width: 100%;
             max-width: 950px;
+            margin-top: 0.4vh;
         }
 
         .btn {
@@ -266,8 +285,8 @@
             background-color: #111;
             color: #fff;
             border: 2px solid #333;
-            padding: 1.2vh 0;
-            font-size: 1.4rem;
+            padding: 1vh 0;
+            font-size: 1.3rem;
             font-weight: 800;
             text-transform: uppercase;
             border-radius: 10px;
@@ -302,14 +321,13 @@
 
         .btn-reset { color: #aaa; }
 
-        /* CRÉDITOS NO RODAPÉ DO PAINEL */
         .arena-footer-text {
             font-size: 1.4vh;
             color: #555;
             letter-spacing: 2px;
             font-weight: 600;
             text-transform: lowercase;
-            margin-top: 0.3vh;
+            margin-top: 0.2vh;
         }
 
         @media (max-width: 768px) or (orientation: portrait) {
@@ -323,11 +341,12 @@
             .logo-container { margin-top: 0; }
             .logo-container img { height: 85%; } 
             .btn { font-size: 1.1rem; padding: 12px 0; }
-            .btn-option { font-size: 0.9rem; }
+            .btn-option { font-size: 0.8rem; padding: 4px 2px; }
             .brand-date { font-size: 3vh; }
             .brand-clock { font-size: 2.2vh; }
             main { margin: 1vh 0; }
             .splash-logo { max-width: 80%; }
+            footer { height: auto; min-height: 220px; }
         }
     </style>
 </head>
@@ -360,13 +379,28 @@
 
     <!-- INFERIOR -->
     <footer>
-        <div class="time-options">
-            <button class="btn-option" data-seconds="60" tabindex="1">1 Min</button>
-            <button class="btn-option" data-seconds="120" tabindex="2">2 Min</button>
-            <button class="btn-option" data-seconds="180" tabindex="3">3 Min</button>
-            <button class="btn-option" data-seconds="240" tabindex="4">4 Min</button>
-            <button class="btn-option active" data-seconds="300" tabindex="5">5 Min</button>
-            <button class="btn-option" data-seconds="360" tabindex="6">6 Min</button>
+        <div class="selection-group">
+            <div class="selection-label">Tempo de Round</div>
+            <div class="time-options round-options">
+                <button class="btn-option" data-seconds="60" tabindex="1">1 Min</button>
+                <button class="btn-option" data-seconds="120" tabindex="2">2 Min</button>
+                <button class="btn-option" data-seconds="180" tabindex="3">3 Min</button>
+                <button class="btn-option" data-seconds="240" tabindex="4">4 Min</button>
+                <button class="btn-option active" data-seconds="300" tabindex="5">5 Min</button>
+                <button class="btn-option" data-seconds="360" tabindex="6">6 Min</button>
+            </div>
+        </div>
+
+        <div class="selection-group">
+            <div class="selection-label">Tempo de Descanso</div>
+            <div class="time-options rest-options">
+                <button class="btn-option active" data-rest-seconds="60" tabindex="10">1 Min</button>
+                <button class="btn-option" data-rest-seconds="120" tabindex="11">2 Min</button>
+                <button class="btn-option" data-rest-seconds="180" tabindex="12">3 Min</button>
+                <button class="btn-option" data-rest-seconds="240" tabindex="13">4 Min</button>
+                <button class="btn-option" data-rest-seconds="300" tabindex="14">5 Min</button>
+                <button class="btn-option" data-rest-seconds="360" tabindex="15">6 Min</button>
+            </div>
         </div>
 
         <div class="action-controls">
@@ -379,7 +413,6 @@
 
     <!-- AUDIO SINC -->
     <audio id="sound-horn" src="buzina.mp3" preload="auto"></audio>
-    <audio id="sound-warning" src="bip.mp3" preload="auto"></audio>
 
     <script>
         let timerSeconds = 300; 
@@ -387,10 +420,8 @@
         let isRunning = false;
         let isResting = false;
         let countdownInterval = null;
-        let warningPlayed = false;
         let timeOffset = 0; 
-
-        const restDuration = 35; 
+        let isFirstStart = true; // Controla se o timer acabou de ser iniciado do zero
 
         const timerDisplay = document.getElementById('timer-display');
         const statusText = document.getElementById('status-text');
@@ -399,13 +430,11 @@
         const dateDisplay = document.getElementById('date');
         const btnStartPause = document.getElementById('btn-start-pause');
         const btnReset = document.getElementById('btn-reset');
-        const optionButtons = document.querySelectorAll('.btn-option');
+        const roundButtons = document.querySelectorAll('.round-options .btn-option');
+        const restButtons = document.querySelectorAll('.rest-options .btn-option');
 
         const soundHorn = document.getElementById('sound-horn');
-        const soundWarning = document.getElementById('sound-warning');
-
         soundHorn.volume = 1.0;
-        soundWarning.volume = 1.0;
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -473,8 +502,13 @@
         }
 
         function getSelectedRoundTime() {
-            const activeBtn = document.querySelector('.btn-option.active');
+            const activeBtn = document.querySelector('.round-options .btn-option.active');
             return activeBtn ? parseInt(activeBtn.getAttribute('data-seconds')) : 300;
+        }
+
+        function getSelectedRestTime() {
+            const activeBtn = document.querySelector('.rest-options .btn-option.active');
+            return activeBtn ? parseInt(activeBtn.getAttribute('data-rest-seconds')) : 60;
         }
 
         function initTimer() {
@@ -482,7 +516,7 @@
                 timerSeconds = getSelectedRoundTime();
                 isResting = false;
                 currentRound = 1;
-                warningPlayed = false;
+                isFirstStart = true;
                 updateDisplay();
             }
         }
@@ -496,17 +530,12 @@
         function tick() {
             if (timerSeconds > 0) {
                 timerSeconds--;
-                if (!isResting && timerSeconds === 10 && !warningPlayed) {
-                    playSound(soundWarning);
-                    warningPlayed = true;
-                }
             } else {
-                playSound(soundHorn);
-                warningPlayed = false;
+                playSound(soundHorn); // Toca a buzina na troca de estados
 
                 if (!isResting) {
                     isResting = true;
-                    timerSeconds = restDuration;
+                    timerSeconds = getSelectedRestTime();
                 } else {
                     isResting = false;
                     currentRound++;
@@ -517,23 +546,27 @@
         }
 
         function toggleButtonsState(disable) {
-            optionButtons.forEach(btn => {
+            const allOptionButtons = document.querySelectorAll('.btn-option');
+            allOptionButtons.forEach(btn => {
                 btn.disabled = disable;
                 if (disable) {
                     btn.removeAttribute('tabindex');
                 } else {
-                    const num = btn.getAttribute('data-seconds') / 60;
-                    btn.setAttribute('tabindex', num.toString());
+                    const isRoundBtn = btn.hasAttribute('data-seconds');
+                    if (isRoundBtn) {
+                        const num = btn.getAttribute('data-seconds') / 60;
+                        btn.setAttribute('tabindex', num.toString());
+                    } else {
+                        const num = btn.getAttribute('data-rest-seconds') / 60;
+                        btn.setAttribute('tabindex', (num + 10).toString());
+                    }
                 }
             });
         }
 
         function startPause() {
             soundHorn.volume = 1.0;
-            soundWarning.volume = 1.0;
-            
             soundHorn.play().then(() => { soundHorn.pause(); }).catch(() => {});
-            soundWarning.play().then(() => { soundWarning.pause(); }).catch(() => {});
 
             if (isRunning) {
                 isRunning = false;
@@ -546,6 +579,13 @@
                 toggleButtonsState(true);
                 btnStartPause.textContent = "Pausar";
                 btnStartPause.className = "btn btn-pause";
+                
+                // Toca a buzina na largada inicial do combate
+                if (isFirstStart && !isResting) {
+                    playSound(soundHorn);
+                    isFirstStart = false;
+                }
+                
                 countdownInterval = setInterval(tick, 1000);
             }
             updateDisplay();
@@ -560,12 +600,21 @@
             initTimer();
         }
 
-        optionButtons.forEach(button => {
+        roundButtons.forEach(button => {
             button.addEventListener('click', function() {
                 if (!isRunning) {
-                    optionButtons.forEach(btn => btn.classList.remove('active'));
+                    roundButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
                     initTimer();
+                }
+            });
+        });
+
+        restButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                if (!isRunning) {
+                    restButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
                 }
             });
         });
