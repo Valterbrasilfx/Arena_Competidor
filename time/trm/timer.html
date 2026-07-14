@@ -200,7 +200,7 @@
             gap: 0.8vh;
             border-top: 2px solid #111;
             padding-top: 1vh;
-            height: 24vh; /* Aumentado levemente para caber as duas fileiras de seleção */
+            height: 24vh; 
             min-height: 180px;
             position: relative;
         }
@@ -256,12 +256,11 @@
 
         .btn-option.active {
             background-color: #111;
-            border-color: #ffcc00; /* Destaque levemente diferente */
+            border-color: #ffcc00; 
             color: #ffffff;
             box-shadow: inset 0 0 10px rgba(255, 204, 0, 0.2);
         }
 
-        /* Cor diferenciada para o round ativo para ficar intuitivo */
         .round-options .btn-option.active {
             border-color: #ff000d;
             box-shadow: inset 0 0 10px rgba(229, 9, 20, 0.2);
@@ -421,7 +420,7 @@
         let isResting = false;
         let countdownInterval = null;
         let timeOffset = 0; 
-        let isFirstStart = true; // Controla se o timer acabou de ser iniciado do zero
+        let isFirstStart = true; 
 
         const timerDisplay = document.getElementById('timer-display');
         const statusText = document.getElementById('status-text');
@@ -524,14 +523,14 @@
         function playSound(audioElement) {
             audioElement.currentTime = 0;
             audioElement.volume = 1.0; 
-            audioElement.play().catch(e => console.log("Aguardando interação inicial."));
+            audioElement.play().catch(e => console.log("Erro ao reproduzir áudio:", e));
         }
 
         function tick() {
             if (timerSeconds > 0) {
                 timerSeconds--;
             } else {
-                playSound(soundHorn); // Toca a buzina na troca de estados
+                playSound(soundHorn); // Toca a buzina por completo na transição
 
                 if (!isResting) {
                     isResting = true;
@@ -565,9 +564,6 @@
         }
 
         function startPause() {
-            soundHorn.volume = 1.0;
-            soundHorn.play().then(() => { soundHorn.pause(); }).catch(() => {});
-
             if (isRunning) {
                 isRunning = false;
                 clearInterval(countdownInterval);
@@ -580,7 +576,7 @@
                 btnStartPause.textContent = "Pausar";
                 btnStartPause.className = "btn btn-pause";
                 
-                // Toca a buzina na largada inicial do combate
+                // Toca a buzina por completo apenas na primeira largada do cronômetro
                 if (isFirstStart && !isResting) {
                     playSound(soundHorn);
                     isFirstStart = false;
