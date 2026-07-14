@@ -3,557 +3,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel CT - HR Fight Team Ultimate</title>
-    
-    <!-- Importação das fontes direto do servidor do Google -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rubik+Dirt&family=Russo+One&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome para os Ícones -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <title>Arena Web App</title>
     <style>
+        /* Reset de margens e definição do tema escuro */
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            background-color: #000000; /* Fundo preto absoluto */
+            background-color: #000000;
             color: #ffffff;
-            height: 100vh;
-            width: 100vw;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 3vh 3vw;
-            overflow: hidden;
-            font-family: 'Russo One', sans-serif;
+            align-items: center;
+            padding: 40px 20px;
+            overflow: hidden; /* Evita rolagem na TV */
         }
 
-        /* Cores Temáticas */
-        .txt-vermelho { color: #e60000; }
-        .txt-branco { color: #ffffff; }
-        .txt-cinza { color: #444444; }
-
-        /* Moldura interna fina */
-        .moldura-painel {
-            position: absolute;
-            top: 2vh; left: 2vw; right: 2vw; bottom: 2vh;
-            border: 1px solid rgba(230, 0, 0, 0.15);
-            pointer-events: none;
-            border-radius: 15px;
-            z-index: 0;
-        }
-
-        /* ==========================================
-           ESTRUTURA DE POSICIONAMENTO CENTRAL ABSOLUTO
-        ========================================== */
-        .painel-principal {
-            position: relative;
-            flex: 1;
-            width: 100%;
+        /* Container Principal */
+        .main-container {
             display: flex;
+            flex-direction: column;
+            align-items: center;
             justify-content: center;
-            align-items: center;
-            z-index: 10;
+            flex-grow: 1;
+            gap: 40px;
         }
 
-        /* Linhas Divisórias Verticais do Painel */
-        .divisoria-esquerda {
-            position: absolute;
-            left: 28vw;
-            width: 1px;
-            height: 52vh;
-            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
-        }
-
-        .divisoria-direita {
-            position: absolute;
-            right: 28vw;
-            width: 1px;
-            height: 52vh;
-            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
-        }
-
-        /* BLOCO ESQUERDO: Relógio e Calendário */
-        .bloco-esquerda {
-            position: absolute;
-            left: 1vw;
-            width: 25vw;
-            display: flex;
-            flex-direction: column;
-            gap: 4vh;
-        }
-
-        /* BLOCO CENTRO: Logotipo isolado para centralização absoluta */
-        .bloco-centro {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 2vh;
-            width: 40vw;
-        }
-
-        /* BLOCO DIREITO: Temporizador e Botões */
-        .bloco-direita {
-            position: absolute;
-            right: 1vw;
-            width: 25vw;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2.5vh;
-        }
-
-        /* ==========================================
-           ESTILIZAÇÃO DOS COMPONENTES (ESQUERDA)
-        ========================================== */
-        .info-grupo {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header-section {
-            display: flex;
-            align-items: center;
-            gap: 0.8vw;
-            font-size: 1.4vw;
-            letter-spacing: 1px;
-            margin-bottom: 0.5vh;
-        }
-
-        .header-section i {
-            color: #e60000;
-            font-size: 1.3vw;
-        }
-
-        .valor-digital {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3.8vw;
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: 1px;
-        }
-
-        /* Data organizada em duas linhas */
-        .data-container {
-            display: flex;
-            flex-direction: column;
-            line-height: 0.9;
-        }
-        .data-ddmm {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 4.2vw;
-            font-weight: 900;
-        }
-        .data-aaaa {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 2.5vw;
-            font-weight: 900;
-            color: #666666;
-            letter-spacing: 4px;
-            margin-top: 0.5vh;
-        }
-
-        .sub-data-dia {
-            font-size: 1.6vw;
-            letter-spacing: 1px;
-            margin-top: 0.8vh;
-            font-weight: bold;
-        }
-
-        .glow-line {
-            width: 60%;
-            height: 1px;
-            background: linear-gradient(90deg, #e60000, transparent);
-            margin-top: 1vh;
-        }
-
-        /* ==========================================
-           ESTILIZAÇÃO DOS COMPONENTES (CENTRO)
-        ========================================== */
-        .logo-ct {
-            max-width: 95%;
-            max-height: 44vh;
-            object-fit: contain;
-            filter: drop-shadow(0px 0px 30px rgba(230, 0, 0, 0.25));
-        }
-
-        .sub-logo-texto {
+        /* Container do Logo */
+        .logo-container {
             text-align: center;
         }
-        .sub-logo-texto h2 {
-            font-size: 3.4vw;
-            letter-spacing: 1px;
-            line-height: 1;
-        }
-        .sub-logo-texto p {
-            font-size: 1.2vw;
-            letter-spacing: 4px;
-            color: #666666;
+
+        .logo {
+            max-height: 70px;
+            width: auto;
+            object-fit: contain;
         }
 
-        /* ==========================================
-           ESTILIZAÇÃO DOS COMPONENTES (DIREITA)
-        ========================================== */
-        .timer-container {
-            position: relative;
-            width: 22vw;
-            height: 22vw;
-            max-width: 310px;
-            max-height: 310px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .timer-container svg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transform: rotate(-90deg);
-        }
-
-        .circle-ticks {
-            fill: none;
-            stroke: #161616;
-            stroke-width: 14;
-            stroke-dasharray: 2px 4px;
-        }
-
-        .circle-progress {
-            fill: none;
-            stroke: #e60000;
-            stroke-width: 14;
-            stroke-linecap: square;
-            transition: stroke-dashoffset 1s linear;
-        }
-
-        .cronometro-wrapper {
-            position: absolute;
+        /* Container dos Botões - Alinhamento Vertical */
+        .button-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .cronometro-texto {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 3.5vw;
-            font-weight: 900;
-            letter-spacing: 1px;
-        }
-
-        .cronometro-legendas {
-            font-size: 1vw;
-            letter-spacing: 5px;
-            margin-top: -0.2vh;
-            word-spacing: 6px;
-        }
-
-        .topo-cronometro-titulo {
-            position: absolute;
-            top: -3.5vh;
-            display: flex;
-            align-items: center;
-            gap: 0.5vw;
-            font-size: 1.4vw;
-            letter-spacing: 1px;
-        }
-
-        /* Painel de Botões */
-        .controle-botoes {
-            display: flex;
-            flex-direction: column;
-            gap: 1vh;
-            width: 90%;
-            align-items: center;
-        }
-
-        .linha-botoes {
-            display: flex;
-            gap: 0.6vw;
+            gap: 20px;
             width: 100%;
-            justify-content: center;
+            max-width: 400px;
         }
 
-        .btn {
-            background-color: #0d0d0d;
-            border: 1px solid #262626;
+        /* Estilização dos Botões */
+        .tv-button {
+            background-color: #cc0000;
             color: #ffffff;
-            font-family: 'Russo One', sans-serif;
-            font-size: 1.1vw;
-            padding: 0.8vh 1vw;
+            border: 4px solid transparent;
+            padding: 22px 30px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border-radius: 12px;
             cursor: pointer;
-            border-radius: 4px;
-            transition: all 0.2s ease;
+            transition: all 0.25s ease-in-out;
+            outline: none;
+            text-align: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
             text-transform: uppercase;
             letter-spacing: 1px;
-            flex: 1;
-            text-align: center;
         }
 
-        .btn:hover {
-            background-color: #e60000;
-            border-color: #e60000;
-            box-shadow: 0 0 12px rgba(230, 0, 0, 0.4);
+        /* Estado de Hover e Focus */
+        .tv-button:focus, .tv-button:hover {
+            background-color: #ff1a1a;
+            border-color: #ffffff;
+            transform: scale(1.06);
+            box-shadow: 0 0 30px rgba(255, 26, 26, 0.8);
         }
 
-        .btn-tempo {
-            font-size: 1.2vw;
-            font-weight: bold;
-        }
-
-        .btn-acao {
-            background-color: #141414;
-            border-color: #333333;
+        /* Botão do Patrocinador com leve variação */
+        .btn-patrocinador {
+            background-color: #990000;
         }
         
-        .btn-pause {
-            border-left: 3px solid #ffcc00;
-        }
-        .btn-reset {
-            border-left: 3px solid #e60000;
+        .btn-patrocinador:focus, .btn-patrocinador:hover {
+            background-color: #e60000;
         }
 
-        /* ==========================================
-           PARTE INFERIOR: ESTILO DE PINCEL RASGADO
-           ========================================== */
-        .bloco-inferior {
+        /* --- Seção de Propaganda do Arena Competidor --- */
+        .promo-container {
+            background: linear-gradient(180deg, #111111 0%, #080808 100%);
+            border: 2px solid #222222;
+            border-radius: 16px;
+            padding: 25px 40px;
+            width: 90%;
+            max-width: 1100px;
             text-align: center;
-            width: 100%;
-            padding-bottom: 1vh;
-            z-index: 10;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 2vw;
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
         }
 
-        .linha-frase {
-            flex: 1;
-            height: 4px;
-            background: linear-gradient(90deg, transparent, #e60000, transparent);
-        }
-
-        .frase-efeito {
-            font-family: 'Rubik Dirt', sans-serif; 
-            font-size: 4.8vw;
-            letter-spacing: 3px;
+        .promo-title {
+            color: #ff1a1a;
+            font-size: 1.6rem;
+            font-weight: 800;
             text-transform: uppercase;
-            
-            text-shadow: 3px 3px 0px #000,
-                         -1px -1px 0px #000,
-                         0px 0px 20px rgba(230, 0, 0, 0.6);
-                         
-            white-space: nowrap;
-            transform: scaleY(1.05) skewX(-10deg);
+            letter-spacing: 2px;
+            margin-bottom: 15px;
         }
 
+        .promo-grid {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .promo-item {
+            flex: 1;
+            min-width: 130px;
+            background-color: #1a1a1a;
+            padding: 15px 10px;
+            border-radius: 8px;
+            border-bottom: 3px solid #cc0000;
+        }
+
+        .promo-item h4 {
+            font-size: 1.1rem;
+            color: #ffffff;
+            margin-bottom: 5px;
+            font-weight: 700;
+        }
+
+        .promo-item p {
+            font-size: 0.85rem;
+            color: #aaaaaa;
+        }
+
+        .promo-highlight {
+            color: #ff1a1a !important;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <div class="moldura-painel"></div>
-
-    <div class="painel-principal">
-        
-        <!-- LADO ESQUERDO -->
-        <div class="bloco-esquerda">
-            <div class="info-grupo">
-                <div class="header-section txt-vermelho">
-                    <i class="fa-solid fa-clock"></i> <span>Hora</span>
-                </div>
-                <span id="txt-hora" class="valor-digital txt-branco">00:00:00</span>
-                <div class="glow-line"></div>
-            </div>
-            
-            <div class="info-grupo">
-                <div class="header-section txt-vermelho">
-                    <i class="fa-solid fa-calendar-days"></i> <span>Data</span>
-                </div>
-                <div class="data-container">
-                    <span id="txt-data-ddmm" class="data-ddmm txt-branco">00/00</span>
-                    <span id="txt-data-aaaa" class="data-aaaa">0000</span>
-                </div>
-                <span id="txt-dia-semana" class="sub-data-dia txt-vermelho">...</span>
-            </div>
+    <div class="main-container">
+        <!-- Logo do App -->
+        <div class="logo-container">
+            <img src="arena2.png" alt="Arena Logo" class="logo">
         </div>
 
-        <div class="divisoria-esquerda"></div>
-        
-        <!-- CENTRO -->
-        <div class="bloco-centro">
-            <img src="logoht.png" alt="Logo CT" class="logo-ct">
-            <div class="sub-logo-texto">
-                <h2><span class="txt-vermelho">HR</span><span class="txt-branco">FIGHTTEAM</span></h2>
-                <p>DISCIPLINA  •  FOCO  •  EVOLUÇÃO</p>
-            </div>
+        <!-- Botões de Ação (Um abaixo do outro) -->
+        <div class="button-container">
+            <button class="tv-button" onclick="irParaTimerPadrao()">Placar Normal</button>
+            <button class="tv-button btn-patrocinador" onclick="irParaTimerPatrocinador()">Placar com Patrocínio</button>
         </div>
-
-        <div class="divisoria-direita"></div>
-
-        <!-- LADO DIREITO -->
-        <div class="bloco-direita">
-            
-            <div class="timer-container">
-                <div class="topo-cronometro-titulo txt-vermelho">
-                    <i class="fa-solid fa-stopwatch"></i> <span>CRONÔMETRO</span>
-                </div>
-                <svg viewBox="0 0 160 160">
-                    <circle class="circle-ticks" cx="80" cy="80" r="68"></circle>
-                    <circle id="progresso-timer" class="circle-progress" cx="80" cy="80" r="68"></circle>
-                </svg>
-                <div class="cronometro-wrapper">
-                    <div id="txt-cronometro" class="cronometro-texto txt-branco">00:00:00</div>
-                    <div class="cronometro-legendas txt-cinza">HH MM SS</div>
-                </div>
-            </div>
-
-            <div class="controle-botoes">
-                <div class="linha-botoes">
-                    <button class="btn btn-tempo" onclick="definirTimer(2)">2 Min</button>
-                    <button class="btn btn-tempo" onclick="definirTimer(5)">5 Min</button>
-                    <button class="btn btn-tempo" onclick="definirTimer(8)">8 Min</button>
-                    <button class="btn btn-tempo" onclick="definirTimer(10)">10 Min</button>
-                </div>
-                <div class="linha-botoes">
-                    <button id="btn-play-pause" class="btn btn-acao btn-pause" onclick="alternarPlayPause()">Pausar</button>
-                    <button class="btn btn-acao btn-reset" onclick="resetarTimer()">Reset</button>
-                </div>
-            </div>
-
-        </div>
-
     </div>
 
-    <!-- PARTE INFERIOR -->
-    <div class="bloco-inferior">
-        <div class="linha-frase"></div>
-        <h1 class="frase-efeito">
-            <span class="txt-vermelho">Campeão</span> 
-            <span class="txt-branco">se faz</span> 
-            <span class="txt-vermelho">em casa</span>
-        </h1>
-        <div class="linha-frase"></div>
+    <!-- Banner de Propaganda da Arena Competidor -->
+    <div class="promo-container">
+        <h3 class="promo-title">Serviços arenacompetidor.com</h3>
+        <div class="promo-grid">
+            <div class="promo-item">
+                <h4>Inscrições</h4>
+                <p>Gestão Online</p>
+            </div>
+            <div class="promo-item">
+                <h4>Sistemas</h4>
+                <p>Chaves e Lutas</p>
+            </div>
+            <div class="promo-item">
+                <h4>Transmissões</h4>
+                <p>Ao Vivo Profissional</p>
+            </div>
+            <div class="promo-item">
+                <h4>VAR</h4>
+                <p>Análise de Vídeo</p>
+            </div>
+            <div class="promo-item">
+                <h4>Placares</h4>
+                <p>Tempo Real</p>
+            </div>
+            <div class="promo-item">
+                <h4 class="promo-highlight">Jiu-Jitsu</h4>
+                <p>Geral</p>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Carregamento dos Arquivos de Áudio
-        const audioBip = new Audio('bip.mp3');
-        const audioBuzina = new Audio('buzina.mp3');
+        // Foco inicial e navegação vertical para TV
+        window.addEventListener('DOMContentLoaded', () => {
+            const botoes = document.querySelectorAll('.tv-button');
+            if (botoes.length > 0) {
+                botoes[0].focus();
+            }
 
-        // Relógio e Data
-        function atualizarRelogio() {
-            const agora = new Date();
-            const horas = String(agora.getHours()).padStart(2, '0');
-            const minutos = String(agora.getMinutes()).padStart(2, '0');
-            const segundos = String(agora.getSeconds()).padStart(2, '0');
-            document.getElementById('txt-hora').textContent = `${horas}:${minutos}:${segundos}`;
-            
-            const dia = String(agora.getDate()).padStart(2, '0');
-            const mes = String(agora.getMonth() + 1).padStart(2, '0');
-            
-            document.getElementById('txt-data-ddmm').textContent = `${dia}/${mes}`;
-            document.getElementById('txt-data-aaaa').textContent = agora.getFullYear();
-            
-            const diasSemana = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
-            document.getElementById('txt-dia-semana').textContent = diasSemana[agora.getDay()];
-        }
-        setInterval(atualizarRelogio, 1000);
-        atualizarRelogio();
-
-        // Cronômetro
-        let tempoInicial = 300;
-        let tempoRestante = tempoInicial;
-        let intervaloTimer = null;
-        let executando = false;
-
-        const elementoCronometro = document.getElementById('txt-cronometro');
-        const circuloProgresso = document.getElementById('progresso-timer');
-        const btnPlayPause = document.getElementById('btn-play-pause');
-        const perimetro = 2 * Math.PI * 68;
-        
-        circuloProgresso.style.strokeDasharray = perimetro;
-
-        function formatarTempo(segundosTotais) {
-            const hrs = String(Math.floor(segundosTotais / 3600)).padStart(2, '0');
-            const mins = String(Math.floor((segundosTotais % 3600) / 60)).padStart(2, '0');
-            const segs = String(segundosTotais % 60).padStart(2, '0');
-            return `${hrs}:${mins}:${segs}`;
-        }
-
-        function atualizarGrafico() {
-            elementoCronometro.textContent = formatarTempo(tempoRestante);
-            const deslocamento = perimetro - ((tempoRestante / tempoInicial) * perimetro);
-            circuloProgresso.style.strokeDashoffset = deslocamento;
-        }
-
-        function tiqueTaque() {
-            if (tempoRestante > 0) {
-                tempoRestante--;
-                atualizarGrafico();
-
-                // Gerenciamento dos Sinais Sonoros nos 10 segundos finais
-                if (tempoRestante <= 10 && tempoRestante > 0) {
-                    elementoCronometro.style.color = "#ffcc00"; // Muda para amarelo de atenção
-                    audioBip.currentTime = 0; // Reseta o áudio para tocar sem atraso
-                    audioBip.play().catch(e => console.log("Áudio bloqueado pelo navegador. Clique na tela antes."));
+            let indiceFoco = 0;
+            document.addEventListener('keydown', (e) => {
+                // Navegação por setas para CIMA e para BAIXO do controle remoto
+                if (e.key === 'ArrowDown') {
+                    indiceFoco = (indiceFoco + 1) % botoes.length;
+                    botoes[indiceFoco].focus();
+                    e.preventDefault();
+                } else if (e.key === 'ArrowUp') {
+                    indiceFoco = (indiceFoco - 1 + botoes.length) % botoes.length;
+                    botoes[indiceFoco].focus();
+                    e.preventDefault();
                 }
-            } else {
-                // Quando zerar
-                clearInterval(intervaloTimer);
-                executando = false;
-                btnPlayPause.textContent = "Iniciar";
-                elementoCronometro.style.color = "#e60000"; // Fica vermelho fixo no fim
-                circuloProgresso.style.strokeDashoffset = perimetro;
-                
-                // Toca a buzina final
-                audioBuzina.currentTime = 0;
-                audioBuzina.play().catch(e => console.log("Áudio bloqueado pelo navegador. Clique na tela antes."));
-            }
+            });
+        });
+
+        // Ações de redirecionamento real dos Botões
+        function irParaTimerPadrao() {
+            window.location.href = 'timer2.html';
         }
 
-        function definirTimer(minutos) {
-            clearInterval(intervaloTimer);
-            executando = true;
-            tempoInicial = minutos * 60;
-            tempoRestante = tempoInicial;
-            elementoCronometro.style.color = "#ffffff";
-            btnPlayPause.textContent = "Pausar";
-            atualizarGrafico();
-            intervaloTimer = setInterval(tiqueTaque, 1000);
+        function irParaTimerPatrocinador() {
+            window.location.href = 'patrocinador.html';
         }
-
-        function alternarPlayPause() {
-            if (tempoRestante <= 0) return;
-            
-            if (executando) {
-                clearInterval(intervaloTimer);
-                executando = false;
-                btnPlayPause.textContent = "Iniciar";
-            } else {
-                executando = true;
-                btnPlayPause.textContent = "Pausar";
-                intervaloTimer = setInterval(tiqueTaque, 1000);
-            }
-        }
-
-        function resetarTimer() {
-            clearInterval(intervaloTimer);
-            executando = false;
-            tempoRestante = tempoInicial;
-            elementoCronometro.style.color = "#ffffff";
-            btnPlayPause.textContent = "Iniciar";
-            atualizarGrafico();
-        }
-
-        atualizarGrafico();
     </script>
 </body>
 </html>
