@@ -1,1 +1,500 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel CT - Patrocinadores & Timer</title>
+    
+    <!-- Fontes do Google -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Rubik+Dirt&family=Russo+One&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome para Ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000000; /* Fundo preto absoluto */
+            color: #ffffff;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 2.5vh 2.5vw;
+            overflow: hidden;
+            font-family: 'Russo One', sans-serif;
+        }
+
+        /* Cores Temáticas */
+        .txt-vermelho { color: #e60000; }
+        .txt-branco { color: #ffffff; }
+        .txt-cinza { color: #555555; }
+
+        /* Moldura de tela */
+        .moldura-painel {
+            position: absolute;
+            top: 1.5vh; left: 1.5vw; right: 1.5vw; bottom: 1.5vh;
+            border: 1px solid rgba(230, 0, 0, 0.15);
+            pointer-events: none;
+            border-radius: 15px;
+            z-index: 0;
+        }
+
+        /* LAYOUT PRINCIPAL: 2 COLUNAS BEM DEFINIDAS */
+        .painel-grid {
+            display: grid;
+            /* Define estritamente a metade esquerda para informações e a metade direita para os patrocinadores */
+            grid-template-columns: 45vw 2px 45vw;
+            flex: 1;
+            width: 100%;
+            height: 72vh;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+        }
+
+        /* DIVISÓRIA VERTICAL CENTRAL */
+        .divisoria {
+            width: 2px;
+            height: 60vh;
+            background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.15), transparent);
+            align-self: center;
+        }
+
+        /* COLUNA DA ESQUERDA: APENAS DADOS E TIMER */
+        .coluna-esquerda {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: 100%;
+            width: 100%;
+            padding: 2vh 0;
+        }
+
+        .logo-ct {
+            max-width: 90%;
+            max-height: 35vh;
+            object-fit: contain;
+            filter: drop-shadow(0px 0px 20px rgba(230, 0, 0, 0.2));
+        }
+
+        .widgets-tempo-container {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            gap: 1.5vw;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-bottom: 2vh;
+        }
+
+        .info-grupo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+        }
+
+        .header-section {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+            font-size: 1vw;
+            letter-spacing: 1px;
+            margin-bottom: 0.5vh;
+        }
+
+        .header-section i {
+            color: #e60000;
+        }
+
+        .valor-digital {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.8vw;
+            font-weight: 900;
+            line-height: 1;
+        }
+
+        .data-container {
+            display: flex;
+            align-items: baseline;
+            gap: 2px;
+        }
+
+        .data-ddmm {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3vw;
+            font-weight: 900;
+        }
+
+        .data-aaaa {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.0vw;
+            font-weight: 900;
+            color: #444444;
+        }
+
+        .sub-data-dia {
+            font-size: 1.5vw;
+            letter-spacing: 1px;
+            margin-top: 0.3vh;
+            font-weight: bold;
+        }
+
+        /* ÁREA DO CRONÔMETRO */
+        .cronometro-enfase-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #0d0d0d 0%, #050505 100%);
+            border: 2px solid #e60000;
+            border-radius: 12px;
+            width: 90%;
+            padding: 2.5vh 1.5vw;
+            box-shadow: 0 0 25px rgba(230, 0, 0, 0.15);
+        }
+
+        .cronometro-titulo {
+            display: flex;
+            align-items: center;
+            gap: 0.5vw;
+            font-size: 1.1vw;
+            letter-spacing: 2px;
+            margin-bottom: 1vh;
+        }
+
+        .cronometro-texto {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.8vw;
+            font-weight: 900;
+            line-height: 1;
+            letter-spacing: 2px;
+            text-shadow: 0px 0px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .cronometro-legendas {
+            font-size: 0.9vw;
+            letter-spacing: 12px;
+            margin-top: 1vh;
+            color: #555555;
+            text-indent: 12px;
+        }
+
+        /* COLUNA DA DIREITA: EXCLUSIVA PARA OS PATROCINADORES */
+        .coluna-direita {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            padding: 1vh;
+        }
+
+        /* Container do Slider */
+        .patrocinador-slider-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            border-radius: 12px;
+            background: radial-gradient(circle, #0d0d0d 0%, #000000 100%);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .patrocinador-slide {
+            position: absolute;
+            max-width: 95%;
+            max-height: 95%;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+
+        .patrocinador-slide.ativo {
+            opacity: 1;
+        }
+
+        /* BARRA INFERIOR DE CONTROLES */
+        .barra-inferior {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            gap: 1.5vh;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 2vh;
+            z-index: 10;
+        }
+
+        .controle-botoes-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 2vw;
+            width: 100%;
+        }
+
+        .botoes-grupo-tempo {
+            display: flex;
+            gap: 0.8vw;
+            flex: 1;
+        }
+
+        .botoes-grupo-acao {
+            display: flex;
+            gap: 0.8vw;
+            min-width: 320px;
+        }
+
+        .btn {
+            background-color: #0d0d0d;
+            border: 1px solid #262626;
+            color: #ffffff;
+            font-family: 'Russo One', sans-serif;
+            font-size: 1.1vw;
+            padding: 1.2vh 1.5vw;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex: 1;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background-color: #e60000;
+            border-color: #e60000;
+            box-shadow: 0 0 12px rgba(230, 0, 0, 0.4);
+        }
+
+        .btn-tempo {
+            font-size: 1.1vw;
+            font-weight: bold;
+        }
+
+        .btn-acao {
+            background-color: #141414;
+            border-color: #333333;
+        }
+
+        .btn-pause {
+            border-left: 4px solid #ffcc00;
+        }
+
+        .btn-reset {
+            border-left: 4px solid #e60000;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="moldura-painel"></div>
+
+    <!-- ÁREA SUPERIOR: GRID DE CONTEÚDOS -->
+    <div class="painel-grid">
+        
+        <!-- 1. COLUNA ESQUERDA (DADOS & TIMER) -->
+        <div class="coluna-esquerda">
+            <!-- Logo principal -->
+            <img src="logoht.png" alt="Logo CT" class="logo-ct">
+            
+            <!-- Linha com Data e Hora -->
+            <div class="widgets-tempo-container">
+                <div class="info-grupo">
+                    <div class="header-section txt-vermelho">
+                        <i class="fa-solid fa-clock"></i> <span>HORA</span>
+                    </div>
+                    <span id="txt-hora" class="valor-digital txt-branco">00:00:00</span>
+                </div>
+                
+                <div class="info-grupo">
+                    <div class="header-section txt-vermelho">
+                        <i class="fa-solid fa-calendar-days"></i> <span>DATA</span>
+                    </div>
+                    <div class="data-container">
+                        <span id="txt-data-ddmm" class="data-ddmm txt-branco">00/00</span>
+                        <span id="txt-data-aaaa" class="data-aaaa">0000</span>
+                    </div>
+                    <span id="txt-dia-semana" class="sub-data-dia txt-vermelho">...</span>
+                </div>
+            </div>
+
+            <!-- Box do Cronômetro -->
+            <div class="cronometro-enfase-box">
+                <div class="cronometro-titulo txt-vermelho">
+                    <i class="fa-solid fa-stopwatch"></i> <span>CRONÔMETRO</span>
+                </div>
+                <div id="txt-cronometro" class="cronometro-texto txt-branco">00:00:00</div>
+                <div class="cronometro-legendas">HH MM SS</div>
+            </div>
+        </div>
+
+        <!-- 2. DIVISÓRIA VERTICAL DO CENTRO -->
+        <div class="divisoria"></div>
+
+        <!-- 3. COLUNA DIREITA (PATROCINADORES ISOLADOS) -->
+        <div class="coluna-direita">
+            <div class="patrocinador-slider-container">
+                <img src="patro1.jpg" alt="Patrocinador 1" class="patrocinador-slide ativo">
+                <img src="patro2.jpg" alt="Patrocinador 2" class="patrocinador-slide">
+                <img src="patro3.jpg" alt="Patrocinador 3" class="patrocinador-slide">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- BARRA INFERIOR DE CONTROLES -->
+    <div class="barra-inferior">
+        
+        <div class="controle-botoes-container">
+            <!-- Opções de Tempo à Esquerda -->
+            <div class="botoes-grupo-tempo">
+                <button class="btn btn-tempo" onclick="definirTimer(2)">2 Min</button>
+                <button class="btn btn-tempo" onclick="definirTimer(5)">5 Min</button>
+                <button class="btn btn-tempo" onclick="definirTimer(8)">8 Min</button>
+                <button class="btn btn-tempo" onclick="definirTimer(10)">10 Min</button>
+            </div>
+            
+            <!-- Botões de Ação à Direita -->
+            <div class="botoes-grupo-acao">
+                <button id="btn-play-pause" class="btn btn-acao btn-pause" onclick="alternarPlayPause()">Pausar</button>
+                <button class="btn btn-acao btn-reset" onclick="resetarTimer()">Reset</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Carregamento dos Arquivos de Áudio
+        const audioBip = new Audio('bip.mp3');
+        const audioBuzina = new Audio('buzina.mp3');
+
+        // Relógio e Data
+        function atualizarRelogio() {
+            const agora = new Date();
+            const horas = String(agora.getHours()).padStart(2, '0');
+            const minutos = String(agora.getMinutes()).padStart(2, '0');
+            const segundos = String(agora.getSeconds()).padStart(2, '0');
+            document.getElementById('txt-hora').textContent = `${horas}:${minutos}:${segundos}`;
+            
+            const dia = String(agora.getDate()).padStart(2, '0');
+            const mes = String(agora.getMonth() + 1).padStart(2, '0');
+            
+            document.getElementById('txt-data-ddmm').textContent = `${dia}/${mes}`;
+            document.getElementById('txt-data-aaaa').textContent = agora.getFullYear();
+            
+            const diasSemana = ['Domingo', 'Segunda-Feira', 'Terça-Feira', 'Quarta-Feira', 'Quinta-Feira', 'Sexta-Feira', 'Sábado'];
+            document.getElementById('txt-dia-semana').textContent = diasSemana[agora.getDay()];
+        }
+        setInterval(atualizarRelogio, 1000);
+        atualizarRelogio();
+
+        // Cronômetro
+        let tempoInicial = 300;
+        let tempoRestante = tempoInicial;
+        let intervaloTimer = null;
+        let executando = false;
+
+        const elementoCronometro = document.getElementById('txt-cronometro');
+        const btnPlayPause = document.getElementById('btn-play-pause');
+
+        function formatarTempo(segundosTotais) {
+            const hrs = String(Math.floor(segundosTotais / 3600)).padStart(2, '0');
+            const mins = String(Math.floor((segundosTotais % 3600) / 60)).padStart(2, '0');
+            const segs = String(segundosTotais % 60).padStart(2, '0');
+            return `${hrs}:${mins}:${segs}`;
+        }
+
+        function atualizarGrafico() {
+            elementoCronometro.textContent = formatarTempo(tempoRestante);
+        }
+
+        function tiqueTaque() {
+            if (tempoRestante > 0) {
+                tempoRestante--;
+                atualizarGrafico();
+
+                // Sinal Sonoro nos 10 segundos finais
+                if (tempoRestante <= 10 && tempoRestante > 0) {
+                    elementoCronometro.style.color = "#ffcc00"; // Amarelo de atenção
+                    audioBip.currentTime = 0;
+                    audioBip.play().catch(e => console.log("Áudio bloqueado."));
+                }
+            } else {
+                clearInterval(intervaloTimer);
+                executando = false;
+                btnPlayPause.textContent = "Iniciar";
+                elementoCronometro.style.color = "#e60000"; // Vermelho fixo
+                
+                audioBuzina.currentTime = 0;
+                audioBuzina.play().catch(e => console.log("Áudio bloqueado."));
+            }
+        }
+
+        function definirTimer(minutos) {
+            clearInterval(intervaloTimer);
+            executando = true;
+            tempoInicial = minutos * 60;
+            tempoRestante = tempoInicial;
+            elementoCronometro.style.color = "#ffffff";
+            btnPlayPause.textContent = "Pausar";
+            atualizarGrafico();
+            intervaloTimer = setInterval(tiqueTaque, 1000);
+        }
+
+        function alternarPlayPause() {
+            if (tempoRestante <= 0) return;
+            
+            if (executando) {
+                clearInterval(intervaloTimer);
+                executando = false;
+                btnPlayPause.textContent = "Iniciar";
+            } else {
+                executando = true;
+                btnPlayPause.textContent = "Pausar";
+                intervaloTimer = setInterval(tiqueTaque, 1000);
+            }
+        }
+
+        function resetarTimer() {
+            clearInterval(intervaloTimer);
+            executando = false;
+            tempoRestante = tempoInicial;
+            elementoCronometro.style.color = "#ffffff";
+            btnPlayPause.textContent = "Iniciar";
+            atualizarGrafico();
+        }
+
+        atualizarGrafico();
+
+        // CONTROLE DO SLIDER (FADE AUTOMÁTICO)
+        let indiceSlide = 0;
+        const slides = document.querySelectorAll('.patrocinador-slide');
+        const tempoExibicao = 5000; // Tempo de troca (5 segundos)
+
+        function rotacionarPatrocinadores() {
+            if (slides.length <= 1) return;
+            slides[indiceSlide].classList.remove('ativo');
+            indiceSlide = (indiceSlide + 1) % slides.length;
+            slides[indiceSlide].classList.add('ativo');
+        }
+
+        setInterval(rotacionarPatrocinadores, tempoExibicao);
+    </script>
+</body>
+</html>
