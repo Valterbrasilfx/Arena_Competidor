@@ -126,7 +126,33 @@
     <script>
         const CSV_URL = 'https://script.google.com/macros/s/AKfycbxhGu_PmUEbp2dew7_XlVuf_1e4pMNBTJFyJqJUSVc_yQSdeVmpNq3SVDMA0Ci6dus47Q/exec';
         const FOTO_PADRAO = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
-        const ORDEM_FAIXAS = { 'MARROM': 1, 'ROXA': 2, 'AZUL': 3, 'BRANCA': 4, 'VERDE': 5, 'LARANJA': 6, 'AMARELA': 7, 'CINZA': 8 };
+        
+        // Mapeamento de prioridade para ordenação das faixas exibidas na tela
+        const ORDEM_FAIXAS = { 
+            'MARROM': 1, 'ROXA': 2, 'AZUL': 3, 
+            'VERDE': 4, 'AMARELA/LARANJA/VERDE': 5, 
+            'LARANJA': 6, 'AMARELA': 7, 
+            'BRANCA/CINZA': 8, 'BRANCA': 9, 'CINZA': 10 
+        };
+
+        // Categorias exatas que devem sofrer o agrupamento de faixas
+        const CATEGORIAS_PARA_AGRUPAR = [
+            'INFANTIL A',
+            'INFANTIL B',
+            'INFANTO-JUVENIL A',
+            'INFANTO-JUVENIL B',
+            'MIRIM',
+            'PRÉ-MIRIM'
+        ];
+
+        // Regras de agrupamento de faixas para as categorias infantis e mirins especificadas
+        const AGRUPAMENTO_FAIXAS = {
+            'BRANCA': 'BRANCA/CINZA',
+            'CINZA': 'BRANCA/CINZA',
+            'AMARELA': 'AMARELA/LARANJA/VERDE',
+            'LARANJA': 'AMARELA/LARANJA/VERDE',
+            'VERDE': 'AMARELA/LARANJA/VERDE'
+        };
         
         let dadosAtletas = [];
         let colMap = {};
@@ -163,7 +189,6 @@
                     if (clean.includes("PROFESSOR")) colMap.PROFESSOR = c;
                 });
 
-                // Filtragem na origem: Ignora qualquer linha cujo campo de faixa seja PRETA
                 dadosAtletas = lines.slice(1).map(linha => {
                     const colunas = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     let obj = {};
@@ -226,18 +251,31 @@
 
             container.innerHTML = '';
             const estrutura = {};
+            
             filtradosParaTabela.forEach(a => {
-                const fx = a['SUA FAIXA'] || 'BRANCA';
+                let fx = (a['SUA FAIXA'] || 'BRANCA').toUpperCase();
+                const categoria = (a['SUA CATEGORIA'] || '').toUpperCase().trim();
+
+                // Checa se a categoria deste atleta está exatamente na lista das que devem agrupar
+                const deveAgrupar = CATEGORIAS_PARA_AGRUPAR.includes(categoria);
+
+                if (deveAgrupar) {
+                    // Se for para agrupar, aplica a fusão de faixas
+                    if (AGRUPAMENTO_FAIXAS[fx]) {
+                        fx = AGRUPAMENTO_FAIXAS[fx];
+                    }
+                }
+
                 const ch = `${a['SUA CATEGORIA']} - ${a['SEU PESO']} (${a['SEXO']})`;
                 if (!estrutura[fx]) estrutura[fx] = {};
                 if (!estrutura[fx][ch]) estrutura[fx][ch] = [];
-                if (estrutura[fx][ch]) estrutura[fx][ch].push(a);
+                estrutura[fx][ch].push(a);
             });
 
             Object.keys(estrutura).sort((a,b) => (ORDEM_FAIXAS[a.toUpperCase()]||99)-(ORDEM_FAIXAS[b.toUpperCase()]||99)).forEach(fx => {
                 const divFaixa = document.createElement('div');
                 divFaixa.className = 'faixa-group-header';
-                divFaixa.textContent = `Faixa ${fx}`;
+                divFaixa.textContent = fx.includes('/') ? fx : `Faixa ${fx}`;
                 container.appendChild(divFaixa);
 
                 Object.keys(estrutura[fx]).sort().forEach(ch => {
