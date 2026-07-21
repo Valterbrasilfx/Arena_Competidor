@@ -93,7 +93,7 @@
 
         .logo-container img {
             height: 100%; 
-            width: auto;   
+            width: auto;    
             max-width: 100%;
             object-fit: contain;
             filter: drop-shadow(0px 0px 25px rgba(0, 0, 0, 0.2));
@@ -393,12 +393,12 @@
         <div class="selection-group">
             <div class="selection-label">Tempo de Descanso</div>
             <div class="time-options rest-options">
-                <button class="btn-option active" data-rest-seconds="60" tabindex="10">1 Min</button>
-                <button class="btn-option" data-rest-seconds="120" tabindex="11">2 Min</button>
-                <button class="btn-option" data-rest-seconds="180" tabindex="12">3 Min</button>
-                <button class="btn-option" data-rest-seconds="240" tabindex="13">4 Min</button>
-                <button class="btn-option" data-rest-seconds="300" tabindex="14">5 Min</button>
-                <button class="btn-option" data-rest-seconds="360" tabindex="15">6 Min</button>
+                <button class="btn-option" data-rest-seconds="30" tabindex="10">30 Seg</button>
+                <button class="btn-option" data-rest-seconds="45" tabindex="11">45 Seg</button>
+                <button class="btn-option active" data-rest-seconds="60" tabindex="12">60 Seg</button>
+                <button class="btn-option" data-rest-seconds="75" tabindex="13">75 Seg</button>
+                <button class="btn-option" data-rest-seconds="90" tabindex="14">90 Seg</button>
+                <button class="btn-option" data-rest-seconds="105" tabindex="15">105 Seg</button>
             </div>
         </div>
 
@@ -556,7 +556,7 @@
                         const num = btn.getAttribute('data-seconds') / 60;
                         btn.setAttribute('tabindex', num.toString());
                     } else {
-                        const num = btn.getAttribute('data-rest-seconds') / 60;
+                        const num = btn.getAttribute('data-rest-seconds') / 15;
                         btn.setAttribute('tabindex', (num + 10).toString());
                     }
                 }
