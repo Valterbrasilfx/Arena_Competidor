@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARENA MASTER CONTROL v4.2</title>
+    <title>ARENA MASTER CONTROL v4.2 - 12 CANAIS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
@@ -19,16 +19,19 @@
         .status-offline { background: #475569; }
 
         .kpi-card { background: #0a0a0a; border: 1px solid #1a1a1a; border-top: 2px solid #dc2626; }
-        .grid-6 { grid-template-columns: repeat(6, minmax(0, 1fr)); }
-        ::-webkit-scrollbar { width: 2px; }
-        ::-webkit-scrollbar-thumb { background: #dc2626; }
+        
+        /* Custom Scrollbar para área de vídeos e logs */
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #dc2626; border-radius: 2px; }
     </style>
 </head>
 <body class="flex flex-col p-2">
 
-    <div id="app" class="flex flex-col h-full">
+    <div id="app" class="flex flex-col h-full overflow-hidden">
         
-        <header class="flex justify-between items-center mb-4 px-2">
+        <!-- HEADER / KPI PANEL -->
+        <header class="flex justify-between items-center mb-3 px-2 flex-shrink-0">
             <img src="../img/arena2.png" alt="Arena Logo" class="h-5 w-auto"> 
             
             <div class="flex gap-3">
@@ -47,37 +50,46 @@
             </div>
         </header>
 
-        <div class="grid grid-6 gap-3 mb-6">
-            <div v-for="(stream, index) in streams" :key="index" class="flex flex-col gap-2">
-                <div class="video-feed rounded shadow-2xl">
-                    <iframe :src="'https://www.youtube.com/embed/' + stream.id + '?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0'" frameborder="0" allowfullscreen></iframe>
-                </div>
-
-                <div class="glass p-2 rounded relative">
-                    <div class="absolute top-0 left-0 w-full h-1 transition-colors duration-500" :class="getConnectionClass(stream)"></div>
-                    
-                    <div class="flex justify-between items-center mt-1">
-                        <span class="text-[10px] font-black text-white italic tracking-tighter">{{ stream.area }}</span>
-                        <span class="text-[8px] font-bold" :class="stream.isLive ? 'text-green-500' : 'text-gray-600'">
-                            {{ stream.isLive ? 'ESTÁVEL' : 'OFFLINE' }}
-                        </span>
+        <!-- GRID DE 12 STREAMS -->
+        <div class="flex-grow overflow-y-auto pr-1 mb-3">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                <div v-for="(stream, index) in streams" :key="index" class="flex flex-col gap-1.5">
+                    <div class="video-feed rounded shadow-2xl overflow-hidden">
+                        <iframe 
+                            :src="'https://www.youtube.com/embed/' + stream.id + '?autoplay=1&mute=1&controls=1&modestbranding=1&rel=0'" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            allowfullscreen>
+                        </iframe>
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-white/5 font-mono">
-                        <div>
-                            <p class="text-[7px] text-gray-500 uppercase">Viewers</p>
-                            <p class="text-[11px] font-bold text-red-500">{{ stream.viewers }}</p>
+                    <div class="glass p-2 rounded relative">
+                        <div class="absolute top-0 left-0 w-full h-1 transition-colors duration-500" :class="getConnectionClass(stream)"></div>
+                        
+                        <div class="flex justify-between items-center mt-1">
+                            <span class="text-[10px] font-black text-white italic tracking-tighter">{{ stream.area }}</span>
+                            <span class="text-[8px] font-bold" :class="stream.isLive ? 'text-green-500' : 'text-gray-600'">
+                                {{ stream.isLive ? 'ESTÁVEL' : 'OFFLINE' }}
+                            </span>
                         </div>
-                        <div class="text-right">
-                            <p class="text-[7px] text-gray-500 uppercase">Status</p>
-                            <p class="text-[8px] text-gray-300 uppercase">{{ stream.isLive ? 'Transmitindo' : 'Aguardando' }}</p>
+
+                        <div class="grid grid-cols-2 gap-2 mt-1.5 pt-1.5 border-t border-white/5 font-mono">
+                            <div>
+                                <p class="text-[7px] text-gray-500 uppercase">Viewers</p>
+                                <p class="text-[11px] font-bold text-red-500">{{ stream.viewers }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[7px] text-gray-500 uppercase">Status</p>
+                                <p class="text-[8px] text-gray-300 uppercase">{{ stream.isLive ? 'Transmitindo' : 'Aguardando' }}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <footer class="flex-grow flex gap-4 min-h-0 bg-black border-t border-white/5 pt-4">
+        <!-- FOOTER / LOGS & HEALTH -->
+        <footer class="h-36 flex gap-4 flex-shrink-0 bg-black border-t border-white/5 pt-3">
             <div class="flex-grow glass p-3 overflow-hidden flex flex-col rounded-lg">
                 <div class="flex justify-between items-center mb-2">
                     <h4 class="text-[10px] font-bold text-red-600 uppercase tracking-widest flex items-center gap-2">
@@ -93,18 +105,18 @@
                 </div>
             </div>
 
-            <div class="w-64 glass p-4 rounded-lg flex flex-col justify-between border-l-4 border-l-red-600">
-                <h4 class="text-[10px] font-black text-white uppercase mb-4 tracking-tighter italic">Network Integrity</h4>
-                <div class="space-y-4">
+            <div class="w-64 glass p-3 rounded-lg flex flex-col justify-between border-l-4 border-l-red-600 flex-shrink-0">
+                <h4 class="text-[10px] font-black text-white uppercase mb-2 tracking-tighter italic">Network Integrity</h4>
+                <div class="space-y-2">
                     <div v-for="metric in systemHealth">
-                        <div class="flex justify-between text-[8px] mb-1 uppercase text-gray-500">
+                        <div class="flex justify-between text-[8px] mb-0.5 uppercase text-gray-500">
                             <span>{{ metric.label }}</span>
                             <span :class="metric.color">{{ metric.value }}%</span>
                         </div>
                         <div class="w-full bg-gray-900 h-1"><div :class="metric.bg" class="h-full" :style="{width: metric.value + '%'}"></div></div>
                     </div>
                 </div>
-                <div class="mt-4 text-[7px] text-gray-700 leading-tight">
+                <div class="mt-2 text-[7px] text-gray-700 leading-tight">
                     ARENA COMPETIDOR TECHNOLOGY<br>MASTER CONTROL UNIT
                 </div>
             </div>
@@ -122,12 +134,18 @@
                     channelData: { subs: '...', totalViews: '...' },
                     totalLiveViewers: 0,
                     streams: [
-                        { area: 'AREA 01', id: 'FgkvumJ2YWw', viewers: 0, isLive: false },
-                        { area: 'AREA 02', id: 'c8MzmYr9HYY', viewers: 0, isLive: false },
-                        { area: 'AREA 03', id: 'XZpK2uyC_Js', viewers: 0, isLive: false },
-                        { area: 'AREA 04', id: 'xIEzJ-gVNvo', viewers: 0, isLive: false },
-                        { area: 'AREA 05', id: 'msst6vTPCmM', viewers: 0, isLive: false },
-                        { area: 'AREA 06', id: 'a1pbOBqM8XE', viewers: 0, isLive: false }
+                        { area: 'AREA 01', id: '1l7ZVoQU8Fk', viewers: 0, isLive: false },
+                        { area: 'AREA 02', id: 'yRu6zcKE4V4', viewers: 0, isLive: false },
+                        { area: 'AREA 03', id: 'YYd28w0_bNQ', viewers: 0, isLive: false },
+                        { area: 'AREA 04', id: 'vu5MKz5I8FM', viewers: 0, isLive: false },
+                        { area: 'AREA 05', id: 'mF0sxQa6YoA', viewers: 0, isLive: false },
+                        { area: 'AREA 06', id: 'draa7ETXRvM', viewers: 0, isLive: false },
+                        { area: 'AREA 07', id: 'w72Go2hZVCU', viewers: 0, isLive: false },
+                        { area: 'AREA 08', id: 'SFMRyHC-kvA', viewers: 0, isLive: false },
+                        { area: 'AREA 09', id: 'ntgyPNI6Lgc', viewers: 0, isLive: false },
+                        { area: 'AREA 10', id: 'OLTY5vU6gGg', viewers: 0, isLive: false },
+                        { area: 'AREA 11', id: 'fEoIEqFzSEs', viewers: 0, isLive: false },
+                        { area: 'AREA 12', id: 'IkhUOslt4lQ', viewers: 0, isLive: false }
                     ],
                     systemHealth: [
                         { label: 'Stream Stability', value: 100, color: 'text-green-500', bg: 'bg-green-500' },
