@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARENA MASTER CONTROL v4.2 - 12 CANAIS</title>
+    <title>ARENA MASTER CONTROL v4.2 - 11 CANAIS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
@@ -20,7 +20,7 @@
 
         .kpi-card { background: #0a0a0a; border: 1px solid #1a1a1a; border-top: 2px solid #dc2626; }
         
-        /* Custom Scrollbar para área de vídeos e logs */
+        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #dc2626; border-radius: 2px; }
@@ -50,7 +50,7 @@
             </div>
         </header>
 
-        <!-- GRID DE 12 STREAMS -->
+        <!-- GRID DE STREAMS -->
         <div class="flex-grow overflow-y-auto pr-1 mb-3">
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-3">
                 <div v-for="(stream, index) in streams" :key="index" class="flex flex-col gap-1.5">
@@ -98,7 +98,7 @@
                     <span class="text-[8px] font-mono text-gray-600">PRODUCTION MODE | VER 4.2.0</span>
                 </div>
                 <div class="flex-grow overflow-y-auto space-y-1 font-mono text-[9px] text-gray-400">
-                    <p v-for="log in logs" class="border-b border-white/5 pb-0.5 last:border-0">
+                    <p v-for="(log, idx) in logs" :key="idx" class="border-b border-white/5 pb-0.5 last:border-0">
                         <span class="text-red-900">[{{ log.time }}]</span> 
                         <span class="text-white opacity-50">#</span> {{ log.msg }}
                     </p>
@@ -108,12 +108,14 @@
             <div class="w-64 glass p-3 rounded-lg flex flex-col justify-between border-l-4 border-l-red-600 flex-shrink-0">
                 <h4 class="text-[10px] font-black text-white uppercase mb-2 tracking-tighter italic">Network Integrity</h4>
                 <div class="space-y-2">
-                    <div v-for="metric in systemHealth">
+                    <div v-for="(metric, idx) in systemHealth" :key="idx">
                         <div class="flex justify-between text-[8px] mb-0.5 uppercase text-gray-500">
                             <span>{{ metric.label }}</span>
                             <span :class="metric.color">{{ metric.value }}%</span>
                         </div>
-                        <div class="w-full bg-gray-900 h-1"><div :class="metric.bg" class="h-full" :style="{width: metric.value + '%'}"></div></div>
+                        <div class="w-full bg-gray-900 h-1">
+                            <div :class="metric.bg" class="h-full" :style="{ width: metric.value + '%' }"></div>
+                        </div>
                     </div>
                 </div>
                 <div class="mt-2 text-[7px] text-gray-700 leading-tight">
@@ -124,13 +126,13 @@
     </div>
 
     <script>
-        const { createApp } = Vue
+        const { createApp } = Vue;
+
         createApp({
             data() {
                 return {
-                    apiKey: 'AIzaSyDQqZZ09WngQEuA8ATRoQlHTYDHkMh8gdM', // SUA CHAVE VALIDADA
-                    channelId: 'UCAagqCNKNX02STp9dWR2-yg', // SEU ID DE CANAL
-                    currentDomain: window.location.hostname,
+                    apiKey: 'AIzaSyDQqZZ09WngQEuA8ATRoQlHTYDHkMh8gdM', 
+                    channelId: 'UCAagqCNKNX02STp9dWR2-yg',
                     channelData: { subs: '...', totalViews: '...' },
                     totalLiveViewers: 0,
                     streams: [
@@ -144,8 +146,7 @@
                         { area: 'AREA 08', id: 'SFMRyHC-kvA', viewers: 0, isLive: false },
                         { area: 'AREA 09', id: 'ntgyPNI6Lgc', viewers: 0, isLive: false },
                         { area: 'AREA 10', id: 'OLTY5vU6gGg', viewers: 0, isLive: false },
-                        { area: 'AREA 11', id: 'fEoIEqFzSEs', viewers: 0, isLive: false },
-                        { area: 'AREA 12', id: 'IkhUOslt4lQ', viewers: 0, isLive: false }
+                        { area: 'AREA 11', id: '4Cg_aoIjeZ4', viewers: 0, isLive: false }
                     ],
                     systemHealth: [
                         { label: 'Stream Stability', value: 100, color: 'text-green-500', bg: 'bg-green-500' },
@@ -158,40 +159,47 @@
             methods: {
                 async fetchYouTubeData() {
                     try {
-                        // FETCH CHANNEL DATA
+                        // 1. Dados do Canal
                         const chRes = await fetch(`https://www.googleapis.com/youtube/v3/channels?part=statistics&id=${this.channelId}&key=${this.apiKey}`);
                         const chData = await chRes.json();
-                        if(chData.items) {
+                        
+                        if (chData.items && chData.items.length > 0) {
                             const s = chData.items[0].statistics;
                             this.channelData.subs = Number(s.subscriberCount).toLocaleString('pt-BR');
                             this.channelData.totalViews = Number(s.viewCount).toLocaleString('pt-BR');
                         }
 
-                        // FETCH VIDEO LIVE DATA
+                        // 2. Dados de Transmissão dos Vídeos
                         const vIds = this.streams.map(s => s.id).join(',');
                         const vRes = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${vIds}&key=${this.apiKey}`);
                         const vData = await vRes.json();
                         
                         let currentTotal = 0;
                         
-                        // Reseta estados antes de mapear
+                        // Reset de contadores antes de recalcular
                         this.streams.forEach(s => { s.isLive = false; s.viewers = 0; });
 
-                        vData.items?.forEach((item) => {
-                            const idx = this.streams.findIndex(s => s.id === item.id);
-                            if (idx !== -1) {
-                                const viewers = parseInt(item.liveStreamingDetails?.concurrentViewers || 0);
-                                this.streams[idx].viewers = viewers;
-                                this.streams[idx].isLive = true;
-                                currentTotal += viewers;
-                            }
-                        });
+                        if (vData.items) {
+                            vData.items.forEach((item) => {
+                                const idx = this.streams.findIndex(s => s.id === item.id);
+                                if (idx !== -1 && item.liveStreamingDetails) {
+                                    const liveDetails = item.liveStreamingDetails;
+                                    
+                                    const viewers = parseInt(liveDetails.concurrentViewers || 0);
+                                    const isCurrentlyLive = liveDetails.actualStartTime && !liveDetails.actualEndTime;
+
+                                    this.streams[idx].viewers = viewers;
+                                    this.streams[idx].isLive = isCurrentlyLive || viewers > 0;
+                                    currentTotal += viewers;
+                                }
+                            });
+                        }
 
                         this.totalLiveViewers = currentTotal;
                         this.addLog(`Sincronização OK. Global Viewers: ${currentTotal}`);
 
                     } catch (error) {
-                        this.addLog("CRITICAL: Falha na comunicação com YouTube API", 'error');
+                        this.addLog("CRITICAL: Falha na comunicação com YouTube API");
                     }
                 },
                 getConnectionClass(stream) {
@@ -200,17 +208,16 @@
                     return 'status-regular';
                 },
                 addLog(msg) {
-                    this.logs.unshift({ time: new Date().toLocaleTimeString(), msg });
+                    this.logs.unshift({ time: new Date().toLocaleTimeString('pt-BR'), msg });
                     if (this.logs.length > 50) this.logs.pop();
                 }
             },
             mounted() {
                 this.addLog("Arena Master Control Iniciado.");
                 this.fetchYouTubeData();
-                // Refresh automático a cada 60 segundos
                 setInterval(this.fetchYouTubeData, 60000);
             }
-        }).mount('#app')
+        }).mount('#app');
     </script>
 </body>
 </html>
