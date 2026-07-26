@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ARENA MASTER CONTROL v4.2 - 11 CANAIS</title>
+    <title>ARENA MASTER CONTROL v4.2 - 12 CANAIS</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <style>
@@ -136,17 +136,18 @@
                     channelData: { subs: '...', totalViews: '...' },
                     totalLiveViewers: 0,
                     streams: [
-                        { area: 'AREA 01', id: '1l7ZVoQU8Fk', viewers: 0, isLive: false },
-                        { area: 'AREA 02', id: 'yRu6zcKE4V4', viewers: 0, isLive: false },
-                        { area: 'AREA 03', id: 'YYd28w0_bNQ', viewers: 0, isLive: false },
-                        { area: 'AREA 04', id: 'vu5MKz5I8FM', viewers: 0, isLive: false },
-                        { area: 'AREA 05', id: 'mF0sxQa6YoA', viewers: 0, isLive: false },
-                        { area: 'AREA 06', id: 'draa7ETXRvM', viewers: 0, isLive: false },
-                        { area: 'AREA 07', id: 'w72Go2hZVCU', viewers: 0, isLive: false },
-                        { area: 'AREA 08', id: 'SFMRyHC-kvA', viewers: 0, isLive: false },
-                        { area: 'AREA 09', id: 'ntgyPNI6Lgc', viewers: 0, isLive: false },
-                        { area: 'AREA 10', id: 'OLTY5vU6gGg', viewers: 0, isLive: false },
-                        { area: 'AREA 11', id: '4Cg_aoIjeZ4', viewers: 0, isLive: false }
+                        { area: 'AREA 01', id: 'Ph3q7NhIfA4', viewers: 0, isLive: false },
+                        { area: 'AREA 02', id: 'Y_0r1m-npJQ', viewers: 0, isLive: false },
+                        { area: 'AREA 03', id: 'p3qX9zMeL5w', viewers: 0, isLive: false },
+                        { area: 'AREA 04', id: '60FbSBJSVeg', viewers: 0, isLive: false },
+                        { area: 'AREA 05', id: 'zvA9nbrdgYo', viewers: 0, isLive: false },
+                        { area: 'AREA 06', id: 'PCvtsPG-Xjc', viewers: 0, isLive: false },
+                        { area: 'AREA 07', id: 'QZx6GOPzLT8', viewers: 0, isLive: false },
+                        { area: 'AREA 08', id: 'a65LuxPcMfA', viewers: 0, isLive: false },
+                        { area: 'AREA 09', id: 'frvdyJ0HEcE', viewers: 0, isLive: false },
+                        { area: 'AREA 10', id: 'rEEd2ILQl7I', viewers: 0, isLive: false },
+                        { area: 'AREA 11', id: 'QZkPa9eZz90', viewers: 0, isLive: false },
+                        { area: 'AREA 12', id: 'QZkPa9eZz90', viewers: 0, isLive: false }
                     ],
                     systemHealth: [
                         { label: 'Stream Stability', value: 100, color: 'text-green-500', bg: 'bg-green-500' },
@@ -181,17 +182,19 @@
 
                         if (vData.items) {
                             vData.items.forEach((item) => {
-                                const idx = this.streams.findIndex(s => s.id === item.id);
-                                if (idx !== -1 && item.liveStreamingDetails) {
-                                    const liveDetails = item.liveStreamingDetails;
-                                    
-                                    const viewers = parseInt(liveDetails.concurrentViewers || 0);
-                                    const isCurrentlyLive = liveDetails.actualStartTime && !liveDetails.actualEndTime;
+                                // Mapeia todos os elementos que combinam com este ID (caso de IDs duplicados como na área 11 e 12)
+                                this.streams.forEach((stream) => {
+                                    if (stream.id === item.id && item.liveStreamingDetails) {
+                                        const liveDetails = item.liveStreamingDetails;
+                                        
+                                        const viewers = parseInt(liveDetails.concurrentViewers || 0);
+                                        const isCurrentlyLive = liveDetails.actualStartTime && !liveDetails.actualEndTime;
 
-                                    this.streams[idx].viewers = viewers;
-                                    this.streams[idx].isLive = isCurrentlyLive || viewers > 0;
-                                    currentTotal += viewers;
-                                }
+                                        stream.viewers = viewers;
+                                        stream.isLive = isCurrentlyLive || viewers > 0;
+                                        currentTotal += viewers;
+                                    }
+                                });
                             });
                         }
 
