@@ -206,10 +206,8 @@
 
             const estrutura = {};
             data.forEach(atleta => {
-                let catName = atleta.categoria;
-                if (catName.toUpperCase().includes('MASTER')) catName = 'MASTER (TODAS AS IDADES)';
-                
-                const chave = `ABSOLUTO ${catName.toUpperCase()} (${atleta.sexo})`;
+                // Junta Adulto e Master agrupando apenas pelo gênero do atleta
+                const chave = `ABSOLUTO (${atleta.sexo})`;
                 
                 if (!estrutura[atleta.faixa]) estrutura[atleta.faixa] = {};
                 if (!estrutura[atleta.faixa][chave]) estrutura[atleta.faixa][chave] = [];
