@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulário de Graduação - Jiu-Jitsu</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px 15px;
+    }
+
+    .container {
+      background-color: #1e1e1e;
+      width: 100%;
+      max-width: 550px;
+      padding: 30px 25px;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 25px;
+      color: #ffffff;
+      font-size: 1.6rem;
+      border-bottom: 2px solid #e50914;
+      padding-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #cccccc;
+    }
+
+    input[type="text"],
+    input[type="date"],
+    select {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 6px;
+      border: 1px solid #444;
+      background-color: #2a2a2a;
+      color: #ffffff;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    input[type="text"]:focus,
+    input[type="date"]:focus,
+    select:focus {
+      border-color: #e50914;
+      box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.25);
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(1);
+      cursor: pointer;
+    }
+
+    .alert-box {
+      background-color: rgba(229, 9, 20, 0.15);
+      border-left: 4px solid #e50914;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      color: #ff8a80;
+      font-weight: bold;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      background-color: #e50914;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+      margin-top: 10px;
+      text-transform: uppercase;
+    }
+
+    button:hover {
+      background-color: #b20710;
+    }
+
+    button:active {
+      transform: scale(0.99);
+    }
+
+    #msg-status {
+      margin-top: 15px;
+      text-align: center;
+      font-weight: bold;
+      font-size: 1rem;
+    }
+
+    .sucesso { color: #4caf50; }
+    .erro { color: #f44336; }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 20px 15px;
+      }
+      h2 {
+        font-size: 1.3rem;
+      }
+      input[type="text"], input[type="date"], select, button {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>GRADUAÇÃO GADELHA TEAM</h2>
+    
+    <form id="form-jiujitsu">
+      
+      <!-- Nome Completo -->
+      <div class="form-group">
+        <label for="nome">Nome Completo:</label>
+        <input type="text" id="nome" name="nome" placeholder="Digite seu nome completo" required>
+      </div>
+
+      <!-- Faixa Atual -->
+      <div class="form-group">
+        <label for="faixa">Faixa Atual:</label>
+        <select id="faixa" name="faixa" required>
+          <option value="" disabled selected>Selecione sua faixa</option>
+          <option value="Branca">Branca</option>
+          <option value="Cinza">Cinza</option>
+          <option value="Amarela">Amarela</option>
+          <option value="Laranja">Laranja</option>
+          <option value="Verde">Verde</option>
+          <option value="Azul">Azul</option>
+          <option value="Roxa">Roxa</option>
+          <option value="Marrom">Marrom</option>
+          <option value="Preta">Preta</option>
+        </select>
+      </div>
+
+      <!-- Graus -->
+      <div class="form-group">
+        <label for="graus">Graus:</label>
+        <select id="graus" name="graus" required>
+          <option value="" disabled selected>Selecione a quantidade de graus</option>
+          <option value="0 Graus">0 Graus</option>
+          <option value="1 Grau">1 Grau</option>
+          <option value="2 Graus">2 Graus</option>
+          <option value="3 Graus">3 Graus</option>
+          <option value="4 Graus">4 Graus</option>
+        </select>
+      </div>
+
+      <!-- Última Graduação -->
+      <div class="form-group">
+        <label for="ultimaGraduacao">Quando foi sua última graduação?:</label>
+        <input type="date" id="ultimaGraduacao" name="ultimaGraduacao" required>
+      </div>
+
+      <!-- Tempo de Jiu-Jitsu -->
+      <div class="form-group">
+        <label for="tempoJiuJitsu">Quanto tempo de Jiu-Jitsu?:</label>
+        <select id="tempoJiuJitsu" name="tempoJiuJitsu" required>
+          <option value="" disabled selected>Selecione o tempo aproximado</option>
+          <option value="Até 6 meses">Até 6 meses</option>
+          <option value="Até 1 ano">Até 1 ano</option>
+          <option value="Até 2 anos">Até 2 anos</option>
+          <option value="Até 3 anos">Até 3 anos</option>
+          <option value="Até 4 anos">Até 4 anos</option>
+          <option value="5 anos">Até 5 anos</option>
+          <option value="6 anos">Até 6 anos</option>
+          <option value="7 anos">Até 7 anos</option>
+          <option value="8 anos">Até 8 anos</option>
+          <option value="9 anos">Até 9 anos</option>
+          <option value="10 anos">Até 10 anos</option>
+          <option value="+10 anos">+10 anos</option>
+        </select>
+      </div>
+
+      <!-- Vai Levar Convidado? -->
+      <div class="form-group">
+        <label for="vaiLevarConvidado">Vai levar convidado?</label>
+        <select id="vaiLevarConvidado" name="vaiLevarConvidado" onchange="toggleConvidados()" required>
+          <option value="" disabled selected>Selecione uma opção</option>
+          <option value="Não">Não</option>
+          <option value="Sim">Sim</option>
+        </select>
+      </div>
+
+      <!-- Quantos Convidados -->
+      <div class="form-group hidden" id="grupo-convidados">
+        <label for="quantosConvidados">Quantos convidados?</label>
+        <select id="quantosConvidados" name="quantosConvidados">
+          <option value="" disabled selected>Selecione a quantidade</option>
+          <option value="1 pessoa">1 pessoa</option>
+          <option value="2 pessoas">2 pessoas</option>
+          <option value="3 pessoas">3 pessoas</option>
+          <option value="4 pessoas">4 pessoas</option>
+          <option value="5 pessoas">5 pessoas</option>
+        </select>
+      </div>
+
+      <!-- Observação de Enfase Kimono -->
+      <div class="alert-box">
+        ⚠ OBSERVAÇÃO: Só poderá usar kimono BRANCO e PRETO no dia do evento!
+      </div>
+
+      <!-- Cor do Kimono -->
+      <div class="form-group">
+        <label for="corKimono">Cor de kimono que usará no dia?:</label>
+        <select id="corKimono" name="corKimono" required>
+          <option value="" disabled selected>Selecione a cor do kimono</option>
+          <option value="Branco">Branco</option>
+          <option value="Preto">Preto</option>
+        </select>
+      </div>
+
+      <button type="submit" id="btn-enviar">Enviar Informações</button>
+    </form>
+
+    <div id="msg-status"></div>
+  </div>
+
+  <script>
+    // URL DO SEU GOOGLE APPS SCRIPT
+    const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbyL6m1Xi0bITuTWHj3S3qL19zNs6TGt6DwzbCOmE4Xh23AaYH3REowSjF-iTyz-s0yc/exec';
+
+    function toggleConvidados() {
+      const selectConvidado = document.getElementById('vaiLevarConvidado');
+      const grupoConvidados = document.getElementById('grupo-convidados');
+      const selectQuantos = document.getElementById('quantosConvidados');
+
+      if (selectConvidado.value === 'Sim') {
+        grupoConvidados.classList.remove('hidden');
+        selectQuantos.setAttribute('required', 'required');
+      } else {
+        grupoConvidados.classList.add('hidden');
+        selectQuantos.removeAttribute('required');
+        selectQuantos.value = '';
+      }
+    }
+
+    document.getElementById('form-jiujitsu').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById('btn-enviar');
+      const statusDiv = document.getElementById('msg-status');
+
+      btn.disabled = true;
+      btn.innerText = 'Enviando...';
+      statusDiv.innerText = '';
+      statusDiv.className = '';
+
+      const dados = {
+        nome: document.getElementById('nome').value,
+        faixa: document.getElementById('faixa').value,
+        graus: document.getElementById('graus').value,
+        ultimaGraduacao: document.getElementById('ultimaGraduacao').value,
+        tempoJiuJitsu: document.getElementById('tempoJiuJitsu').value,
+        vaiLevarConvidado: document.getElementById('vaiLevarConvidado').value,
+        quantosConvidados: document.getElementById('quantosConvidados').value,
+        corKimono: document.getElementById('corKimono').value
+      };
+
+      // Envio via fetch (POST) para o Google Apps Script
+      fetch(URL_SCRIPT, {
+        method: 'POST',
+        mode: 'no-cors', // Evita bloqueio CORS do navegador
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dados)
+      })
+      .then(() => {
+        alert("Informações enviadas com sucesso!");
+        window.location.href = "https://arenacompetidor.com";
+      })
+      .catch((erro) => {
+        console.error('Erro:', erro);
+        statusDiv.innerText = 'Erro ao enviar dados. Tente novamente.';
+        statusDiv.className = 'erro';
+        btn.disabled = false;
+        btn.innerText = 'Enviar Informações';
+      });
+    });
+  </script>
+</body>
+</html>
