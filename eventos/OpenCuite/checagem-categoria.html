@@ -75,6 +75,36 @@
         .atleta-nome { font-weight: 600; color: #111827; font-size: 0.95rem; }
         .atleta-ord { font-size: 0.7rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2px; }
 
+        /* BADGES DE STATUS (COLUNA R) */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #bbf7d0;
+        }
+
+        .status-aguardando {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde68a;
+        }
+
+        .status-cancelado {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+        }
+
         #photoModal {
             display: none; position: fixed; z-index: 2000; top: 0; left: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.9);
@@ -117,6 +147,7 @@
             <div class="filtro-grupo"><label>Faixa</label><select id="filtroFaixa"><option value="todos">Todos</option></select></div>
             <div class="filtro-grupo"><label>Categoria</label><select id="filtroCategoria"><option value="todos">Todos</option></select></div>
             <div class="filtro-grupo"><label>Peso</label><select id="filtroPeso"><option value="todos">Todos</option></select></div>
+            <div class="filtro-grupo"><label>Status</label><select id="filtroStatus"><option value="todos">Todos</option></select></div>
         </div>
 
         <div id="loading">Sincronizando Banco de Dados...</div>
@@ -128,6 +159,9 @@
         const FOTO_PADRAO = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
         const ORDEM_FAIXAS = { 'PRETA': 1, 'MARROM': 2, 'ROXA': 3, 'AZUL': 4, 'BRANCA': 5, 'VERDE': 6, 'LARANJA': 7, 'AMARELA': 8, 'CINZA': 9 };
         
+        // Índice da coluna R (18ª coluna = índice 17)
+        const INDEX_COLUNA_R = 17;
+
         let dadosAtletas = [];
         let colMap = {};
 
@@ -147,6 +181,17 @@
             return url;
         }
 
+        function obterBadgeStatus(statusTexto) {
+            const val = (statusTexto || '').toUpperCase().trim();
+            if (val.includes('CONFIRMADO')) {
+                return `<span class="status-badge status-confirmado">CONFIRMADO</span>`;
+            } else if (val.includes('CANCEL')) {
+                return `<span class="status-badge status-cancelado">CANCELADO</span>`;
+            } else {
+                return `<span class="status-badge status-aguardando">AGUARDANDO</span>`;
+            }
+        }
+
         async function carregarDados() {
             try {
                 const response = await fetch(CSV_URL);
@@ -154,7 +199,7 @@
                 const lines = csvText.split('\n').filter(l => l.trim() !== '');
                 const cabecalhoOriginal = lines[0].split(',').map(c => c.trim().replace(/"/g, ''));
                 
-                cabecalhoOriginal.forEach((c, i) => {
+                cabecalhoOriginal.forEach((c) => {
                     const clean = c.toUpperCase();
                     if (clean.includes("ORD")) colMap.ORD = c;
                     if (clean.includes("NOME COMPLETO")) colMap.NOME = c;
@@ -167,6 +212,9 @@
                     const colunas = AppLineParse(linha);
                     let obj = {};
                     cabecalhoOriginal.forEach((c, i) => { obj[c] = colunas[i]?.replace(/"/g, '').trim() || ''; });
+                    
+                    // Pega o valor exatamente da Coluna R (18ª posição no CSV)
+                    obj['_STATUS_R'] = colunas[INDEX_COLUNA_R]?.replace(/"/g, '').trim() || 'AGUARDANDO';
                     return obj;
                 });
 
@@ -198,7 +246,8 @@
                 'filtroGenero': 'SEXO',
                 'filtroFaixa': 'SUA FAIXA',
                 'filtroCategoria': 'SUA CATEGORIA',
-                'filtroPeso': 'SEU PESO'
+                'filtroPeso': 'SEU PESO',
+                'filtroStatus': '_STATUS_R'
             };
 
             Object.keys(selects).forEach(id => {
@@ -229,16 +278,18 @@
             const fF = document.getElementById('filtroFaixa').value;
             const fC = document.getElementById('filtroCategoria').value;
             const fP = document.getElementById('filtroPeso').value;
+            const fS = document.getElementById('filtroStatus').value;
 
             const filtradosParaTabela = dadosAtletas.filter(a => 
                 (fG === 'todos' || a['SEXO'] === fG) &&
                 (fF === 'todos' || a['SUA FAIXA'] === fF) &&
                 (fC === 'todos' || a['SUA CATEGORIA'] === fC) &&
-                (fP === 'todos' || a['SEU PESO'] === fP)
+                (fP === 'todos' || a['SEU PESO'] === fP) &&
+                (fS === 'todos' || a['_STATUS_R'] === fS)
             );
 
             if(atualizarFiltros) {
-                atualizarOpcoesDosFiltros(filtradosParaTabela.length > 0 || (fG==='todos' && fF==='todos' && fC==='todos' && fP==='todos') ? (filtradosParaTabela.length > 0 ? filtradosParaTabela : dadosAtletas) : dadosAtletas);
+                atualizarOpcoesDosFiltros(filtradosParaTabela.length > 0 || (fG==='todos' && fF==='todos' && fC==='todos' && fP==='todos' && fS==='todos') ? (filtradosParaTabela.length > 0 ? filtradosParaTabela : dadosAtletas) : dadosAtletas);
             }
 
             container.innerHTML = '';
@@ -265,10 +316,11 @@
                         <div class="accordion-header" onclick="toggleAcc(this)">${ch} (${atletas.length})</div>
                         <div class="accordion-content">
                             <table>
-                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th></tr></thead>
+                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th><th>Status</th></tr></thead>
                                 <tbody>
                                     ${atletas.map(a => {
                                         const urlFinal = tratarLinkFoto(a[colMap.FOTO]);
+                                        const rawStatus = a['_STATUS_R'];
                                         return `
                                         <tr>
                                             <td data-label="Atleta">
@@ -282,6 +334,7 @@
                                             </td>
                                             <td data-label="Equipe">${a[colMap.EQUIPE] || '---'}</td>
                                             <td data-label="Professor">${a[colMap.PROFESSOR] || '---'}</td>
+                                            <td data-label="Status">${obterBadgeStatus(rawStatus)}</td>
                                         </tr>
                                         `;
                                     }).join('')}
@@ -300,7 +353,7 @@
         }
 
         document.querySelectorAll('select').forEach(s => {
-            s.addEventListener('change', (e) => {
+            s.addEventListener('change', () => {
                 renderizar(true);
             });
         });
