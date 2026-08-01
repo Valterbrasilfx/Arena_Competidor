@@ -164,8 +164,9 @@
             background-color: var(--primary-dark); 
         }
         .btn-confirmar:disabled {
-            background-color: var(--success-color);
-            cursor: default;
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+            opacity: 0.7;
         }
 
         .modal { 
@@ -296,7 +297,6 @@
     </div>
     
     <script>
-        // ATENÇÃO: Substitua pelo link gerado na sua IMPLANTAÇÃO do Apps Script!
         const APP_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzkGn8NFSDi_X5ituL-tMZm7-UCRNMxfMKzjTXDcQ698dNRMiHDNdvFJx1PE_d-lUTV/exec"; 
         
         let inscricoesData = []; 
@@ -347,7 +347,6 @@
             const headers = splitCSVLine(lines[0]).map(h => h.toUpperCase().replace(/"/g, ''));
             const data = [];
 
-            // Mapeamento baseado no cabeçalho fixado enviado pelo doGet
             const idxNome = headers.indexOf('NOME COMPLETO');
             const idxCpf = headers.indexOf('CPF');
             const idxCelular = headers.indexOf('CELULAR');
@@ -387,9 +386,8 @@
                 const isConfirmado = statusLower === 'confirmado';
                 const statusClass = isConfirmado ? 'status-confirmado' : (statusLower === 'cancelado' ? 'status-cancelado' : 'status-pendente');
                 
-                const buttonHtml = isConfirmado
-                    ? '<button class="btn-confirmar" disabled>Confirmado</button>'
-                    : `<button class="btn-confirmar" onclick="abrirModal(${item.id})">Confirmar Inscrição</button>`;
+                // ALTERAÇÃO: Todos os botões ficam permanentemente desativados
+                const buttonHtml = '<button class="btn-confirmar" disabled>Inscrições Encerradas</button>';
 
                 const row = tbody.insertRow();
                 row.setAttribute('data-id', item.id);
@@ -422,20 +420,9 @@
         }
 
         function abrirModal(id) {
-            const row = document.querySelector(`tr[data-id="${id}"]`);
-            if (!row) return;
-
-            document.getElementById('modalInscricaoId').value = id;
-            document.getElementById('modalAtletaNome').textContent = row.getAttribute('data-atleta');
-            document.getElementById('modalAtletaCPF').textContent = row.getAttribute('data-cpf');
-            document.getElementById('modalAtletaCpfData').value = row.getAttribute('data-linha'); 
-
-            const valorNominal = parseFloat(row.getAttribute('data-valor'));
-            document.getElementById('modalAtletaValorNominal').textContent = formatCurrency(valorNominal);
-            
-            document.getElementById('valorPago').value = valorNominal.toFixed(2);
-            document.getElementById('tipoPagamento').value = ''; 
-            document.getElementById('modalConfirmacao').style.display = 'block';
+            // ALTERAÇÃO: Bloqueado a abertura do modal
+            alert("As confirmações de inscrições foram encerradas.");
+            return;
         }
 
         function fecharModal() {
@@ -444,55 +431,8 @@
 
         document.getElementById('formConfirmacao').addEventListener('submit', async function(event) {
             event.preventDefault();
-
-            const id = document.getElementById('modalInscricaoId').value;
-            const linhaId = document.getElementById('modalAtletaCpfData').value;
-            const valorPago = document.getElementById('valorPago').value;
-            const tipoPagamento = document.getElementById('tipoPagamento').value;
-            
-            // Parametros urlencoded estritos que ativam a função exata no Apps Script
-            const urlParams = new URLSearchParams();
-            urlParams.append('linhaId', linhaId); 
-            urlParams.append('statusNovo', 'Confirmado');
-            urlParams.append('valorAlterado', valorPago.replace('.', ',')); 
-            urlParams.append('descricao', tipoPagamento);
-            urlParams.append('function', 'updateStatus'); 
-
-            try {
-                const response = await fetch(APP_SCRIPT_URL, {
-                    method: 'POST',
-                    body: urlParams,
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-                });
-                
-                const txt = await response.text();
-                let result;
-                
-                try {
-                    result = JSON.parse(txt);
-                } catch(e) {
-                    // Fallback para lidar com restrições e redirecionamentos do Google
-                    if (txt.includes("sucesso") || response.ok) {
-                        result = { resultado: 'sucesso' };
-                    } else {
-                        throw new Error("Erro de resposta");
-                    }
-                }
-                
-                if (result.resultado === 'sucesso') {
-                    alert("✅ Confirmado!");
-                    fecharModal();
-                    carregarInscricoes(); // Atualiza a tabela na hora
-                } else {
-                    alert("❌ Erro do Servidor: " + result.mensagem);
-                }
-                
-            } catch (error) {
-                console.error(error);
-                alert("⚠️ A requisição foi enviada. Atualizando dados para confirmar alterações...");
-                fecharModal();
-                setTimeout(() => { carregarInscricoes(); }, 1500); 
-            }
+            // ALTERAÇÃO: Previne o envio caso o modal seja acionado manualmente
+            alert("As confirmações de inscrições estão encerradas.");
         });
 
         document.addEventListener('DOMContentLoaded', () => {
