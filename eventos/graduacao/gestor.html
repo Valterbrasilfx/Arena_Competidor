@@ -140,9 +140,10 @@
             font-weight: 600;
             cursor: pointer;
             margin-left: 6px;
-            transition: background 0.2s;
+            transition: all 0.2s;
         }
         .btn-salvar-linha:hover { background-color: #1d4ed8; }
+        .btn-salvar-linha.salvo { background-color: #16a34a; }
 
         .accordion-item {
             background: var(--card-bg);
@@ -218,6 +219,24 @@
             padding: 6px 12px; border-radius: 6px; font-size: 0.75rem;
             font-weight: 700; text-transform: uppercase; display: inline-block;
             letter-spacing: 0.5px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .badge-alterado {
+            display: inline-block;
+            padding: 2px 6px;
+            background-color: #dcfce7;
+            color: #15803d;
+            border: 1px solid #86efac;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
+        .select-promocao.has-value {
+            border-color: #16a34a;
+            background-color: #f0fdf4;
+            font-weight: 600;
         }
 
         .faixa-preta { background-color: #111827; color: #ffffff; border: 1px solid #374151; }
@@ -386,7 +405,8 @@
         async function fetchAndProcessData() {
             const loadingEl = document.getElementById('loading-message');
             try {
-                const response = await fetch(EXEC_URL, { redirect: 'follow' });
+                // Adiciona timestamp para evitar cache do CSV do Google
+                const response = await fetch(EXEC_URL + '&_t=' + new Date().getTime(), { redirect: 'follow' });
                 const textData = await response.text();
 
                 let records = [];
@@ -405,6 +425,10 @@
                             headers.forEach((h, i) => {
                                 obj[h] = cols[i] || '';
                             });
+                            // Captura genérica das últimas colunas caso a Coluna J não venha com nome no cabeçalho
+                            if (cols.length >= 10 && !obj['PROXIMAGRADUACAO']) {
+                                obj['COLUNA_J'] = cols[9] || '';
+                            }
                             return obj;
                         });
                     }
@@ -422,6 +446,8 @@
                         return match ? row[match] : '';
                     };
 
+                    const proxGrad = getVal(['PROXIMO GRAU', 'PROXIMA FAIXA', 'NOVO CAMPO', 'GRADUACAO', 'PROXIMA']) || row['COLUNA_J'] || '';
+
                     return {
                         timestamp: getVal(['TIMESTAMP', 'DATA']),
                         nome: getVal(['NOME COMPLETO', 'NOME']),
@@ -432,7 +458,7 @@
                         vaiConvidado: getVal(['VAI LEVAR CONVIDADO']),
                         qtdConvidados: getVal(['QUANTOS CONVIDADOS']),
                         corKimono: getVal(['COR DO KIMONO', 'KIMONO']),
-                        proximaGraduacao: getVal(['PROXIMO GRAU', 'PROXIMA FAIXA', 'NOVO CAMPO']) || ''
+                        proximaGraduacao: proxGrad.trim()
                     };
                 });
 
@@ -484,10 +510,14 @@
                     `<option value="${opt}" ${atleta.proximaGraduacao === opt ? 'selected' : ''}>${opt}</option>`
                 ).join('');
 
+                const temAlteracao = atleta.proximaGraduacao !== '';
+                const selectClass = temAlteracao ? 'select-promocao has-value' : 'select-promocao';
+                const badgeStatus = temAlteracao ? `<span class="badge-alterado">✓ DEFINIDO</span>` : '';
+
                 return `
                 <tr>
                     <td data-label="Nº">${index + 1}</td>
-                    <td data-label="Nome Completo"><strong>${atleta.nome}</strong></td>
+                    <td data-label="Nome Completo"><strong>${atleta.nome}</strong> ${badgeStatus}</td>
                     <td data-label="Faixa Atual"><span class="badge-faixa ${getFaixaBadgeClass(atleta.faixa)}">${atleta.faixa}</span></td>
                     <td data-label="Graus">${atleta.graus}</td>
                     <td data-label="Última Graduação">${atleta.ultimaGraduacao}</td>
@@ -496,11 +526,11 @@
                     <td data-label="Qtd. Convidados">${atleta.qtdConvidados}</td>
                     <td data-label="Cor do Kimono"><span class="badge-kimono">${atleta.corKimono}</span></td>
                     <td data-label="Próximo Grau/Faixa">
-                        <select id="select-prom-${index}" class="select-promocao">
+                        <select id="select-prom-${index}" class="${selectClass}">
                             <option value="">Manter Atual / Em branco</option>
                             ${optionsHtml}
                         </select>
-                        <button class="btn-salvar-linha" onclick="salvarPromocao(${index}, '${atleta.nome}')">💾 Salvar</button>
+                        <button id="btn-save-${index}" class="btn-salvar-linha" onclick="salvarPromocao(${index}, '${atleta.nome}')">💾 Salvar</button>
                     </td>
                 </tr>
                 `;
@@ -543,13 +573,24 @@
 
         async function salvarPromocao(index, nomeAtleta) {
             const selectEl = document.getElementById(`select-prom-${index}`);
+            const btnEl = document.getElementById(`btn-save-${index}`);
             const novaGraduacao = selectEl.value;
 
-            // Atualiza na memória local para relatórios
+            // 1. Atualiza na memória local imediatamente
             filteredData[index].proximaGraduacao = novaGraduacao;
 
+            // 2. Feedback visual no front
+            if (novaGraduacao !== '') {
+                selectEl.classList.add('has-value');
+            } else {
+                selectEl.classList.remove('has-value');
+            }
+
+            btnEl.innerHTML = '⌛ Salvando...';
+            btnEl.disabled = true;
+
             try {
-                // Dispara a requisição para o Google Apps Script gravar na Coluna J
+                // 3. Dispara a requisição para o Google Apps Script gravar na Coluna J
                 await fetch(SAVE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
@@ -560,10 +601,21 @@
                         novoCampo: novaGraduacao 
                     })
                 });
-                alert(`Graduação de "${nomeAtleta}" salva com sucesso na planilha!`);
+
+                btnEl.innerHTML = '✓ Salvo!';
+                btnEl.classList.add('salvo');
+                
+                setTimeout(() => {
+                    btnEl.innerHTML = '💾 Salvar';
+                    btnEl.classList.remove('salvo');
+                    btnEl.disabled = false;
+                }, 2000);
+
             } catch (err) {
                 console.error(err);
                 alert('Ocorreu um erro ao conectar com o servidor. Tente novamente.');
+                btnEl.innerHTML = '💾 Salvar';
+                btnEl.disabled = false;
             }
         }
 
