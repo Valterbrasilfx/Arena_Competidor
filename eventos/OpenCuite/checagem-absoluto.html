@@ -48,7 +48,7 @@
 
         .filtros-container {
             background: var(--card-bg); padding: 20px; border-radius: var(--radius);
-            box-shadow: var(--shadow-md); display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            box-shadow: var(--shadow-md); display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 12px; margin-bottom: 30px;
         }
 
@@ -127,7 +127,7 @@
             color: #374151;
         }
 
-        /* BADGES DE STATUS (COLUNA R) */
+        /* BADGE DE STATUS CONFIRMADO */
         .status-badge {
             display: inline-block;
             padding: 4px 10px;
@@ -143,18 +143,6 @@
             background-color: #dcfce7;
             color: #15803d;
             border: 1px solid #bbf7d0;
-        }
-
-        .status-aguardando {
-            background-color: #fef3c7;
-            color: #d97706;
-            border: 1px solid #fde68a;
-        }
-
-        .status-cancelado {
-            background-color: #fee2e2;
-            color: #b91c1c;
-            border: 1px solid #fecaca;
         }
 
         .link-voltar {
@@ -189,15 +177,14 @@
     </header>
 
     <div class="main-content">
-        <h1>Checagem de Absoluto</h1>
+        <h1>Checagem de Absoluto (Confirmados)</h1>
 
         <div class="filtros-container">
             <div class="filtro-grupo"><label>Gênero</label><select id="filtroGenero"><option value="todos">Todos</option></select></div>
             <div class="filtro-grupo"><label>Faixa</label><select id="filtroFaixa"><option value="todos">Todos</option></select></div>
-            <div class="filtro-grupo"><label>Status</label><select id="filtroStatus"><option value="todos">Todos</option></select></div>
         </div>
 
-        <div id="loading-message">Carregando inscritos do Absoluto...</div>
+        <div id="loading-message">Carregando inscritos confirmados do Absoluto...</div>
         <div id="listaInscritosAbsoluto"></div>
         <a href="checagem.html" class="link-voltar">Voltar para Opções</a>
     </div>
@@ -229,15 +216,8 @@
             return result;
         }
 
-        function obterBadgeStatus(statusTexto) {
-            const val = (statusTexto || '').toUpperCase().trim();
-            if (val.includes('CONFIRMADO')) {
-                return `<span class="status-badge status-confirmado">CONFIRMADO</span>`;
-            } else if (val.includes('CANCEL')) {
-                return `<span class="status-badge status-cancelado">CANCELADO</span>`;
-            } else {
-                return `<span class="status-badge status-aguardando">AGUARDANDO</span>`;
-            }
+        function obterBadgeStatus() {
+            return `<span class="status-badge status-confirmado">CONFIRMADO</span>`;
         }
 
         async function fetchAndProcessData() {
@@ -271,7 +251,7 @@
                     const colunas = parseCSVLine(linha);
                     const getVal = (colIdx) => colIdx !== -1 && colunas[colIdx] ? colunas[colIdx].replace(/"/g, '').trim() : '';
 
-                    const statusR = colunas[INDEX_COLUNA_R]?.replace(/"/g, '').trim() || 'AGUARDANDO';
+                    const statusR = colunas[INDEX_COLUNA_R]?.replace(/"/g, '').trim() || '';
 
                     return {
                         ord: getVal(idx.ord) || '-',
@@ -285,8 +265,11 @@
                         statusR: statusR
                     };
                 }).filter(atleta => {
-                    // Mantém apenas quem solicitou o Absoluto ("SIM" ou "S")
-                    return atleta.absoluto.includes('SIM') || atleta.absoluto === 'S';
+                    const pediuAbsoluto = atleta.absoluto.includes('SIM') || atleta.absoluto === 'S';
+                    const estaConfirmado = atleta.statusR.toUpperCase().includes('CONFIRMADO');
+                    
+                    // Mantém apenas inscritos do Absoluto com Status CONFIRMADO na Coluna R
+                    return pediuAbsoluto && estaConfirmado;
                 });
 
                 loadingEl.style.display = 'none';
@@ -301,13 +284,14 @@
         function atualizarOpcoesDosFiltros(filtrados) {
             const selects = {
                 'filtroGenero': 'sexo',
-                'filtroFaixa': 'faixa',
-                'filtroStatus': 'statusR'
+                'filtroFaixa': 'faixa'
             };
 
             Object.keys(selects).forEach(id => {
                 const campo = selects[id];
                 const select = document.getElementById(id);
+                if (!select) return;
+
                 const valorAtual = select.value;
                 
                 const optSet = new Set();
@@ -331,22 +315,20 @@
             const container = document.getElementById('listaInscritosAbsoluto');
             const fG = document.getElementById('filtroGenero').value;
             const fF = document.getElementById('filtroFaixa').value;
-            const fS = document.getElementById('filtroStatus').value;
 
             const filtrados = dadosAtletasAbsoluto.filter(a => 
                 (fG === 'todos' || a.sexo === fG) &&
-                (fF === 'todos' || a.faixa === fF) &&
-                (fS === 'todos' || a.statusR === fS)
+                (fF === 'todos' || a.faixa === fF)
             );
 
             if(atualizarFiltros) {
-                atualizarOpcoesDosFiltros(filtrados.length > 0 || (fG==='todos' && fF==='todos' && fS==='todos') ? (filtrados.length > 0 ? filtrados : dadosAtletasAbsoluto) : dadosAtletasAbsoluto);
+                atualizarOpcoesDosFiltros(filtrados.length > 0 || (fG==='todos' && fF==='todos') ? (filtrados.length > 0 ? filtrados : dadosAtletasAbsoluto) : dadosAtletasAbsoluto);
             }
 
             container.innerHTML = '';
 
             if (filtrados.length === 0) {
-                container.innerHTML = '<p style="text-align:center; font-weight:600; color:#6b7280; margin-top:20px;">Nenhum atleta encontrado para os filtros selecionados.</p>';
+                container.innerHTML = '<p style="text-align:center; font-weight:600; color:#6b7280; margin-top:20px;">Nenhum atleta confirmado encontrado para os filtros selecionados.</p>';
                 return;
             }
 
@@ -394,7 +376,7 @@
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta">${a.nome}</td>
                                             <td data-label="Equipe">${a.equipe}</td>
-                                            <td data-label="Status">${obterBadgeStatus(a.statusR)}</td>
+                                            <td data-label="Status">${obterBadgeStatus()}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
