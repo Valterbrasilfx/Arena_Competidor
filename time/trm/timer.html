@@ -411,7 +411,8 @@
     </footer>
 
     <!-- AUDIO SINC -->
-    <audio id="sound-horn" src="buzina.mp3" preload="auto"></audio>
+    <audio id="sound-combate" src="combate.mp3" preload="auto"></audio>
+    <audio id="sound-parou" src="parou.mp3" preload="auto"></audio>
 
     <script>
         let timerSeconds = 300; 
@@ -432,8 +433,8 @@
         const roundButtons = document.querySelectorAll('.round-options .btn-option');
         const restButtons = document.querySelectorAll('.rest-options .btn-option');
 
-        const soundHorn = document.getElementById('sound-horn');
-        soundHorn.volume = 1.0;
+        const soundCombate = document.getElementById('sound-combate');
+        const soundParou = document.getElementById('sound-parou');
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -530,7 +531,8 @@
             if (timerSeconds > 0) {
                 timerSeconds--;
             } else {
-                playSound(soundHorn); // Toca a buzina por completo na transição
+                // Toca parou.mp3 quando zera o tempo
+                playSound(soundParou);
 
                 if (!isResting) {
                     isResting = true;
@@ -539,6 +541,8 @@
                     isResting = false;
                     currentRound++;
                     timerSeconds = getSelectedRoundTime();
+                    // Toca combate.mp3 ao iniciar o novo round
+                    playSound(soundCombate);
                 }
             }
             updateDisplay();
@@ -576,9 +580,9 @@
                 btnStartPause.textContent = "Pausar";
                 btnStartPause.className = "btn btn-pause";
                 
-                // Toca a buzina por completo apenas na primeira largada do cronômetro
+                // Toca combate.mp3 na primeira partida do cronômetro
                 if (isFirstStart && !isResting) {
-                    playSound(soundHorn);
+                    playSound(soundCombate);
                     isFirstStart = false;
                 }
                 
