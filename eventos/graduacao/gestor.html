@@ -41,8 +41,8 @@
 
         .main-content {
             margin-top: 140px;
-            width: 90%;
-            max-width: 1200px;
+            width: 95%;
+            max-width: 1400px;
             padding-bottom: 60px;
             text-align: center;
         }
@@ -87,17 +87,17 @@
             text-transform: uppercase;
         }
 
-        .filter-group select, .filter-group input {
-            padding: 10px 12px;
+        .filter-group select, .filter-group input, .select-promocao {
+            padding: 8px 10px;
             border-radius: 8px;
             border: 1px solid #d1d5db;
             font-family: 'Inter', sans-serif;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             outline: none;
             transition: border-color 0.2s;
         }
 
-        .filter-group select:focus, .filter-group input:focus {
+        .filter-group select:focus, .filter-group input:focus, .select-promocao:focus {
             border-color: var(--primary-color);
         }
 
@@ -124,17 +124,25 @@
             transition: all 0.2s ease;
         }
 
-        .btn-excel {
-            background-color: #16a34a;
-            color: white;
-        }
+        .btn-excel { background-color: #16a34a; color: white; }
         .btn-excel:hover { background-color: #15803d; }
 
-        .btn-pdf {
-            background-color: #dc2626;
-            color: white;
-        }
+        .btn-pdf { background-color: #dc2626; color: white; }
         .btn-pdf:hover { background-color: #b91c1c; }
+
+        .btn-salvar-linha {
+            padding: 6px 12px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 6px;
+            transition: background 0.2s;
+        }
+        .btn-salvar-linha:hover { background-color: #1d4ed8; }
 
         .accordion-item {
             background: var(--card-bg);
@@ -174,12 +182,7 @@
             letter-spacing: 0.5px;
         }
 
-        .accordion-header::after {
-            content: '+';
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-        }
-
+        .accordion-header::after { content: '+'; font-size: 1.5rem; color: var(--text-secondary); }
         .accordion-header.active::after { content: '-'; }
 
         .accordion-content {
@@ -195,11 +198,7 @@
             border-top: 1px solid #f3f4f6;
         }
 
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            margin-top: 15px;
-        }
+        .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; }
 
         table { width: 100%; border-collapse: collapse; }
         th { 
@@ -211,25 +210,14 @@
         td { padding: 14px 12px; border-bottom: 1px solid #f3f4f6; font-size: 0.85rem; white-space: nowrap; }
 
         .badge-kimono {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: #e5e7eb;
-            color: #374151;
-            text-transform: uppercase;
+            padding: 4px 8px; border-radius: 6px; font-size: 0.75rem;
+            font-weight: 600; background: #e5e7eb; color: #374151; text-transform: uppercase;
         }
 
-        /* Badges de Cores das Faixas com Alto Contraste */
         .badge-faixa {
-            padding: 6px 12px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            display: inline-block;
-            letter-spacing: 0.5px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            padding: 6px 12px; border-radius: 6px; font-size: 0.75rem;
+            font-weight: 700; text-transform: uppercase; display: inline-block;
+            letter-spacing: 0.5px; box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         .faixa-preta { background-color: #111827; color: #ffffff; border: 1px solid #374151; }
@@ -244,42 +232,14 @@
         .faixa-padrao { background-color: #e5e7eb; color: #374151; }
 
         .link-voltar {
-            display: inline-block;
-            margin-top: 40px;
-            padding: 14px 30px;
-            background-color: #111827;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 12px;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
+            display: inline-block; margin-top: 40px; padding: 14px 30px;
+            background-color: #111827; color: #fff; text-decoration: none;
+            border-radius: 12px; font-family: 'Poppins', sans-serif; font-weight: 600;
             transition: all 0.3s ease;
         }
         .link-voltar:hover { background-color: var(--primary-color); transform: translateY(-2px); }
 
         #loading-message { padding: 50px; font-weight: 600; color: var(--primary-color); }
-
-        @media (max-width: 900px) {
-            .main-content { margin-top: 110px; }
-            thead { display: none; }
-            tr { display: block; border-bottom: 2px solid #f3f4f6; padding: 10px 0; }
-            td { 
-                display: flex; 
-                justify-content: space-between; 
-                border: none; 
-                padding: 6px 0; 
-                white-space: normal;
-                text-align: right;
-            }
-            td::before { 
-                content: attr(data-label); 
-                font-weight: 700; 
-                color: var(--text-secondary); 
-                font-size: 0.75rem; 
-                text-align: left; 
-                margin-right: 10px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -338,11 +298,10 @@
 
     <script>
         const EXEC_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVH_DfCKGmD5HExS2P_0pPIA-zcoMSJ54a-wKm1CFIB2cvT0bPtHJpWjcqOaajawDz8bfPFdJpKOur/pub?output=csv';
+        const SAVE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyL6m1Xi0bITuTWHj3S3qL19zNs6TGt6DwzbCOmE4Xh23AaYH3REowSjF-iTyz-s0yc/exec'; 
 
-        // Ordem de faixas configurada
         const FAIXA_ORDER = ['PRETA', 'MARROM', 'ROXA', 'AZUL', 'VERDE', 'LARANJA', 'AMARELA', 'CINZA', 'BRANCA'];
 
-        // Definição de cores Hex e RGB para PDF e Excel
         const FAIXA_COLORS = {
             'PRETA':   { bg: '#111827', text: '#ffffff', rgbBg: [17, 24, 39],   rgbText: [255, 255, 255] },
             'MARROM':  { bg: '#78350f', text: '#ffffff', rgbBg: [120, 53, 15],  rgbText: [255, 255, 255] },
@@ -354,6 +313,13 @@
             'CINZA':   { bg: '#6b7280', text: '#ffffff', rgbBg: [107, 114, 128],rgbText: [255, 255, 255] },
             'BRANCA':  { bg: '#f9fafb', text: '#111827', rgbBg: [249, 250, 251],rgbText: [17, 24, 39] }
         };
+
+        const OPCOES_PROMOCAO = [
+            "Ganhar 1 Grau", "Ganhar 2 Graus", "Ganhar 3 Graus", "Ganhar 4 Graus",
+            "Mudar para Faixa Cinza", "Mudar para Faixa Amarela", "Mudar para Faixa Laranja",
+            "Mudar para Faixa Verde", "Mudar para Faixa Azul", "Mudar para Faixa Roxa",
+            "Mudar para Faixa Marrom", "Mudar para Faixa Preta"
+        ];
 
         let allData = [];
         let filteredData = [];
@@ -376,7 +342,6 @@
             return result;
         }
 
-        // Função para obter dados de estilo da faixa
         function getFaixaColorInfo(faixaStr) {
             const f = (faixaStr || '').toUpperCase();
             for (let key of FAIXA_ORDER) {
@@ -399,7 +364,6 @@
             return 'faixa-padrao';
         }
 
-        // Função de Ordenação por Hierarquia
         function sortAtletas(list) {
             return list.sort((a, b) => {
                 const getFaixaIndex = (f) => {
@@ -411,14 +375,11 @@
                 const faixaA = getFaixaIndex(a.faixa);
                 const faixaB = getFaixaIndex(b.faixa);
 
-                if (faixaA !== faixaB) {
-                    return faixaA - faixaB;
-                }
+                if (faixaA !== faixaB) return faixaA - faixaB;
 
                 const grauA = parseInt(a.graus) || 0;
                 const grauB = parseInt(b.graus) || 0;
-
-                return grauB - grauA; // Decrescente: 4, 3, 2, 1, 0
+                return grauB - grauA;
             });
         }
 
@@ -458,7 +419,7 @@
                     const getVal = (possibleKeys) => {
                         const keys = Object.keys(row);
                         const match = keys.find(k => possibleKeys.some(pk => k.toUpperCase().includes(pk)));
-                        return match ? row[match] : '-';
+                        return match ? row[match] : '';
                     };
 
                     return {
@@ -470,7 +431,8 @@
                         tempoJiuJitsu: getVal(['QUANTO TEMPO DE JIU JITSU', 'TEMPO DE JIU']),
                         vaiConvidado: getVal(['VAI LEVAR CONVIDADO']),
                         qtdConvidados: getVal(['QUANTOS CONVIDADOS']),
-                        corKimono: getVal(['COR DO KIMONO', 'KIMONO'])
+                        corKimono: getVal(['COR DO KIMONO', 'KIMONO']),
+                        proximaGraduacao: getVal(['PROXIMO GRAU', 'PROXIMA FAIXA', 'NOVO CAMPO']) || ''
                     };
                 });
 
@@ -480,9 +442,7 @@
 
             } catch (err) {
                 console.error('Erro na leitura:', err);
-                loadingEl.innerHTML = `
-                    <p style="color: #ef4444; margin-bottom: 10px;">❌ Não foi possível carregar os dados.</p>
-                `;
+                loadingEl.innerHTML = `<p style="color: #ef4444; margin-bottom: 10px;">❌ Não foi possível carregar os dados.</p>`;
             }
         }
 
@@ -519,7 +479,12 @@
             const item = document.createElement('div');
             item.className = 'accordion-item';
 
-            const tableRows = data.map((atleta, index) => `
+            const tableRows = data.map((atleta, index) => {
+                const optionsHtml = OPCOES_PROMOCAO.map(opt => 
+                    `<option value="${opt}" ${atleta.proximaGraduacao === opt ? 'selected' : ''}>${opt}</option>`
+                ).join('');
+
+                return `
                 <tr>
                     <td data-label="Nº">${index + 1}</td>
                     <td data-label="Nome Completo"><strong>${atleta.nome}</strong></td>
@@ -530,8 +495,16 @@
                     <td data-label="Levar Convidado?">${atleta.vaiConvidado}</td>
                     <td data-label="Qtd. Convidados">${atleta.qtdConvidados}</td>
                     <td data-label="Cor do Kimono"><span class="badge-kimono">${atleta.corKimono}</span></td>
+                    <td data-label="Próximo Grau/Faixa">
+                        <select id="select-prom-${index}" class="select-promocao">
+                            <option value="">Manter Atual / Em branco</option>
+                            ${optionsHtml}
+                        </select>
+                        <button class="btn-salvar-linha" onclick="salvarPromocao(${index}, '${atleta.nome}')">💾 Salvar</button>
+                    </td>
                 </tr>
-            `).join('');
+                `;
+            }).join('');
 
             item.innerHTML = `
                 <div class="accordion-header active" onclick="toggleAcc(this)">
@@ -554,6 +527,7 @@
                                     <th>Convidado?</th>
                                     <th>Qtd. Conv.</th>
                                     <th>Kimono</th>
+                                    <th>Próximo Grau/Próxima Faixa</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -567,13 +541,38 @@
             container.appendChild(item);
         }
 
+        async function salvarPromocao(index, nomeAtleta) {
+            const selectEl = document.getElementById(`select-prom-${index}`);
+            const novaGraduacao = selectEl.value;
+
+            // Atualiza na memória local para relatórios
+            filteredData[index].proximaGraduacao = novaGraduacao;
+
+            try {
+                // Dispara a requisição para o Google Apps Script gravar na Coluna J
+                await fetch(SAVE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        nome: nomeAtleta, 
+                        proximaGraduacao: novaGraduacao,
+                        novoCampo: novaGraduacao 
+                    })
+                });
+                alert(`Graduação de "${nomeAtleta}" salva com sucesso na planilha!`);
+            } catch (err) {
+                console.error(err);
+                alert('Ocorreu um erro ao conectar com o servidor. Tente novamente.');
+            }
+        }
+
         function toggleAcc(el) {
             const content = el.nextElementSibling;
             el.classList.toggle('active');
             content.classList.toggle('open');
         }
 
-        // Exportação para Excel preservando cores de fundo e texto na coluna Faixa
         function exportToExcel() {
             if (filteredData.length === 0) return alert('Nenhum dado para exportar!');
 
@@ -609,7 +608,7 @@
                         <td>${item.vaiConvidado}</td>
                         <td>${item.qtdConvidados}</td>
                         <td>${item.corKimono}</td>
-                        <td></td>
+                        <td>${item.proximaGraduacao || ''}</td>
                     </tr>
                 `;
             });
@@ -625,7 +624,6 @@
             document.body.removeChild(link);
         }
 
-        // Exportação para PDF estilizando a célula da Faixa com suas cores reais
         function exportToPDF() {
             if (filteredData.length === 0) return alert('Nenhum dado para exportar!');
 
@@ -646,7 +644,7 @@
                 item.vaiConvidado,
                 item.qtdConvidados,
                 item.corKimono,
-                "" // Coluna em branco para preenchimento posterior
+                item.proximaGraduacao || "" 
             ]);
 
             doc.autoTable({
@@ -656,7 +654,6 @@
                 styles: { fontSize: 8 },
                 headStyles: { fillColor: [37, 99, 235] },
                 didParseCell: function(data) {
-                    // Pinta e estiliza a coluna de Faixa (índice 2) nas linhas do corpo da tabela
                     if (data.section === 'body' && data.column.index === 2) {
                         const faixaTexto = data.cell.raw;
                         const colorInfo = getFaixaColorInfo(faixaTexto);
