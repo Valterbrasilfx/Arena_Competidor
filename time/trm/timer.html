@@ -392,6 +392,7 @@
     <!-- AUDIO SINC -->
     <audio id="sound-combate" src="combate.mp3" preload="auto"></audio>
     <audio id="sound-parou" src="parou.mp3" preload="auto"></audio>
+    <audio id="sound-buzina" src="buzina.mp3" preload="auto"></audio>
 
     <script>
         let timerSeconds = 300; 
@@ -412,6 +413,7 @@
 
         const soundCombate = document.getElementById('sound-combate');
         const soundParou = document.getElementById('sound-parou');
+        const soundBuzina = document.getElementById('sound-buzina');
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -506,17 +508,16 @@
             if (timerSeconds > 0) {
                 timerSeconds--;
             } else {
-                // Toca parou.mp3 quando zera o tempo
-                playSound(soundParou);
-
                 if (!isResting) {
+                    // Fim do tempo de luta: toca parou.mp3 e inicia o descanso (sem som no início)
+                    playSound(soundParou);
                     isResting = true;
                     timerSeconds = getSelectedRestTime();
                 } else {
+                    // Fim do descanso: toca buzina.mp3 e reinicia o combate
+                    playSound(soundBuzina);
                     isResting = false;
                     timerSeconds = getSelectedFightTime();
-                    // Toca combate.mp3 ao reiniciar o ciclo
-                    playSound(soundCombate);
                 }
             }
             updateDisplay();
@@ -531,21 +532,23 @@
 
         function startPause() {
             if (isRunning) {
+                // Ao clicar em Pausar (parar o timer do combate)
                 isRunning = false;
                 clearInterval(countdownInterval);
                 toggleButtonsState(false);
                 btnStartPause.textContent = "Iniciar";
                 btnStartPause.className = "btn btn-start";
+                playSound(soundParou);
             } else {
+                // Ao clicar em Iniciar
                 isRunning = true;
                 toggleButtonsState(true);
                 btnStartPause.textContent = "Pausar";
                 btnStartPause.className = "btn btn-pause";
                 
-                // Toca combate.mp3 na primeira partida do cronômetro
-                if (isFirstStart && !isResting) {
+                // Toca combate.mp3 ao iniciar a luta
+                if (!isResting) {
                     playSound(soundCombate);
-                    isFirstStart = false;
                 }
                 
                 countdownInterval = setInterval(tick, 1000);
