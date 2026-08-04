@@ -77,9 +77,9 @@
             justify-content: center;
             align-items: center;
             position: relative;
-            height: 35vh; 
-            min-height: 130px;
-            padding-top: 2vh; 
+            height: 28vh; 
+            min-height: 110px;
+            padding-top: 1vh; 
         }
 
         .logo-container {
@@ -154,42 +154,26 @@
         }
 
         .status-banner {
-            font-size: 4vh; 
+            font-size: 3.5vh; 
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 1.2vw;
-            margin-bottom: 0.2vh;
+            margin-bottom: 0;
             transition: all 0.3s ease;
         }
 
-        .status-banner.work { color: #ffffff; text-shadow: 0 0 30px rgba(229,9,20,0.5); }
-        .status-banner.rest { color: #ffffff; text-shadow: 0 0 30px rgba(0,255,102,0.5); }
-        .status-banner.paused { color: #ffffff; text-shadow: 0 0 30px rgba(255,204,0,0.4); }
+        .status-banner.work { color: #000000; text-shadow: 0 0 30px rgba(229,9,20,0.5); }
+        .status-banner.rest { color: #000000; text-shadow: 0 0 30px rgba(0,255,102,0.5); }
+        .status-banner.paused { color: #0a0a0a; text-shadow: 0 0 30px rgba(255,204,0,0.4); }
 
         .main-timer {
-            font-size: 20vh;
+            font-size: 35vh;
             font-weight: 900;
             font-family: monospace;
-            line-height: 0.8;
-            color: #ffffff;
-            letter-spacing: -0.5vw;
-            text-shadow: 0px 15px 50px rgba(0,0,0,0.9);
-        }
-
-        .round-display {
-            font-size: 4.5vh; 
-            font-weight: 800;
-            text-transform: uppercase;
-            color: #ffffff;
-            letter-spacing: 2px;
-            margin-top: 0.5vh;
-        }
-
-        .round-display span {
-            color: #ffffff;
-            font-size: 5.5vh; 
-            margin-left: 10px;
-            line-height: 1;
+            line-height: 0.75;
+            color: #000000;
+            letter-spacing: -0.6vw;
+            text-shadow: 0px 10px 30px rgba(0,0,0,0.3);
         }
 
         footer {
@@ -256,14 +240,14 @@
 
         .btn-option.active {
             background-color: #111;
-            border-color: #ffcc00; 
+            border-color: #ff000d; 
             color: #ffffff;
-            box-shadow: inset 0 0 10px rgba(255, 204, 0, 0.2);
+            box-shadow: inset 0 0 10px rgba(229, 9, 20, 0.2);
         }
 
-        .round-options .btn-option.active {
-            border-color: #ff000d;
-            box-shadow: inset 0 0 10px rgba(229, 9, 20, 0.2);
+        .rest-options .btn-option.active {
+            border-color: #ffcc00;
+            box-shadow: inset 0 0 10px rgba(255, 204, 0, 0.2);
         }
 
         .btn-option:disabled {
@@ -330,17 +314,15 @@
         }
 
         @media (max-width: 768px) or (orientation: portrait) {
-            .main-timer { font-size: 14vh; }
+            .main-timer { font-size: 22vh; }
             .status-banner { font-size: 3.5vh; }
-            .round-display { font-size: 4vh; }
-            .round-display span { font-size: 5vh; }
             .time-options, .action-controls { max-width: 100%; }
             .clock-container { position: relative; right: auto; top: auto; transform: none; margin-left: 20px; padding: 5px 10px; }
             header { justify-content: space-between; padding: 0 10px; height: 18vh; }
             .logo-container { margin-top: 0; }
             .logo-container img { height: 85%; } 
             .btn { font-size: 1.1rem; padding: 12px 0; }
-            .btn-option { font-size: 0.8rem; padding: 4px 2px; }
+            .btn-option { font-size: 0.75rem; padding: 4px 2px; }
             .brand-date { font-size: 3vh; }
             .brand-clock { font-size: 2.2vh; }
             main { margin: 1vh 0; }
@@ -373,38 +355,35 @@
     <main>
         <div class="status-banner paused" id="status-text">CONFIGURAÇÃO</div>
         <div class="main-timer" id="timer-display">05:00</div>
-        <div class="round-display" id="round-display">ROUND <span>1</span></div>
     </main>
 
     <!-- INFERIOR -->
     <footer>
         <div class="selection-group">
-            <div class="selection-label">Tempo de Round</div>
-            <div class="time-options round-options">
+            <div class="selection-label">Tempo de Luta</div>
+            <div class="time-options fight-options">
                 <button class="btn-option" data-seconds="60" tabindex="1">1 Min</button>
                 <button class="btn-option" data-seconds="120" tabindex="2">2 Min</button>
                 <button class="btn-option" data-seconds="180" tabindex="3">3 Min</button>
                 <button class="btn-option" data-seconds="240" tabindex="4">4 Min</button>
                 <button class="btn-option active" data-seconds="300" tabindex="5">5 Min</button>
-                <button class="btn-option" data-seconds="360" tabindex="6">6 Min</button>
+                <button class="btn-option" data-seconds="420" tabindex="6">7 Min</button>
+                <button class="btn-option" data-seconds="480" tabindex="7">8 Min</button>
+                <button class="btn-option" data-seconds="600" tabindex="8">10 Min</button>
             </div>
         </div>
 
         <div class="selection-group">
             <div class="selection-label">Tempo de Descanso</div>
             <div class="time-options rest-options">
-                <button class="btn-option" data-rest-seconds="30" tabindex="10">30 Seg</button>
-                <button class="btn-option" data-rest-seconds="45" tabindex="11">45 Seg</button>
-                <button class="btn-option active" data-rest-seconds="60" tabindex="12">60 Seg</button>
-                <button class="btn-option" data-rest-seconds="75" tabindex="13">75 Seg</button>
-                <button class="btn-option" data-rest-seconds="90" tabindex="14">90 Seg</button>
-                <button class="btn-option" data-rest-seconds="105" tabindex="15">105 Seg</button>
+                <button class="btn-option" data-rest-seconds="30" tabindex="9">30 Seg</button>
+                <button class="btn-option active" data-rest-seconds="60" tabindex="10">60 Seg</button>
             </div>
         </div>
 
         <div class="action-controls">
-            <button class="btn btn-start" id="btn-start-pause" tabindex="7">Iniciar</button>
-            <button class="btn btn-reset" id="btn-reset" tabindex="8">Resetar</button>
+            <button class="btn btn-start" id="btn-start-pause" tabindex="11">Iniciar</button>
+            <button class="btn btn-reset" id="btn-reset" tabindex="12">Resetar</button>
         </div>
         
         <div class="arena-footer-text">by arena competidor</div>
@@ -416,7 +395,6 @@
 
     <script>
         let timerSeconds = 300; 
-        let currentRound = 1;
         let isRunning = false;
         let isResting = false;
         let countdownInterval = null;
@@ -425,12 +403,11 @@
 
         const timerDisplay = document.getElementById('timer-display');
         const statusText = document.getElementById('status-text');
-        const roundDisplay = document.getElementById('round-display');
         const clockDisplay = document.getElementById('clock');
         const dateDisplay = document.getElementById('date');
         const btnStartPause = document.getElementById('btn-start-pause');
         const btnReset = document.getElementById('btn-reset');
-        const roundButtons = document.querySelectorAll('.round-options .btn-option');
+        const fightButtons = document.querySelectorAll('.fight-options .btn-option');
         const restButtons = document.querySelectorAll('.rest-options .btn-option');
 
         const soundCombate = document.getElementById('sound-combate');
@@ -487,7 +464,6 @@
 
         function updateDisplay() {
             timerDisplay.textContent = formatTime(timerSeconds);
-            roundDisplay.innerHTML = isResting ? `DESCANSO` : `ROUND <span>${currentRound}</span>`;
             
             if (!isRunning) {
                 statusText.textContent = "PAUSADO";
@@ -501,8 +477,8 @@
             }
         }
 
-        function getSelectedRoundTime() {
-            const activeBtn = document.querySelector('.round-options .btn-option.active');
+        function getSelectedFightTime() {
+            const activeBtn = document.querySelector('.fight-options .btn-option.active');
             return activeBtn ? parseInt(activeBtn.getAttribute('data-seconds')) : 300;
         }
 
@@ -513,9 +489,8 @@
 
         function initTimer() {
             if (!isRunning) {
-                timerSeconds = getSelectedRoundTime();
+                timerSeconds = getSelectedFightTime();
                 isResting = false;
-                currentRound = 1;
                 isFirstStart = true;
                 updateDisplay();
             }
@@ -539,9 +514,8 @@
                     timerSeconds = getSelectedRestTime();
                 } else {
                     isResting = false;
-                    currentRound++;
-                    timerSeconds = getSelectedRoundTime();
-                    // Toca combate.mp3 ao iniciar o novo round
+                    timerSeconds = getSelectedFightTime();
+                    // Toca combate.mp3 ao reiniciar o ciclo
                     playSound(soundCombate);
                 }
             }
@@ -552,18 +526,6 @@
             const allOptionButtons = document.querySelectorAll('.btn-option');
             allOptionButtons.forEach(btn => {
                 btn.disabled = disable;
-                if (disable) {
-                    btn.removeAttribute('tabindex');
-                } else {
-                    const isRoundBtn = btn.hasAttribute('data-seconds');
-                    if (isRoundBtn) {
-                        const num = btn.getAttribute('data-seconds') / 60;
-                        btn.setAttribute('tabindex', num.toString());
-                    } else {
-                        const num = btn.getAttribute('data-rest-seconds') / 15;
-                        btn.setAttribute('tabindex', (num + 10).toString());
-                    }
-                }
             });
         }
 
@@ -600,10 +562,10 @@
             initTimer();
         }
 
-        roundButtons.forEach(button => {
+        fightButtons.forEach(button => {
             button.addEventListener('click', function() {
                 if (!isRunning) {
-                    roundButtons.forEach(btn => btn.classList.remove('active'));
+                    fightButtons.forEach(btn => btn.classList.remove('active'));
                     this.classList.add('active');
                     initTimer();
                 }
