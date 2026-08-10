@@ -75,6 +75,23 @@
         .atleta-nome { font-weight: 600; color: #111827; font-size: 0.95rem; }
         .atleta-ord { font-size: 0.7rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2px; }
 
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .status-pendente {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
         #photoModal {
             display: none; position: fixed; z-index: 2000; top: 0; left: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.9);
@@ -127,7 +144,6 @@
         const CSV_URL = 'https://script.google.com/macros/s/AKfycbxhGu_PmUEbp2dew7_XlVuf_1e4pMNBTJFyJqJUSVc_yQSdeVmpNq3SVDMA0Ci6dus47Q/exec';
         const FOTO_PADRAO = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
         
-        // Mapeamento de prioridade para ordenação das faixas exibidas na tela
         const ORDEM_FAIXAS = { 
             'MARROM': 1, 'ROXA': 2, 'AZUL': 3, 
             'VERDE': 4, 'AMARELA/LARANJA/VERDE': 5, 
@@ -135,7 +151,6 @@
             'BRANCA/CINZA': 8, 'BRANCA': 9, 'CINZA': 10 
         };
 
-        // Categorias exatas que devem sofrer o agrupamento de faixas
         const CATEGORIAS_PARA_AGRUPAR = [
             'INFANTIL A',
             'INFANTIL B',
@@ -145,7 +160,6 @@
             'PRÉ-MIRIM'
         ];
 
-        // Regras de agrupamento de faixas para as categorias infantis e mirins especificadas
         const AGRUPAMENTO_FAIXAS = {
             'BRANCA': 'BRANCA/CINZA',
             'CINZA': 'BRANCA/CINZA',
@@ -187,12 +201,19 @@
                     if (clean === "FOTO" || clean.includes("FOTO")) colMap.FOTO = c;
                     if (clean.includes("EQUIPE")) colMap.EQUIPE = c;
                     if (clean.includes("PROFESSOR")) colMap.PROFESSOR = c;
+                    if (clean.includes("STATUS")) colMap.STATUS = c;
                 });
 
                 dadosAtletas = lines.slice(1).map(linha => {
                     const colunas = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     let obj = {};
                     cabecalhoOriginal.forEach((c, i) => { obj[c] = colunas[i]?.replace(/"/g, '').trim() || ''; });
+                    
+                    // Mapeia a coluna R (índice 17) caso a coluna STATUS não seja encontrada pelo nome
+                    if (!colMap.STATUS && colunas[17] !== undefined) {
+                        obj['STATUS_COL_R'] = colunas[17].replace(/"/g, '').trim();
+                    }
+
                     return obj;
                 }).filter(atleta => (atleta['SUA FAIXA'] || '').toUpperCase() !== 'PRETA');
 
@@ -256,11 +277,9 @@
                 let fx = (a['SUA FAIXA'] || 'BRANCA').toUpperCase();
                 const categoria = (a['SUA CATEGORIA'] || '').toUpperCase().trim();
 
-                // Checa se a categoria deste atleta está exatamente na lista das que devem agrupar
                 const deveAgrupar = CATEGORIAS_PARA_AGRUPAR.includes(categoria);
 
                 if (deveAgrupar) {
-                    // Se for para agrupar, aplica a fusão de faixas
                     if (AGRUPAMENTO_FAIXAS[fx]) {
                         fx = AGRUPAMENTO_FAIXAS[fx];
                     }
@@ -286,10 +305,16 @@
                         <div class="accordion-header" onclick="toggleAcc(this)">${ch} (${atletas.length})</div>
                         <div class="accordion-content">
                             <table>
-                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th></tr></thead>
+                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th><th>Status</th></tr></thead>
                                 <tbody>
                                     ${atletas.map(a => {
                                         const urlFinal = tratarLinkFoto(a[colMap.FOTO]);
+                                        
+                                        const valorStatus = a[colMap.STATUS] || a['STATUS_COL_R'] || 'PENDENTE';
+                                        const statusNormalizado = valorStatus.toString().toUpperCase().trim();
+                                        const isConfirmado = statusNormalizado.includes('CONFIRMADO') || statusNormalizado.includes('OK') || statusNormalizado.includes('PAGO');
+                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
+
                                         return `
                                         <tr>
                                             <td data-label="Atleta">
@@ -303,6 +328,7 @@
                                             </td>
                                             <td data-label="Equipe">${a[colMap.EQUIPE] || '---'}</td>
                                             <td data-label="Professor">${a[colMap.PROFESSOR] || '---'}</td>
+                                            <td data-label="Status"><span class="status-badge ${statusClass}">${valorStatus}</span></td>
                                         </tr>
                                         `}).join('')}
                                 </tbody>
