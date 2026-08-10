@@ -115,6 +115,23 @@
             color: #374151;
         }
 
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .status-pendente {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
         .link-voltar {
             display: block; width: fit-content; margin: 40px auto;
             padding: 14px 30px; background-color: #111827; color: #fff;
@@ -165,6 +182,9 @@
 
                 const headers = rows[0].map(h => h.toUpperCase().trim());
                 
+                const idxStatusHeader = headers.indexOf('STATUS');
+                const idxStatus = idxStatusHeader !== -1 ? idxStatusHeader : 17; // Pega o cabeçalho STATUS ou a Coluna R (índice 17)
+
                 const idx = {
                     ord: headers.indexOf('ORD'),
                     nome: headers.indexOf('NOME COMPLETO'),
@@ -173,7 +193,8 @@
                     faixa: headers.indexOf('SUA FAIXA'),
                     cat: headers.indexOf('SUA CATEGORIA'),
                     sexo: headers.indexOf('SEXO'),
-                    abs: headers.indexOf('ABSOLUTO')
+                    abs: headers.indexOf('ABSOLUTO'),
+                    status: idxStatus
                 };
 
                 const data = rows.slice(1).map(row => ({
@@ -184,7 +205,8 @@
                     faixa: (row[idx.faixa] || 'BRANCA').toUpperCase(),
                     categoria: row[idx.cat] || '',
                     sexo: (row[idx.sexo] || '').toUpperCase(),
-                    absoluto: (row[idx.abs] || '').toUpperCase()
+                    absoluto: (row[idx.abs] || '').toUpperCase(),
+                    status: row[idx.status] || 'PENDENTE'
                 })).filter(atleta => atleta.absoluto === 'SIM');
 
                 renderizar(data);
@@ -206,7 +228,6 @@
 
             const estrutura = {};
             data.forEach(atleta => {
-                // Junta Adulto e Master agrupando apenas pelo gênero do atleta
                 const chave = `ABSOLUTO (${atleta.sexo})`;
                 
                 if (!estrutura[atleta.faixa]) estrutura[atleta.faixa] = {};
@@ -237,15 +258,21 @@
                                         <th>ORD</th>
                                         <th>Atleta</th>
                                         <th>Equipe</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     ${atletas.map(a => {
+                                        const statusNormalizado = a.status.toString().toUpperCase().trim();
+                                        const isConfirmado = statusNormalizado.includes('CONFIRMADO') || statusNormalizado.includes('OK') || statusNormalizado.includes('PAGO');
+                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
+
                                         return `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta">${a.nome}</td>
                                             <td data-label="Equipe">${a.equipe}</td>
+                                            <td data-label="Status"><span class="status-badge ${statusClass}">${a.status}</span></td>
                                         </tr>
                                         `;
                                     }).join('')}
