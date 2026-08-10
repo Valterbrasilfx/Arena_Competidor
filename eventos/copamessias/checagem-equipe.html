@@ -141,6 +141,23 @@
             color: #4b5563;
         }
 
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .status-pendente {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
         .link-voltar {
             display: inline-block;
             margin-top: 40px;
@@ -209,6 +226,8 @@
                 
                 const headers = parseCSVLine(lines[0]).map(h => h.toUpperCase());
                 
+                const idxStatus = headers.indexOf('STATUS') !== -1 ? headers.indexOf('STATUS') : 17; // Pega o cabeçalho STATUS ou a Coluna R (índice 17)
+
                 const idx = {
                     ord: headers.indexOf('ORD'),
                     nome: headers.indexOf('NOME COMPLETO'),
@@ -216,7 +235,8 @@
                     professor: headers.findIndex(h => h.includes('PROFESSOR')),
                     faixa: headers.indexOf('SUA FAIXA'),
                     peso: headers.indexOf('SEU PESO'),
-                    categoria: headers.indexOf('SUA CATEGORIA')
+                    categoria: headers.indexOf('SUA CATEGORIA'),
+                    status: idxStatus
                 };
 
                 const data = lines.slice(1).map(line => {
@@ -228,7 +248,8 @@
                         professor: values[idx.professor] || 'NÃO INFORMADO',
                         faixa: values[idx.faixa] || '',
                         peso: values[idx.peso] || '',
-                        categoria: values[idx.categoria] || ''
+                        categoria: values[idx.categoria] || '',
+                        status: values[idx.status] || 'PENDENTE'
                     };
                 });
 
@@ -279,10 +300,15 @@
                                         <th>Faixa</th>
                                         <th>Peso</th>
                                         <th>Categoria</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     ${infoEquipe.professores[prof].map(a => {
+                                        const statusNormalizado = a.status.toString().toUpperCase().trim();
+                                        const isConfirmado = statusNormalizado.includes('CONFIRMADO') || statusNormalizado.includes('OK') || statusNormalizado.includes('PAGO');
+                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
+
                                         return `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
@@ -290,6 +316,7 @@
                                             <td data-label="Faixa">${a.faixa}</td>
                                             <td data-label="Peso">${a.peso}</td>
                                             <td data-label="Categoria">${a.categoria}</td>
+                                            <td data-label="Status"><span class="status-badge ${statusClass}">${a.status}</span></td>
                                         </tr>
                                         `;
                                     }).join('')}
