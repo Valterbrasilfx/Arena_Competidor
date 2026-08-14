@@ -226,7 +226,7 @@
                 
                 const headers = parseCSVLine(lines[0]).map(h => h.toUpperCase());
                 
-                const idxStatus = headers.indexOf('STATUS') !== -1 ? headers.indexOf('STATUS') : 17; // Pega o cabeçalho STATUS ou a Coluna R (índice 17)
+                const idxStatus = headers.indexOf('STATUS') !== -1 ? headers.indexOf('STATUS') : 17;
 
                 const idx = {
                     ord: headers.indexOf('ORD'),
@@ -251,6 +251,13 @@
                         categoria: values[idx.categoria] || '',
                         status: values[idx.status] || 'PENDENTE'
                     };
+                })
+                // FILTRO ADICIONADO: Mantém apenas atletas com status confirmado
+                .filter(atleta => {
+                    const statusNormalizado = atleta.status.toString().toUpperCase().trim();
+                    return statusNormalizado.includes('CONFIRMADO') || 
+                           statusNormalizado.includes('OK') || 
+                           statusNormalizado.includes('PAGO');
                 });
 
                 renderEquipes(data);
@@ -264,7 +271,12 @@
             const container = document.getElementById('listaEquipes');
             container.innerHTML = '';
             document.getElementById('loading-message').style.display = 'none';
-            const Blacklist = {};
+
+            if (data.length === 0) {
+                container.innerHTML = '<p style="text-align:center;">Nenhum atleta confirmado foi encontrado.</p>';
+                return;
+            }
+
             const estrutura = {};
 
             data.forEach(atleta => {
@@ -330,7 +342,7 @@
                     <div class="accordion-header" onclick="toggleAcc(this)">
                         <div class="team-info">
                             <h2>${nomeEquipe}</h2>
-                            <p>${infoEquipe.total} Atleta(s) Inscrito(s)</p>
+                            <p>${infoEquipe.total} Atleta(s) Confirmado(s)</p>
                         </div>
                     </div>
                     <div class="accordion-content">${htmlProfessores}</div>
