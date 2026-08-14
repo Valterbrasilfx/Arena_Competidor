@@ -399,7 +399,7 @@
         let isResting = false;
         let countdownInterval = null;
         let timeOffset = 0; 
-        let isFirstStart = true; 
+        let audioUnlocked = false;
 
         const timerDisplay = document.getElementById('timer-display');
         const statusText = document.getElementById('status-text');
@@ -416,11 +416,27 @@
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
-                splash.style.opacity = '0';
-                splash.style.visibility = 'hidden';
-                setTimeout(() => splash.remove(), 800); 
+                if (splash) {
+                    splash.style.opacity = '0';
+                    splash.style.visibility = 'hidden';
+                    setTimeout(() => splash.remove(), 800); 
+                }
             }, 2600);
         });
+
+        // Desbloqueia os áudios no primeiro gesto do usuário
+        function unlockAudio() {
+            if (audioUnlocked) return;
+
+            [soundCombate, soundParou].forEach(audio => {
+                audio.play().then(() => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                }).catch(e => console.log("Aguardando interação do usuário:", e));
+            });
+
+            audioUnlocked = true;
+        }
 
         function syncTimeWithInternet() {
             fetch('https://worldtimeapi.org/api/timezone/America/Sao_Paulo')
@@ -491,15 +507,21 @@
             if (!isRunning) {
                 timerSeconds = getSelectedFightTime();
                 isResting = false;
-                isFirstStart = true;
                 updateDisplay();
             }
         }
 
         function playSound(audioElement) {
+            audioElement.pause();
             audioElement.currentTime = 0;
             audioElement.volume = 1.0; 
-            audioElement.play().catch(e => console.log("Erro ao reproduzir áudio:", e));
+            
+            const playPromise = audioElement.play();
+            if (playPromise !== undefined) {
+                playPromise.catch(e => {
+                    console.log("Erro ao reproduzir áudio:", e);
+                });
+            }
         }
 
         function tick() {
@@ -507,12 +529,12 @@
                 timerSeconds--;
             } else {
                 if (!isResting) {
-                    // Fim do tempo de luta: toca parou.mp3 e inicia o descanso
+                    // Fim do tempo de luta -> Toca parou.mp3 e inicia descanso
                     playSound(soundParou);
                     isResting = true;
                     timerSeconds = getSelectedRestTime();
                 } else {
-                    // Fim do descanso: toca combate.mp3 e reinicia o combate diretamente
+                    // Fim do descanso -> Toca combate.mp3 e reinicia luta
                     playSound(soundCombate);
                     isResting = false;
                     timerSeconds = getSelectedFightTime();
@@ -529,8 +551,9 @@
         }
 
         function startPause() {
+            unlockAudio();
+
             if (isRunning) {
-                // Ao clicar em Pausar (parar o timer do combate)
                 isRunning = false;
                 clearInterval(countdownInterval);
                 toggleButtonsState(false);
@@ -538,13 +561,11 @@
                 btnStartPause.className = "btn btn-start";
                 playSound(soundParou);
             } else {
-                // Ao clicar em Iniciar
                 isRunning = true;
                 toggleButtonsState(true);
                 btnStartPause.textContent = "Pausar";
                 btnStartPause.className = "btn btn-pause";
                 
-                // Toca combate.mp3 ao iniciar a luta
                 if (!isResting) {
                     playSound(soundCombate);
                 }
@@ -584,6 +605,8 @@
 
         btnStartPause.addEventListener('click', startPause);
         btnReset.addEventListener('click', reset);
+
+        document.body.addEventListener('click', unlockAudio, { once: true });
 
         initTimer();
     </script>
