@@ -183,7 +183,7 @@
                 const headers = rows[0].map(h => h.toUpperCase().trim());
                 
                 const idxStatusHeader = headers.indexOf('STATUS');
-                const idxStatus = idxStatusHeader !== -1 ? idxStatusHeader : 17; // Pega o cabeçalho STATUS ou a Coluna R (índice 17)
+                const idxStatus = idxStatusHeader !== -1 ? idxStatusHeader : 17;
 
                 const idx = {
                     ord: headers.indexOf('ORD'),
@@ -207,7 +207,15 @@
                     sexo: (row[idx.sexo] || '').toUpperCase(),
                     absoluto: (row[idx.abs] || '').toUpperCase(),
                     status: row[idx.status] || 'PENDENTE'
-                })).filter(atleta => atleta.absoluto === 'SIM');
+                }))
+                .filter(atleta => atleta.absoluto === 'SIM')
+                // FILTRO ADICIONADO: Mantém apenas atletas com status confirmado
+                .filter(atleta => {
+                    const statusNormalizado = atleta.status.toString().toUpperCase().trim();
+                    return statusNormalizado.includes('CONFIRMADO') || 
+                           statusNormalizado.includes('OK') || 
+                           statusNormalizado.includes('PAGO');
+                });
 
                 renderizar(data);
             } catch (error) {
@@ -222,7 +230,7 @@
             document.getElementById('loading-message').style.display = 'none';
 
             if (data.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">Nenhum atleta no Absoluto encontrado.</p>';
+                container.innerHTML = '<p style="text-align:center;">Nenhum atleta confirmado no Absoluto foi encontrado.</p>';
                 return;
             }
 
