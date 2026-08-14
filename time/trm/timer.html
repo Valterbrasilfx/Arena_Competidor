@@ -392,7 +392,6 @@
     <!-- AUDIO SINC -->
     <audio id="sound-combate" src="combate.mp3" preload="auto"></audio>
     <audio id="sound-parou" src="parou.mp3" preload="auto"></audio>
-    <audio id="sound-buzina" src="buzina.mp3" preload="auto"></audio>
 
     <script>
         let timerSeconds = 300; 
@@ -413,7 +412,6 @@
 
         const soundCombate = document.getElementById('sound-combate');
         const soundParou = document.getElementById('sound-parou');
-        const soundBuzina = document.getElementById('sound-buzina');
 
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
@@ -509,13 +507,13 @@
                 timerSeconds--;
             } else {
                 if (!isResting) {
-                    // Fim do tempo de luta: toca parou.mp3 e inicia o descanso (sem som no início)
+                    // Fim do tempo de luta: toca parou.mp3 e inicia o descanso
                     playSound(soundParou);
                     isResting = true;
                     timerSeconds = getSelectedRestTime();
                 } else {
-                    // Fim do descanso: toca buzina.mp3 e reinicia o combate
-                    playSound(soundBuzina);
+                    // Fim do descanso: toca combate.mp3 e reinicia o combate diretamente
+                    playSound(soundCombate);
                     isResting = false;
                     timerSeconds = getSelectedFightTime();
                 }
