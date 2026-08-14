@@ -209,13 +209,21 @@
                     let obj = {};
                     cabecalhoOriginal.forEach((c, i) => { obj[c] = colunas[i]?.replace(/"/g, '').trim() || ''; });
                     
-                    // Mapeia a coluna R (índice 17) caso a coluna STATUS não seja encontrada pelo nome
                     if (!colMap.STATUS && colunas[17] !== undefined) {
                         obj['STATUS_COL_R'] = colunas[17].replace(/"/g, '').trim();
                     }
 
                     return obj;
-                }).filter(atleta => (atleta['SUA FAIXA'] || '').toUpperCase() !== 'PRETA');
+                })
+                .filter(atleta => (atleta['SUA FAIXA'] || '').toUpperCase() !== 'PRETA')
+                // FILTRO ADICIONADO: Mantém apenas atletas confirmados
+                .filter(atleta => {
+                    const valorStatus = atleta[colMap.STATUS] || atleta['STATUS_COL_R'] || '';
+                    const statusNormalizado = valorStatus.toString().toUpperCase().trim();
+                    return statusNormalizado.includes('CONFIRMADO') || 
+                           statusNormalizado.includes('OK') || 
+                           statusNormalizado.includes('PAGO');
+                });
 
                 document.getElementById('loading').style.display = 'none';
                 renderizar(true);
