@@ -130,6 +130,9 @@
         .btn-pdf { background-color: #dc2626; color: white; }
         .btn-pdf:hover { background-color: #b91c1c; }
 
+        .btn-autorizacao { background-color: #4f46e5; color: white; }
+        .btn-autorizacao:hover { background-color: #4338ca; }
+
         .btn-salvar-linha {
             padding: 6px 12px;
             background-color: var(--primary-color);
@@ -307,6 +310,7 @@
             <div class="actions-group">
                 <button class="btn-action btn-excel" onclick="exportToExcel()">📊 Baixar Excel</button>
                 <button class="btn-action btn-pdf" onclick="exportToPDF()">📄 Baixar PDF</button>
+                <button class="btn-action btn-autorizacao" onclick="exportAutorizacaoPDF()">📝 Baixar Autorizações (PDF)</button>
             </div>
         </div>
 
@@ -719,6 +723,37 @@
             });
 
             doc.save("Graduacao_JiuJitsu.pdf");
+        }
+
+        function exportAutorizacaoPDF() {
+            if (filteredData.length === 0) return alert('Nenhum dado para exportar!');
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait' });
+
+            doc.setFontSize(16);
+            doc.text("Lista de Autorização", 14, 15);
+
+            const headers = [["Nº", "Nome Completo"]];
+            
+            const rows = filteredData.map((item, index) => [
+                index + 1,
+                item.nome
+            ]);
+
+            doc.autoTable({
+                head: headers,
+                body: rows,
+                startY: 22,
+                styles: { fontSize: 10, cellPadding: 4 },
+                headStyles: { fillColor: [79, 70, 229] },
+                columnStyles: {
+                    0: { cellWidth: 20, halign: 'center' },
+                    1: { cellWidth: 'auto' }
+                }
+            });
+
+            doc.save("Lista_de_Autorizacao.pdf");
         }
 
         fetchAndProcessData();
