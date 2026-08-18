@@ -40,11 +40,12 @@
         header img { max-width: 250px; width: 80%; height: auto; }
 
         .main-content {
-            margin-top: 140px;
+            margin-top: 130px;
             width: 95%;
             max-width: 1400px;
             padding-bottom: 60px;
             text-align: center;
+            box-sizing: border-box;
         }
 
         h1 {
@@ -66,11 +67,12 @@
             flex-direction: column;
             gap: 15px;
             text-align: left;
+            box-sizing: border-box;
         }
 
         .filters-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
         }
 
@@ -88,13 +90,15 @@
         }
 
         .filter-group select, .filter-group input, .select-promocao {
-            padding: 8px 10px;
+            padding: 10px 12px;
             border-radius: 8px;
             border: 1px solid #d1d5db;
             font-family: 'Inter', sans-serif;
             font-size: 0.85rem;
             outline: none;
             transition: border-color 0.2s;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .filter-group select:focus, .filter-group input:focus, .select-promocao:focus {
@@ -120,6 +124,7 @@
             cursor: pointer;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
             transition: all 0.2s ease;
         }
@@ -134,7 +139,7 @@
         .btn-autorizacao:hover { background-color: #4338ca; }
 
         .btn-salvar-linha {
-            padding: 6px 12px;
+            padding: 8px 14px;
             background-color: var(--primary-color);
             color: white;
             border: none;
@@ -142,8 +147,8 @@
             font-size: 0.8rem;
             font-weight: 600;
             cursor: pointer;
-            margin-left: 6px;
             transition: all 0.2s;
+            white-space: nowrap;
         }
         .btn-salvar-linha:hover { background-color: #1d4ed8; }
         .btn-salvar-linha.salvo { background-color: #16a34a; }
@@ -202,7 +207,7 @@
             border-top: 1px solid #f3f4f6;
         }
 
-        .table-responsive { width: 100%; overflow-x: auto; margin-top: 15px; }
+        .table-responsive { width: 100%; margin-top: 15px; }
 
         table { width: 100%; border-collapse: collapse; }
         th { 
@@ -253,6 +258,12 @@
         .faixa-branca { background-color: #f9fafb; color: #111827; border: 1px solid #d1d5db; }
         .faixa-padrao { background-color: #e5e7eb; color: #374151; }
 
+        .promocao-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .link-voltar {
             display: inline-block; margin-top: 40px; padding: 14px 30px;
             background-color: #111827; color: #fff; text-decoration: none;
@@ -262,6 +273,105 @@
         .link-voltar:hover { background-color: var(--primary-color); transform: translateY(-2px); }
 
         #loading-message { padding: 50px; font-weight: 600; color: var(--primary-color); }
+
+        /* ==========================================================================
+           REGRAS DE RESPONSIVIDADE PARA CELULARES E TELAS MENORES (CARD LAYOUT)
+           ========================================================================== */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-top: 100px;
+                width: 92%;
+                padding-bottom: 40px;
+            }
+
+            h1 { font-size: 1.5rem; margin-bottom: 15px; }
+
+            .controls-panel { padding: 15px; }
+
+            .actions-group {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .btn-action {
+                width: 100%;
+            }
+
+            .accordion-header {
+                padding: 15px;
+            }
+
+            .accordion-content.open {
+                padding: 0 12px 15px;
+            }
+
+            /* Transformação da tabela em Cards Individuais no Mobile */
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                background: #ffffff;
+                border: 1px solid #e5e7eb;
+                border-radius: 12px;
+                margin-bottom: 15px;
+                padding: 12px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            }
+
+            td {
+                border: none;
+                border-bottom: 1px dashed #f3f4f6;
+                position: relative;
+                padding: 10px 0;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                white-space: normal;
+                font-size: 0.85rem;
+                text-align: right;
+            }
+
+            td:last-child {
+                border-bottom: none;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding-top: 12px;
+            }
+
+            /* Adiciona os rótulos dinamicamente baseados no attribute data-label */
+            td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+                text-transform: uppercase;
+                text-align: left;
+                padding-right: 10px;
+            }
+
+            td[data-label="Nº"] {
+                font-weight: bold;
+                color: var(--primary-color);
+            }
+
+            .promocao-container {
+                width: 100%;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .btn-salvar-linha {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 <body>
@@ -409,7 +519,6 @@
         async function fetchAndProcessData() {
             const loadingEl = document.getElementById('loading-message');
             try {
-                // Adiciona timestamp para evitar cache do CSV do Google
                 const response = await fetch(EXEC_URL + '&_t=' + new Date().getTime(), { redirect: 'follow' });
                 const textData = await response.text();
 
@@ -429,7 +538,6 @@
                             headers.forEach((h, i) => {
                                 obj[h] = cols[i] || '';
                             });
-                            // Captura genérica das últimas colunas caso a Coluna J não venha com nome no cabeçalho
                             if (cols.length >= 10 && !obj['PROXIMAGRADUACAO']) {
                                 obj['COLUNA_J'] = cols[9] || '';
                             }
@@ -530,11 +638,13 @@
                     <td data-label="Qtd. Convidados">${atleta.qtdConvidados}</td>
                     <td data-label="Cor do Kimono"><span class="badge-kimono">${atleta.corKimono}</span></td>
                     <td data-label="Próximo Grau/Faixa">
-                        <select id="select-prom-${index}" class="${selectClass}">
-                            <option value="">Manter Atual / Em branco</option>
-                            ${optionsHtml}
-                        </select>
-                        <button id="btn-save-${index}" class="btn-salvar-linha" onclick="salvarPromocao(${index}, '${atleta.nome}')">💾 Salvar</button>
+                        <div class="promocao-container">
+                            <select id="select-prom-${index}" class="${selectClass}">
+                                <option value="">Manter Atual / Em branco</option>
+                                ${optionsHtml}
+                            </select>
+                            <button id="btn-save-${index}" class="btn-salvar-linha" onclick="salvarPromocao(${index}, '${atleta.nome}')">💾 Salvar</button>
+                        </div>
                     </td>
                 </tr>
                 `;
@@ -580,10 +690,8 @@
             const btnEl = document.getElementById(`btn-save-${index}`);
             const novaGraduacao = selectEl.value;
 
-            // 1. Atualiza na memória local imediatamente
             filteredData[index].proximaGraduacao = novaGraduacao;
 
-            // 2. Feedback visual no front
             if (novaGraduacao !== '') {
                 selectEl.classList.add('has-value');
             } else {
@@ -594,7 +702,6 @@
             btnEl.disabled = true;
 
             try {
-                // 3. Dispara a requisição para o Google Apps Script gravar na Coluna J
                 await fetch(SAVE_SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
