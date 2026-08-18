@@ -136,22 +136,18 @@
             transform: translateY(-5px);
         }
 
-        /* --- CORREÇÃO DO BANNER DOS EVENTOS --- */
+        /* --- BANNER RESPONSIVO SEM BARRAS PRETAS --- */
         .event-banner {
             width: 100%;
-            height: 220px; /* Altura fixa do container para manter o padrão no grid */
-            background-color: #000000; /* Fundo preto para banners com proporções variadas */
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: block;
             overflow: hidden;
         }
 
         .event-banner img {
             width: 100%;
-            height: 100%;
-            object-fit: contain; /* Mostra a arte inteira do banner, sem cortar nada! */
+            height: auto;
             display: block;
+            object-fit: contain;
         }
 
         .event-info { 
