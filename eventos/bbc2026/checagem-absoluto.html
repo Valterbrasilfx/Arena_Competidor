@@ -210,9 +210,15 @@
             const estrutura = {};
             data.forEach(atleta => {
                 let catName = atleta.categoria;
-                if (catName.toUpperCase().includes('MASTER')) catName = 'MASTER (TODAS AS IDADES)';
                 
-                const chave = `ABSOLUTO ${catName.toUpperCase()} (${atleta.sexo})`;
+                // Trata a nomeação da chave
+                let chave;
+                if (atleta.faixa === 'PRETA' && catName.toUpperCase().includes('MASTER')) {
+                    chave = `GP FAIXA PRETA MASTER (${atleta.sexo})`;
+                } else {
+                    if (catName.toUpperCase().includes('MASTER')) catName = 'MASTER (TODAS AS IDADES)';
+                    chave = `ABSOLUTO ${catName.toUpperCase()} (${atleta.sexo})`;
+                }
                 
                 if (!estrutura[atleta.faixa]) estrutura[atleta.faixa] = {};
                 if (!estrutura[atleta.faixa][chave]) estrutura[atleta.faixa][chave] = [];
