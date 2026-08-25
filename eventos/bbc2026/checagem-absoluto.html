@@ -117,6 +117,24 @@
             color: #374151;
         }
 
+        /* Estilos para os badges de Status */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .status-aguardando {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
         .link-voltar {
             display: block; width: fit-content; margin: 40px auto;
             padding: 14px 30px; background-color: #111827; color: #fff;
@@ -174,19 +192,24 @@
                     faixa: headers.indexOf('SUA FAIXA'),
                     cat: headers.indexOf('SUA CATEGORIA'),
                     sexo: headers.indexOf('SEXO'),
-                    abs: headers.indexOf('ABSOLUTO')
+                    abs: headers.indexOf('ABSOLUTO'),
+                    status: headers.findIndex(h => h.includes('STATUS'))
                 };
 
-                const data = rows.slice(1).map(row => ({
-                    ord: row[idx.ord] || '-',
-                    nome: row[idx.nome] || '',
-                    equipe: row[idx.equipe] || '',
-                    faixa: (row[idx.faixa] || 'BRANCA').toUpperCase(),
-                    categoria: row[idx.cat] || '',
-                    sexo: (row[idx.sexo] || '').toUpperCase(),
-                    absoluto: (row[idx.abs] || '').toUpperCase()
-                })).filter(atleta => {
-                    // Filtra apenas se escolheu 'SIM' para o absoluto (independente de status de pagamento)
+                const data = rows.slice(1).map(row => {
+                    const statusVal = idx.status !== -1 ? row[idx.status] : 'AGUARDANDO';
+                    return {
+                        ord: row[idx.ord] || '-',
+                        nome: row[idx.nome] || '',
+                        equipe: row[idx.equipe] || '',
+                        faixa: (row[idx.faixa] || 'BRANCA').toUpperCase(),
+                        categoria: row[idx.cat] || '',
+                        sexo: (row[idx.sexo] || '').toUpperCase(),
+                        absoluto: (row[idx.abs] || '').toUpperCase(),
+                        status: statusVal || 'AGUARDANDO'
+                    };
+                }).filter(atleta => {
+                    // Filtra apenas se escolheu 'SIM' para o absoluto
                     return atleta.absoluto === 'SIM';
                 });
 
@@ -211,7 +234,6 @@
             data.forEach(atleta => {
                 let catName = atleta.categoria;
                 
-                // Trata a nomeação da chave
                 let chave;
                 if (atleta.faixa === 'PRETA' && catName.toUpperCase().includes('MASTER')) {
                     chave = `GP FAIXA PRETA MASTER (${atleta.sexo})`;
@@ -248,16 +270,24 @@
                                         <th>ORD</th>
                                         <th>Atleta</th>
                                         <th>Equipe</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${atletas.map(a => `
+                                    ${atletas.map(a => {
+                                        const isConfirmado = a.status.toLowerCase().includes('confirmad') || a.status.toLowerCase().includes('pago') || a.status.toLowerCase().includes('ok');
+                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-aguardando';
+                                        const statusTexto = isConfirmado ? 'Confirmado' : 'Aguardando';
+
+                                        return `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta">${a.nome}</td>
                                             <td data-label="Equipe">${a.equipe}</td>
+                                            <td data-label="Status"><span class="status-badge ${statusClass}">${statusTexto}</span></td>
                                         </tr>
-                                    `).join('')}
+                                    `;
+                                    }).join('')}
                                 </tbody>
                             </table>
                         </div>
