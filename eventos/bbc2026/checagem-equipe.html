@@ -140,6 +140,24 @@
             color: #4b5563;
         }
 
+        /* Estilos para os badges de Status */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .status-aguardando {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
+
         .link-voltar {
             display: inline-block;
             margin-top: 40px;
@@ -211,11 +229,13 @@
                     professor: headers.findIndex(h => h.includes('PROFESSOR')),
                     faixa: headers.indexOf('SUA FAIXA'),
                     peso: headers.indexOf('SEU PESO'),
-                    categoria: headers.indexOf('SUA CATEGORIA')
+                    categoria: headers.indexOf('SUA CATEGORIA'),
+                    status: headers.findIndex(h => h.includes('STATUS'))
                 };
 
                 const data = lines.slice(1).map(line => {
                     const values = parseCSVLine(line);
+                    const statusVal = idx.status !== -1 ? values[idx.status] : 'AGUARDANDO';
                     return {
                         ord: values[idx.ord] || '-',
                         nome: values[idx.nome] || '',
@@ -223,9 +243,10 @@
                         professor: values[idx.professor] || 'NÃO INFORMADO',
                         faixa: values[idx.faixa] || '',
                         peso: values[idx.peso] || '',
-                        categoria: values[idx.categoria] || ''
+                        categoria: values[idx.categoria] || '',
+                        status: statusVal || 'AGUARDANDO'
                     };
-                }); // Removido o filtro .filter() que limitava aos confirmados
+                });
 
                 renderEquipes(data);
             } catch (error) {
@@ -270,16 +291,24 @@
                                         <th>ORD</th>
                                         <th>Atleta</th>
                                         <th>Categoria</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${infoEquipe.professores[prof].map(a => `
+                                    ${infoEquipe.professores[prof].map(a => {
+                                        const isConfirmado = a.status.toLowerCase().includes('confirmad') || a.status.toLowerCase().includes('pago') || a.status.toLowerCase().includes('ok');
+                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-aguardando';
+                                        const statusTexto = isConfirmado ? 'Confirmado' : 'Aguardando';
+
+                                        return `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta"><strong>${a.nome}</strong><br><small>${a.faixa} / ${a.peso}</small></td>
                                             <td data-label="Categoria">${a.categoria}</td>
+                                            <td data-label="Status"><span class="status-badge ${statusClass}">${statusTexto}</span></td>
                                         </tr>
-                                    `).join('')}
+                                    `;
+                                    }).join('')}
                                 </tbody>
                             </table>
                         </div>
