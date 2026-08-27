@@ -8,8 +8,8 @@
     
     <style>
         /* =========================================
-           CONFIGURAÇÕES TEMA SENOGI
-           ========================================= */
+            CONFIGURAÇÕES TEMA SENOGI
+            ========================================= */
         :root {
             --primary-color: #2563eb; 
             --bg-color: #f3f4f6;
@@ -36,8 +36,8 @@
         header img { max-width: 250px; width: 80%; height: auto; }
 
         /* =========================================
-           CONTEÚDO PRINCIPAL
-           ========================================= */
+            CONTEÚDO PRINCIPAL
+            ========================================= */
         .main-content {
             margin-top: 140px;
             width: 90%;
@@ -106,6 +106,13 @@
             transform: translateX(5px);
         }
 
+        /* Estilo dos Botões quando Bloqueados */
+        .btn-checagem.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         /* BOTÃO VOLTAR EVENTO */
         .btn-voltar-evento {
             display: inline-block;
@@ -136,11 +143,91 @@
             color: var(--text-secondary);
         }
 
+        /* =========================================
+            POP-UP MODAL & CRONÔMETRO
+            ========================================= */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: var(--radius);
+            max-width: 420px;
+            width: 85%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e5e7eb;
+        }
+
+        .modal-card h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        .modal-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        .cronometro {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .tempo-unidade {
+            background-color: #f3f4f6;
+            padding: 12px 10px;
+            border-radius: 12px;
+            min-width: 65px;
+        }
+
+        .tempo-unidade .numero {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            display: block;
+            line-height: 1;
+        }
+
+        .tempo-unidade .rotulo {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-top: 4px;
+            display: block;
+        }
+
         @media (max-width: 768px) {
             .main-content { margin-top: 110px; }
             h1 { font-size: 1.8rem; }
             .btn-checagem { padding: 20px; font-size: 1rem; }
             .btn-voltar-evento { width: 100%; box-sizing: border-box; }
+            .modal-card { padding: 30px 20px; }
+            .tempo-unidade { min-width: 55px; padding: 10px 6px; }
+            .tempo-unidade .numero { font-size: 1.3rem; }
         }
     </style>
 </head>
@@ -153,18 +240,16 @@
     </header>
 
     <div class="main-content">
-        <h1>CHAVEAMENTO BBC OPEN DE JIU-JITSU</h1>
+        <h1>CHAVEAMENTO</h1>
         <p class="subtitle">Selecione o tipo de visualização desejada</p>
         
         <div class="opcoes-checagem">
-            <a href="../../meu-evento-agd.html" class="btn-checagem">
+            <a href="https://drive.google.com/file/d/1ZG0PwDqhh1O7teqmSz-XgB6NvYALZXJV/view?usp=sharing" class="btn-checagem disabled" id="btn-categoria">
                 CATEGORIA
             </a>
-           
             
-            <a href="../../meu-evento-agd.html" class="btn-checagem">
-                ABSOLUTO 
-          
+            <a href="https://drive.google.com/file/d/1bW_wMQ0egjP30e1nxg_YrFXhZzuDyagz/view?usp=sharing" class="btn-checagem disabled" id="btn-absoluto">
+                ABSOLUTO
             </a>
         </div>
 
@@ -172,10 +257,80 @@
             ← Voltar ao Arena Competidor
         </a>
     </div>
+
+    <!-- MODAL DE BLOQUEIO / CRONÔMETRO -->
+    <div class="modal-overlay" id="modal-bloqueio">
+        <div class="modal-card">
+            <h2>Chaveamento em Breve!</h2>
+            <p>O chaveamento será liberado oficialmente no dia 28 de agosto às 23:59h. Aguarde o cronômetro zerar:</p>
+            
+            <div class="cronometro">
+                <div class="tempo-unidade">
+                    <span class="numero" id="horas">00</span>
+                    <span class="rotulo">Horas</span>
+                </div>
+                <div class="tempo-unidade">
+                    <span class="numero" id="minutos">00</span>
+                    <span class="rotulo">Min</span>
+                </div>
+                <div class="tempo-unidade">
+                    <span class="numero" id="segundos">00</span>
+                    <span class="rotulo">Seg</span>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <div class="footer">
         &copy; 2026 Arena Competidor. Todos os direitos reservados.
     </div>
+
+    <!-- SCRIPT DE LIBERAÇÃO DA CHAVE -->
+    <script>
+        // Data e hora de liberação: 28 de Agosto de 2026 às 23:59:00
+        const dataLiberacao = new Date("2026-08-28T23:59:00").getTime();
+
+        const modal = document.getElementById("modal-bloqueio");
+        const btnCategoria = document.getElementById("btn-categoria");
+        const btnAbsoluto = document.getElementById("btn-absoluto");
+
+        const elHoras = document.getElementById("horas");
+        const elMinutos = document.getElementById("minutos");
+        const elSegundos = document.getElementById("segundos");
+
+        function liberarBotoes() {
+            modal.classList.add("hidden");
+            btnCategoria.classList.remove("disabled");
+            btnAbsoluto.classList.remove("disabled");
+        }
+
+        function atualizarCronometro() {
+            const agora = new Date().getTime();
+            const distancia = dataLiberacao - agora;
+
+            if (distancia <= 0) {
+                liberarBotoes();
+                clearInterval(intervalo);
+                return;
+            }
+
+            // Cálculos para horas, minutos e segundos restantes (considerando dias totais convertidos em horas para simplificar a exibição rápida)
+            const horas = Math.floor(distancia / (1000 * 60 * 60));
+            const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
+            const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
+
+            // Exibição formatada com 2 dígitos
+            elHoras.textContent = String(horas).padStart(2, '0');
+            elMinutos.textContent = String(minutos).padStart(2, '0');
+            elSegundos.textContent = String(segundos).padStart(2, '0');
+        }
+
+        // Executa a primeira checagem imediatamente ao carregar a página
+        atualizarCronometro();
+
+        // Atualiza a cada 1 segundo
+        const intervalo = setInterval(atualizarCronometro, 1000);
+    </script>
 
 </body>
 </html>
