@@ -9,6 +9,8 @@
     <style>
         :root {
             --primary-color: #2563eb; 
+            --accent-green: #22c55e;
+            --accent-yellow: #f59e0b;
             --bg-color: #f3f4f6;
             --card-bg: #ffffff;
             --text-main: #1f2937;
@@ -74,6 +76,24 @@
         .atleta-info-txt { display: flex; flex-direction: column; }
         .atleta-nome { font-weight: 600; color: #111827; font-size: 0.95rem; }
         .atleta-ord { font-size: 0.7rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2px; }
+
+        /* Estilos para os badges de Status */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .status-aguardando {
+            background-color: #fef3c7;
+            color: #b45309;
+        }
 
         #photoModal {
             display: none; position: fixed; z-index: 2000; top: 0; left: 0;
@@ -161,6 +181,7 @@
                     if (clean === "FOTO" || clean.includes("FOTO")) colMap.FOTO = c;
                     if (clean.includes("EQUIPE")) colMap.EQUIPE = c;
                     if (clean.includes("PROFESSOR")) colMap.PROFESSOR = c;
+                    if (clean.includes("STATUS")) colMap.STATUS = c;
                 });
 
                 dadosAtletas = linhas.slice(1).map(linha => {
@@ -248,10 +269,14 @@
                         <div class="accordion-header" onclick="toggleAcc(this)">${ch} (${atletas.length})</div>
                         <div class="accordion-content">
                             <table>
-                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th></tr></thead>
+                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th><th>Status</th></tr></thead>
                                 <tbody>
                                     ${atletas.map(a => {
                                         const urlFinal = tratarLinkFoto(a[colMap.FOTO]);
+                                        const statusVal = colMap.STATUS ? (a[colMap.STATUS] || '') : '';
+                                        const isConfirmado = statusVal.toLowerCase().includes('confirmad') || statusVal.toLowerCase().includes('pago') || statusVal.toLowerCase().includes('ok');
+                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-aguardando';
+                                        const statusTexto = isConfirmado ? 'Confirmado' : 'Aguardando';
 
                                         return `
                                         <tr>
@@ -266,6 +291,7 @@
                                             </td>
                                             <td data-label="Equipe">${a[colMap.EQUIPE] || '---'}</td>
                                             <td data-label="Professor">${a[colMap.PROFESSOR] || '---'}</td>
+                                            <td data-label="Status"><span class="status-badge ${statusClass}">${statusTexto}</span></td>
                                         </tr>
                                     `}).join('')}
                                 </tbody>
