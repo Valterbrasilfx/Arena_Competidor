@@ -140,7 +140,7 @@
             color: #4b5563;
         }
 
-        /* Estilos para os badges de Status */
+        /* Estilo para o status confirmado */
         .status-badge {
             display: inline-block;
             padding: 4px 8px;
@@ -152,10 +152,6 @@
         .status-confirmado {
             background-color: #dcfce7;
             color: #15803d;
-        }
-        .status-aguardando {
-            background-color: #fef3c7;
-            color: #b45309;
         }
 
         .link-voltar {
@@ -187,7 +183,7 @@
     </header>
 
     <div class="main-content">
-        <h1>Checagem por Equipes</h1>
+        <h1>Checagem por Equipes (Confirmados)</h1>
         <div id="loading-message">Sincronizando banco de dados...</div>
         <div id="listaEquipes"></div>
         <a href="checagem.html" class="link-voltar">Voltar para Opções</a>
@@ -235,7 +231,7 @@
 
                 const data = lines.slice(1).map(line => {
                     const values = parseCSVLine(line);
-                    const statusVal = idx.status !== -1 ? values[idx.status] : 'AGUARDANDO';
+                    const statusVal = idx.status !== -1 ? values[idx.status] : '';
                     return {
                         ord: values[idx.ord] || '-',
                         nome: values[idx.nome] || '',
@@ -244,8 +240,12 @@
                         faixa: values[idx.faixa] || '',
                         peso: values[idx.peso] || '',
                         categoria: values[idx.categoria] || '',
-                        status: statusVal || 'AGUARDANDO'
+                        status: statusVal || ''
                     };
+                }).filter(atleta => {
+                    // Filtra mantendo apenas os atletas confirmados
+                    const statusVal = atleta.status.toLowerCase();
+                    return statusVal.includes('confirmad') || statusVal.includes('pago') || statusVal.includes('ok');
                 });
 
                 renderEquipes(data);
@@ -261,7 +261,7 @@
             document.getElementById('loading-message').style.display = 'none';
 
             if (data.length === 0) {
-                container.innerHTML = '<p style="text-align:center">Nenhum atleta inscrito no momento.</p>';
+                container.innerHTML = '<p style="text-align:center">Nenhum atleta confirmado encontrado.</p>';
                 return;
             }
 
@@ -296,18 +296,14 @@
                                 </thead>
                                 <tbody>
                                     ${infoEquipe.professores[prof].map(a => {
-                                        const isConfirmado = a.status.toLowerCase().includes('confirmad') || a.status.toLowerCase().includes('pago') || a.status.toLowerCase().includes('ok');
-                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-aguardando';
-                                        const statusTexto = isConfirmado ? 'Confirmado' : 'Aguardando';
-
                                         return `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta"><strong>${a.nome}</strong><br><small>${a.faixa} / ${a.peso}</small></td>
                                             <td data-label="Categoria">${a.categoria}</td>
-                                            <td data-label="Status"><span class="status-badge ${statusClass}">${statusTexto}</span></td>
+                                            <td data-label="Status"><span class="status-badge status-confirmado">Confirmado</span></td>
                                         </tr>
-                                    `;
+                                        `;
                                     }).join('')}
                                 </tbody>
                             </table>
@@ -319,7 +315,7 @@
                     <div class="accordion-header" onclick="toggleAcc(this)">
                         <div class="team-info">
                             <h2>${nomeEquipe}</h2>
-                            <p>${infoEquipe.total} Atleta(s) Inscrito(s)</p>
+                            <p>${infoEquipe.total} Atleta(s) Confirmado(s)</p>
                         </div>
                     </div>
                     <div class="accordion-content">${htmlProfessores}</div>
