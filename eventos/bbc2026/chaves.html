@@ -251,7 +251,8 @@
             <a href="https://drive.google.com/file/d/1fVb4iwiV5-VpVlmfcYjUziqzv8dOZhO_/view?usp=sharing" class="btn-checagem disabled" id="btn-absoluto">
                 ABSOLUTO
             </a>
-             <a href="https://drive.google.com/file/d/1XqtkgY_GZQbbB-OOuXTAd9chzKByrThY/view?usp=sharing" class="btn-checagem disabled" id="btn-absoluto">
+            
+            <a href="https://drive.google.com/file/d/1XqtkgY_GZQbbB-OOuXTAd9chzKByrThY/view?usp=sharing" class="btn-checagem disabled" id="btn-gp">
                 GP FAIXA PRETA
             </a>
         </div>
@@ -261,7 +262,6 @@
         </a>
     </div>
 
-    <!-- MODAL DE BLOQUEIO / CRONÔMETRO -->
     <div class="modal-overlay" id="modal-bloqueio">
         <div class="modal-card">
             <h2>Chaveamento em Breve!</h2>
@@ -288,7 +288,6 @@
         &copy; 2026 Arena Competidor. Todos os direitos reservados.
     </div>
 
-    <!-- SCRIPT DE LIBERAÇÃO DA CHAVE -->
     <script>
         // Data e hora de liberação: 28 de Agosto de 2026 às 23:59:00
         const dataLiberacao = new Date("2026-08-28T23:59:00").getTime();
@@ -296,6 +295,7 @@
         const modal = document.getElementById("modal-bloqueio");
         const btnCategoria = document.getElementById("btn-categoria");
         const btnAbsoluto = document.getElementById("btn-absoluto");
+        const btnGp = document.getElementById("btn-gp");
 
         const elHoras = document.getElementById("horas");
         const elMinutos = document.getElementById("minutos");
@@ -305,6 +305,7 @@
             modal.classList.add("hidden");
             btnCategoria.classList.remove("disabled");
             btnAbsoluto.classList.remove("disabled");
+            if (btnGp) btnGp.classList.remove("disabled");
         }
 
         function atualizarCronometro() {
@@ -317,21 +318,16 @@
                 return;
             }
 
-            // Cálculos para horas, minutos e segundos restantes (considerando dias totais convertidos em horas para simplificar a exibição rápida)
             const horas = Math.floor(distancia / (1000 * 60 * 60));
             const minutos = Math.floor((distancia % (1000 * 60 * 60)) / (1000 * 60));
             const segundos = Math.floor((distancia % (1000 * 60)) / 1000);
 
-            // Exibição formatada com 2 dígitos
             elHoras.textContent = String(horas).padStart(2, '0');
             elMinutos.textContent = String(minutos).padStart(2, '0');
             elSegundos.textContent = String(segundos).padStart(2, '0');
         }
 
-        // Executa a primeira checagem imediatamente ao carregar a página
         atualizarCronometro();
-
-        // Atualiza a cada 1 segundo
         const intervalo = setInterval(atualizarCronometro, 1000);
     </script>
 
