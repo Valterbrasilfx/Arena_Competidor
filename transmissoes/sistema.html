@@ -121,7 +121,7 @@
         <!-- MAIN CONTENT AREA -->
         <div class="flex-grow flex gap-3 overflow-hidden mb-3">
             
-            <!-- GRID DE STREAMS -->
+            <!-- GRID DE STREAMS (4 ÁREAS) -->
             <div class="flex-grow overflow-y-auto pr-1">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div v-for="(stream, index) in streams" :key="index" class="flex flex-col gap-2">
@@ -142,7 +142,7 @@
                                     <span class="text-[11px] font-black text-white tracking-wide uppercase font-mono-custom">{{ stream.area }}</span>
                                 </div>
                                 <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border" 
-                                      :class="stream.isLive ? 'bg-emerald-950/50 text-emerald-400 border-emerald-800/50' : 'bg-gray-900 text-gray-500 border-gray-800'">
+                                    :class="stream.isLive ? 'bg-emerald-950/50 text-emerald-400 border-emerald-800/50' : 'bg-gray-900 text-gray-500 border-gray-800'">
                                     {{ stream.isLive ? 'LIVE TRANSMITTING' : 'OFFLINE' }}
                                 </span>
                             </div>
@@ -172,11 +172,11 @@
                     <h3 class="text-[10px] font-extrabold uppercase text-red-500 tracking-wider flex items-center gap-2 font-mono-custom">
                         <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span> Chat Ao Vivo
                     </h3>
-                    <div class="flex gap-1">
+                    <div class="flex flex-wrap gap-1 max-w-[160px] justify-end">
                         <button 
                             @click="chatFilter = 'ALL'" 
                             :class="chatFilter === 'ALL' ? 'bg-red-600 text-white' : 'bg-gray-900 text-gray-400 hover:bg-gray-800'"
-                            class="px-2 py-0.5 text-[8px] font-bold rounded uppercase transition-all">
+                            class="px-1.5 py-0.5 text-[8px] font-bold rounded uppercase transition-all">
                             Todos
                         </button>
                         <button 
@@ -184,8 +184,8 @@
                             :key="idx"
                             @click="chatFilter = stream.area" 
                             :class="chatFilter === stream.area ? 'bg-red-600 text-white' : 'bg-gray-900 text-gray-400 hover:bg-gray-800'"
-                            class="px-2 py-0.5 text-[8px] font-bold rounded uppercase transition-all">
-                            {{ stream.area }}
+                            class="px-1.5 py-0.5 text-[8px] font-bold rounded uppercase transition-all">
+                            {{ stream.area.replace('AREA ', 'A') }}
                         </button>
                     </div>
                 </div>
@@ -201,7 +201,7 @@
                         class="chat-message-enter p-2 rounded-lg bg-black/40 border border-white/5 hover:border-white/10 transition-all">
                         <div class="flex items-center justify-between gap-1 mb-1">
                             <span class="text-[8px] font-bold px-1.5 py-0.2 rounded" 
-                                  :class="msg.area === 'AREA 01' ? 'bg-red-950 text-red-400 border border-red-800/40' : 'bg-amber-950 text-amber-400 border border-amber-800/40'">
+                                :class="msg.area === 'AREA 01' ? 'bg-red-950 text-red-400 border border-red-800/40' : 'bg-amber-950 text-amber-400 border border-amber-800/40'">
                                 {{ msg.area }}
                             </span>
                             <span class="text-[8px] text-gray-500">{{ msg.publishedAt }}</span>
@@ -266,8 +266,10 @@
                     chatFilter: 'ALL',
                     chatMessages: [],
                     streams: [
-                        { area: 'AREA 01', id: 'a-wEN4x-VI0', liveChatId: null, viewers: 0, totalViews: 0, isLive: false },
-                        { area: 'AREA 02', id: 'mdlo5m-WuBE', liveChatId: null, viewers: 0, totalViews: 0, isLive: false }
+                        { area: 'AREA 01', id: 'oMwPe3P84sk', liveChatId: null, viewers: 0, totalViews: 0, isLive: false },
+                        { area: 'AREA 02', id: 'j5gVizNhufs', liveChatId: null, viewers: 0, totalViews: 0, isLive: false },
+                        { area: 'AREA 03', id: '9VPb-pITp8U', liveChatId: null, viewers: 0, totalViews: 0, isLive: false },
+                        { area: 'AREA 04', id: 'Fax-R3HGLts', liveChatId: null, viewers: 0, totalViews: 0, isLive: false }
                     ],
                     systemHealth: [
                         { label: 'Stream Health', value: 100, color: 'text-emerald-400', bg: 'bg-emerald-500' },
@@ -368,7 +370,7 @@
                 }
             },
             mounted() {
-                this.addLog("Arena Master Control v4.3 Iniciado.");
+                this.addLog("Arena Master Control v4.3 Iniciado com 4 Áreas.");
                 this.fetchYouTubeData();
                 setInterval(this.fetchYouTubeData, 30000);
             }
