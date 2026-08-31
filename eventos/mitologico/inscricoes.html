@@ -206,7 +206,7 @@
             <ul> 
                 <li><strong>Como funciona?:</strong> Escolha a distância que deseja completar ao longo do mês e registre suas corridas. 
                 O desafio é 100% virtual — ou seja, você pode correr onde e quando quiser!</li> 
-                <li><strong>Inscrição:</strong> R$ 46,99 — preencha os dados abaixo para garantir sua participação.</li> 
+                <li><strong>Inscrição:</strong> R$ 56,99 — preencha os dados abaixo para garantir sua participação.</li> 
                 <li><strong>Confirmação:</strong> Sua inscrição só será validada após a verificação manual do pagamento pela equipe organizadora.</li> 
                 <li><strong>Dúvidas ou problemas?</strong> Entre em contato com os organizadores.</li> 
             </ul> 
@@ -256,7 +256,7 @@
                 <input type="checkbox" id="checkMascote" name="etapaMascote">
                 <div class="mascote-text">
                     <strong>ADICIONAR DESAFIO ATENA?</strong><br>
-                    <small>Garanta sua participação extra por apenas <b>R$ 33,00</b> adicionais (Total R$ 79,99).</small>
+                    <small>Garanta sua participação extra por apenas <b>R$ 43,00</b> adicionais (Total R$ 99,99).</small>
                 </div>
             </label>
 
@@ -401,7 +401,7 @@
             document.getElementById('res_meta').innerText = document.getElementById('distancia').value || '-';
             
             const isMascote = checkMascote.checked;
-            const valorTotal = isMascote ? 79.99 : 46.99;
+            const valorTotal = isMascote ? 99.99 : 56.99;
             
             document.getElementById('res_mascote').innerText = isMascote ? 'Sim' : 'Não';
             document.getElementById('res_total').innerText = valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
@@ -429,7 +429,7 @@
                 let fotoBase64 = "";
                 if (fotoFile) fotoBase64 = await toBase64(fotoFile);
 
-                const valorCalculado = checkMascote.checked ? "79.99" : "46.99";
+                const valorCalculado = checkMascote.checked ? "99.99" : "56.99";
 
                 const dados = {
                     nome: document.getElementById('nome').value,
