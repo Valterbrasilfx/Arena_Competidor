@@ -75,17 +75,19 @@
         .atleta-nome { font-weight: 600; color: #111827; font-size: 0.95rem; }
         .atleta-ord { font-size: 0.7rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2px; }
 
-        /* Estilos para o Status de Pagamento */
-        .badge-status {
-            padding: 4px 10px;
+        /* Estilos para os Badges de Status de Pagamento */
+        .status-badge {
+            padding: 4px 8px;
             border-radius: 6px;
+            font-weight: 600;
             font-size: 0.75rem;
-            font-weight: 700;
-            display: inline-block;
             text-transform: uppercase;
+            display: inline-block;
         }
-        .badge-pago { background-color: #d1fae5; color: #065f46; }
-        .badge-pendente { background-color: #fee2e2; color: #991b1b; }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
 
         #photoModal {
             display: none; position: fixed; z-index: 2000; top: 0; left: 0;
@@ -147,6 +149,7 @@
         
         let dadosAtletas = [];
         let colMap = {};
+        let colunaPagamentoKey = '';
 
         function abrirFoto(src) {
             const modal = document.getElementById('photoModal');
@@ -202,6 +205,11 @@
                 const linhas = csvText.split('\n').filter(l => l.trim() !== '');
                 const cabecalhoOriginal = linhas[0].split(',').map(c => c.trim().replace(/"/g, ''));
                 
+                // Mapeia especificamente a coluna R (índice 17) para o pagamento
+                if (cabecalhoOriginal.length > 17) {
+                    colunaPagamentoKey = cabecalhoOriginal[17];
+                }
+
                 cabecalhoOriginal.forEach((c, i) => {
                     const clean = c.toUpperCase();
                     if (clean.includes("ORD")) colMap.ORD = c;
@@ -210,14 +218,6 @@
                     if (clean.includes("EQUIPE")) colMap.EQUIPE = c;
                     if (clean.includes("PROFESSOR")) colMap.PROFESSOR = c;
                 });
-
-                // Mapeamento específico da coluna R (índice 17 no array, considerando base 0)
-                if (cabecalhoOriginal.length > 17) {
-                    colMap.PAGAMENTO = cabecalhoOriginal[17];
-                } else {
-                    // Fallback caso a planilha tenha menos colunas
-                    colMap.PAGAMENTO = cabecalhoOriginal[cabecalhoOriginal.length - 1];
-                }
 
                 dadosAtletas = linhas.slice(1).map(linha => {
                     const colunas = dynamicSplit(linha);
@@ -279,15 +279,32 @@
             const fC = document.getElementById('filtroCategoria').value;
             const fP = document.getElementById('filtroPeso').value;
 
-            const filtradosParaTabela = dadosAtletas.filter(a => 
-                (fG === 'todos' || a['SEXO'] === fG) &&
-                (fF === 'todos' || a['SUA FAIXA'] === fF) &&
-                (fC === 'todos' || a['SUA CATEGORIA'] === fC) &&
-                (fP === 'todos' || a['SEU PESO'] === fP)
-            );
+            // Filtra atletas que atendem aos selects E estão confirmados na coluna R
+            const filtradosParaTabela = dadosAtletas.filter(a => {
+                const atendeFiltros = (fG === 'todos' || a['SEXO'] === fG) &&
+                                      (fF === 'todos' || a['SUA FAIXA'] === fF) &&
+                                      (fC === 'todos' || a['SUA CATEGORIA'] === fC) &&
+                                      (fP === 'todos' || a['SEU PESO'] === fP);
+                
+                if (!atendeFiltros) return false;
+
+                // Valida o valor da Coluna R (pagamento)
+                const valorPagamento = colunaPagamentoKey ? (a[colunaPagamentoKey] || '').toUpperCase() : '';
+                
+                const isConfirmado = valorPagamento.includes('CONFIRM') || 
+                                     valorPagamento.includes('PAGO') || 
+                                     valorPagamento.includes('APROVADO') || 
+                                     valorPagamento.includes('SIM');
+                
+                return isConfirmado;
+            });
 
             if(atualizarFiltros) {
-                atualizarOpcoesDosFiltros(filtradosParaTabela.length > 0 || (fG==='todos' && fF==='todos' && fC==='todos' && fP==='todos') ? (filtradosParaTabela.length > 0 ? filtradosParaTabela : dadosAtletas) : dadosAtletas);
+                const apenasConfirmadosGeral = dadosAtletas.filter(a => {
+                    const vp = colunaPagamentoKey ? (a[colunaPagamentoKey] || '').toUpperCase() : '';
+                    return vp.includes('CONFIRM') || vp.includes('PAGO') || vp.includes('APROVADO') || vp.includes('SIM');
+                });
+                atualizarOpcoesDosFiltros(apenasConfirmadosGeral);
             }
 
             container.innerHTML = '';
@@ -299,6 +316,11 @@
                 if (!estrutura[fx][ch]) estrutura[fx][ch] = [];
                 estrutura[fx][ch].push(a);
             });
+
+            if (Object.keys(estrutura).length === 0) {
+                container.innerHTML = '<p style="text-align: center; color: var(--text-secondary); padding: 20px;">Nenhum atleta com pagamento confirmado encontrado.</p>';
+                return;
+            }
 
             Object.keys(estrutura).sort((a,b) => (ORDEM_FAIXAS[a.toUpperCase()]||99)-(ORDEM_FAIXAS[b.toUpperCase()]||99)).forEach(fx => {
                 const divFaixa = document.createElement('div');
@@ -314,20 +336,10 @@
                         <div class="accordion-header" onclick="toggleAcc(this)">${ch} (${atletas.length})</div>
                         <div class="accordion-content">
                             <table>
-                                <thead>
-                                    <tr>
-                                        <th>Atleta</th>
-                                        <th>Equipe</th>
-                                        <th>Professor</th>
-                                        <th>Status</th>
-                                    </tr>
-                                </thead>
+                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th><th>Pagamento</th></tr></thead>
                                 <tbody>
                                     ${atletas.map(a => {
                                         const urlFinal = tratarLinkFoto(a[colMap.FOTO]);
-                                        const statusPagamento = (a[colMap.PAGAMENTO] || 'Pendente').trim();
-                                        const isPago = statusPagamento.toUpperCase().includes('PAGO') || statusPagamento.toUpperCase().includes('CONFIRMADO');
-                                        const classeBadge = isPago ? 'badge-pago' : 'badge-pendente';
 
                                         return `
                                         <tr>
@@ -342,9 +354,9 @@
                                             </td>
                                             <td data-label="Equipe">${a[colMap.EQUIPE] || '---'}</td>
                                             <td data-label="Professor">${a[colMap.PROFESSOR] || '---'}</td>
-                                            <td data-label="Status"><span class="badge-status ${classeBadge}">${statusPagamento}</span></td>
+                                            <td data-label="Pagamento"><span class="status-badge status-confirmado">Confirmado</span></td>
                                         </tr>
-                                        `}).join('')}
+                                    `}).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -361,7 +373,7 @@
 
         document.querySelectorAll('select').forEach(s => {
             s.addEventListener('change', (e) => {
-                renderizar(true);
+                renderizar(false);
             });
         });
 
