@@ -115,7 +115,7 @@
             color: #374151;
         }
 
-        /* Estilos para os Badges de Status de Pagamento */
+        /* Estilo para o Badge de Status de Pagamento */
         .status-badge {
             padding: 4px 8px;
             border-radius: 6px;
@@ -123,14 +123,8 @@
             font-size: 0.75rem;
             text-transform: uppercase;
             display: inline-block;
-        }
-        .status-confirmado {
             background-color: #dcfce7;
             color: #15803d;
-        }
-        .status-pendente {
-            background-color: #fee2e2;
-            color: #b91c1c;
         }
 
         .link-voltar {
@@ -199,7 +193,6 @@
                     pagamento: headers.findIndex(h => h.includes('PAGAMENTO') || h.includes('STATUS'))
                 };
 
-                // Se o índice da coluna ABSOLUTO não for encontrado, encerra para evitar erros
                 if (idx.abs === -1) {
                     document.getElementById('loading-message').textContent = '❌ Coluna "ABSOLUTO" não encontrada na planilha.';
                     return;
@@ -213,14 +206,12 @@
                     let faixaFinal = faixaOriginal;
                     let categoriaFinal = categoriaOriginal;
 
-                    // Regra universal para Categoria Juvenil (Masculino e Feminino)
                     if (categoriaOriginal.includes('JUVENIL')) {
                         if (faixaOriginal === 'AZUL' || faixaOriginal === 'ROXA') {
                             faixaFinal = 'AZUL / ROXA';
                         }
                     }
 
-                    // --- TRATAMENTO FEMININO ---
                     if (sexoOriginal.includes('FEMININO') || sexoOriginal === 'F') {
                         if (!categoriaOriginal.includes('JUVENIL')) {
                             if (faixaOriginal === 'AZUL' || faixaOriginal === 'ROXA') {
@@ -231,7 +222,6 @@
                             categoriaFinal = 'ADULTO E MASTER (TODAS)';
                         }
                     } 
-                    // --- TRATAMENTO MASCULINO ---
                     else {
                         if (!categoriaOriginal.includes('JUVENIL')) {
                             if (categoriaOriginal === 'MASTER 1') {
@@ -242,6 +232,8 @@
                         }
                     }
 
+                    const valorPagamento = idx.pagamento !== -1 ? (row[idx.pagamento] || '').toUpperCase().trim() : '';
+
                     return {
                         ord: row[idx.ord] || '-',
                         nome: row[idx.nome] || '',
@@ -250,9 +242,14 @@
                         categoria: categoriaFinal,
                         sexo: sexoOriginal.includes('FEMININO') || sexoOriginal === 'F' ? 'FEMININO' : 'MASCULINO',
                         absoluto: (row[idx.abs] || '').toUpperCase().trim(),
-                        pagamento: idx.pagamento !== -1 ? (row[idx.pagamento] || 'Pendente') : 'Pendente'
+                        pagamento: valorPagamento
                     };
-                }).filter(atleta => atleta.absoluto === 'SIM');
+                }).filter(atleta => {
+                    // Filtra apenas quem está no absoluto E tem pagamento confirmado/pago
+                    const isAbsoluto = atleta.absoluto === 'SIM';
+                    const isPago = atleta.pagamento.includes('CONFIRM') || atleta.pagamento.includes('PAGO');
+                    return isAbsoluto && isPago;
+                });
 
                 renderizar(data);
             } catch (error) {
@@ -267,7 +264,7 @@
             document.getElementById('loading-message').style.display = 'none';
 
             if (data.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">Nenhum atleta no Absoluto encontrado.</p>';
+                container.innerHTML = '<p style="text-align:center;">Nenhum atleta com pagamento confirmado no Absoluto encontrado.</p>';
                 return;
             }
 
@@ -303,24 +300,18 @@
                                         <th>ORD</th>
                                         <th>Atleta</th>
                                         <th>Equipe</th>
-                                        <th>Pagamento</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${atletas.map(a => {
-                                        const valorPagamento = a.pagamento;
-                                        const isConfirmado = valorPagamento.toUpperCase().includes('CONFIRM') || valorPagamento.toUpperCase().includes('PAGO');
-                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
-                                        const statusText = isConfirmado ? 'Confirmado' : 'Pendente';
-
-                                        return `
+                                    ${atletas.map(a => `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta">${a.nome}</td>
                                             <td data-label="Equipe">${a.equipe}</td>
-                                            <td data-label="Pagamento"><span class="status-badge ${statusClass}">${statusText}</span></td>
+                                            <td data-label="Status"><span class="status-badge">Confirmado</span></td>
                                         </tr>
-                                    `}).join('')}
+                                    `).join('')}
                                 </tbody>
                             </table>
                         </div>
