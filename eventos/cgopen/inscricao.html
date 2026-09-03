@@ -22,7 +22,7 @@
 body{
     font-family:'Montserrat',sans-serif;
     background:
-        linear-gradient(180deg,#06152F 0%,#08204F 45%,#040B1F 100%);
+        linear-gradient(180deg,#121212 0%,#1a1008 45%,#0a0705 100%);
     min-height:100vh;
     display:flex;
     justify-content:center;
@@ -33,16 +33,16 @@ body{
     position:relative;
 }
 
-/* Luz azul central */
+/* Luz laranja central */
 body::before{
     content:"";
     position:absolute;
     inset:0;
     background:
     radial-gradient(circle,
-        rgba(34,199,255,.30) 0%,
-        rgba(0,102,255,.18) 35%,
-        rgba(4,11,31,0) 75%);
+        rgba(255,140,0,.25) 0%,
+        rgba(255,85,0,.12) 35%,
+        rgba(0,0,0,0) 75%);
     z-index:1;
 }
 
@@ -55,7 +55,7 @@ body::after{
     background:
         linear-gradient(120deg,
         transparent 35%,
-        rgba(25,184,245,.05) 50%,
+        rgba(255,140,0,.04) 50%,
         transparent 65%);
     transform:rotate(-8deg);
     animation:moveLight 8s linear infinite;
@@ -70,12 +70,12 @@ body::after{
     text-align:center;
     padding:45px 35px;
     border-radius:22px;
-    background:rgba(8,24,58,.60);
+    background:rgba(18,14,12,.85);
     backdrop-filter:blur(14px);
-    border:1px solid rgba(255,255,255,.08);
+    border:1px solid rgba(255,140,0,.15);
     box-shadow:
-        0 0 40px rgba(0,140,255,.15),
-        inset 0 0 25px rgba(255,255,255,.03);
+        0 0 40px rgba(255,102,0,.15),
+        inset 0 0 25px rgba(255,255,255,.02);
 }
 
 /* Badge */
@@ -88,7 +88,7 @@ body::after{
 
     border-radius:50px;
 
-    background:linear-gradient(135deg,#1ABEFF,#005CFF);
+    background:linear-gradient(135deg,#ff8c00,#ff4500);
 
     color:#fff;
 
@@ -100,7 +100,7 @@ body::after{
 
     text-transform:uppercase;
 
-    box-shadow:0 0 25px rgba(26,190,255,.45);
+    box-shadow:0 0 25px rgba(255,140,0,.45);
 
     margin-bottom:30px;
 
@@ -126,13 +126,13 @@ h1 span{
 
     display:block;
 
-    color:#22C7FF;
+    color:#ff8c00;
 
 }
 
 .subtitle{
 
-    color:#FFC928;
+    color:#ff9f1a;
 
     font-size:1.35rem;
 
@@ -150,7 +150,7 @@ p{
 
     font-size:1.08rem;
 
-    color:#D7E2EF;
+    color:#e0d8d0;
 
     line-height:1.7;
 
@@ -162,9 +162,9 @@ p{
 
     text-align:left;
 
-    background:rgba(10,38,88,.65);
+    background:rgba(28,18,10,.85);
 
-    border-left:5px solid #22C7FF;
+    border-left:5px solid #ff8c00;
 
     border-radius:10px;
 
@@ -188,7 +188,7 @@ p{
 
 .alert-box span{
 
-    color:#D7E2EF;
+    color:#e0d8d0;
 
     line-height:1.6;
 
@@ -206,7 +206,7 @@ p{
 
     border-radius:20px;
 
-    background:linear-gradient(90deg,#22C7FF,#005CFF);
+    background:linear-gradient(90deg,#ff8c00,#121212);
 
 }
 
