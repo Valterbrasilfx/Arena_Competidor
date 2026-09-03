@@ -10,6 +10,7 @@
         :root {
             --primary-color: #2563eb; 
             --accent-green: #22c55e;
+            --accent-red: #ef4444;
             --bg-color: #f3f4f6;
             --card-bg: #ffffff;
             --text-main: #1f2937;
@@ -102,6 +103,7 @@
         }
 
         .accordion-content.open {
+            max-height: 15000px;
             padding: 0 25px 25px;
             border-top: 1px solid #f3f4f6;
         }
@@ -138,6 +140,24 @@
             font-weight: 700;
             font-size: 0.75rem;
             color: #4b5563;
+        }
+
+        /* Estilos para os Badges de Status de Pagamento */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .status-pendente {
+            background-color: #fee2e2;
+            color: #b91c1c;
         }
 
         .link-voltar {
@@ -203,7 +223,6 @@
         async function fetchAndProcessData() {
             try {
                 const response = await fetch(CSV_URL);
-                if (!response.ok) throw new Error('Erro na resposta do servidor');
                 const csvText = await response.text();
                 const lines = csvText.split(/\r?\n/).filter(line => line.trim() !== '');
                 
@@ -216,7 +235,8 @@
                     professor: headers.findIndex(h => h.includes('PROFESSOR')),
                     faixa: headers.indexOf('SUA FAIXA'),
                     peso: headers.indexOf('SEU PESO'),
-                    categoria: headers.indexOf('SUA CATEGORIA')
+                    categoria: headers.indexOf('SUA CATEGORIA'),
+                    pagamento: headers.findIndex(h => h.includes('PAGAMENTO') || h.includes('STATUS'))
                 };
 
                 const data = lines.slice(1).map(line => {
@@ -228,13 +248,14 @@
                         professor: values[idx.professor] || 'NÃO INFORMADO',
                         faixa: values[idx.faixa] || '',
                         peso: values[idx.peso] || '',
-                        categoria: values[idx.categoria] || ''
+                        categoria: values[idx.categoria] || '',
+                        pagamento: idx.pagamento !== -1 ? (values[idx.pagamento] || 'Pendente') : 'Pendente'
                     };
                 });
 
                 renderEquipes(data);
             } catch (error) {
-                document.getElementById('loading-message').textContent = '❌ Erro ao carregar dados. Verifique sua conexão.';
+                document.getElementById('loading-message').textContent = '❌ Erro ao carregar dados.';
                 console.error(error);
             }
         }
@@ -278,18 +299,25 @@
                                         <th>Faixa</th>
                                         <th>Peso</th>
                                         <th>Categoria</th>
+                                        <th>Pagamento</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${infoEquipe.professores[prof].map(a => `
+                                    ${infoEquipe.professores[prof].map(a => {
+                                        const isConfirmado = a.pagamento.toUpperCase().includes('CONFIRM') || a.pagamento.toUpperCase().includes('PAGO');
+                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
+                                        const statusText = isConfirmado ? 'Confirmado' : 'Pendente';
+                                        
+                                        return `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta">${a.nome}</td>
                                             <td data-label="Faixa">${a.faixa}</td>
                                             <td data-label="Peso">${a.peso}</td>
                                             <td data-label="Categoria">${a.categoria}</td>
+                                            <td data-label="Pagamento"><span class="status-badge ${statusClass}">${statusText}</span></td>
                                         </tr>
-                                    `).join('')}
+                                    `;}).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -303,11 +331,7 @@
                             <p>${infoEquipe.total} Atleta(s) Inscrito(s)</p>
                         </div>
                     </div>
-                    <div class="accordion-content">
-                        <div style="padding-top: 5px;">
-                            ${htmlProfessores}
-                        </div>
-                    </div>
+                    <div class="accordion-content">${htmlProfessores}</div>
                 `; 
                 container.appendChild(item);
             });
@@ -317,18 +341,14 @@
             const content = el.nextElementSibling;
             const isActive = el.classList.contains('active');
 
-            // Fecha todos os outros acordeões abertos
             document.querySelectorAll('.accordion-header').forEach(header => {
                 header.classList.remove('active');
-                header.nextElementSibling.style.maxHeight = null;
                 header.nextElementSibling.classList.remove('open');
             });
 
-            // Se não estava ativo, calcula a altura exata e abre
             if (!isActive) {
                 el.classList.add('active');
                 content.classList.add('open');
-                content.style.maxHeight = content.scrollHeight + "px";
             }
         }
 
