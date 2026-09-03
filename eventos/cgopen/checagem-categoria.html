@@ -75,6 +75,18 @@
         .atleta-nome { font-weight: 600; color: #111827; font-size: 0.95rem; }
         .atleta-ord { font-size: 0.7rem; color: var(--primary-color); font-weight: 800; margin-bottom: 2px; }
 
+        /* Estilos para o Status de Pagamento */
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: inline-block;
+            text-transform: uppercase;
+        }
+        .badge-pago { background-color: #d1fae5; color: #065f46; }
+        .badge-pendente { background-color: #fee2e2; color: #991b1b; }
+
         #photoModal {
             display: none; position: fixed; z-index: 2000; top: 0; left: 0;
             width: 100%; height: 100%; background: rgba(0,0,0,0.9);
@@ -199,6 +211,14 @@
                     if (clean.includes("PROFESSOR")) colMap.PROFESSOR = c;
                 });
 
+                // Mapeamento específico da coluna R (índice 17 no array, considerando base 0)
+                if (cabecalhoOriginal.length > 17) {
+                    colMap.PAGAMENTO = cabecalhoOriginal[17];
+                } else {
+                    // Fallback caso a planilha tenha menos colunas
+                    colMap.PAGAMENTO = cabecalhoOriginal[cabecalhoOriginal.length - 1];
+                }
+
                 dadosAtletas = linhas.slice(1).map(linha => {
                     const colunas = dynamicSplit(linha);
                     let obj = {};
@@ -294,10 +314,20 @@
                         <div class="accordion-header" onclick="toggleAcc(this)">${ch} (${atletas.length})</div>
                         <div class="accordion-content">
                             <table>
-                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th></tr></thead>
+                                <thead>
+                                    <tr>
+                                        <th>Atleta</th>
+                                        <th>Equipe</th>
+                                        <th>Professor</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                     ${atletas.map(a => {
                                         const urlFinal = tratarLinkFoto(a[colMap.FOTO]);
+                                        const statusPagamento = (a[colMap.PAGAMENTO] || 'Pendente').trim();
+                                        const isPago = statusPagamento.toUpperCase().includes('PAGO') || statusPagamento.toUpperCase().includes('CONFIRMADO');
+                                        const classeBadge = isPago ? 'badge-pago' : 'badge-pendente';
 
                                         return `
                                         <tr>
@@ -312,8 +342,9 @@
                                             </td>
                                             <td data-label="Equipe">${a[colMap.EQUIPE] || '---'}</td>
                                             <td data-label="Professor">${a[colMap.PROFESSOR] || '---'}</td>
+                                            <td data-label="Status"><span class="badge-status ${classeBadge}">${statusPagamento}</span></td>
                                         </tr>
-                                    `}).join('')}
+                                        `}).join('')}
                                 </tbody>
                             </table>
                         </div>
