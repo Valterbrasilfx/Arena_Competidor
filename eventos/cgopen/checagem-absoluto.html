@@ -115,6 +115,24 @@
             color: #374151;
         }
 
+        /* Estilos para os Badges de Status de Pagamento */
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+        .status-confirmado {
+            background-color: #dcfce7;
+            color: #15803d;
+        }
+        .status-pendente {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+
         .link-voltar {
             display: block; width: fit-content; margin: 40px auto;
             padding: 14px 30px; background-color: #111827; color: #fff;
@@ -177,9 +195,11 @@
                     faixa: headers.indexOf('SUA FAIXA'),
                     cat: headers.indexOf('SUA CATEGORIA'),
                     sexo: headers.indexOf('SEXO'),
-                    abs: headers.indexOf('ABSOLUTO')
+                    abs: headers.indexOf('ABSOLUTO'),
+                    pagamento: headers.findIndex(h => h.includes('PAGAMENTO') || h.includes('STATUS'))
                 };
 
+                // Se o índice da coluna ABSOLUTO não for encontrado, encerra para evitar erros
                 if (idx.abs === -1) {
                     document.getElementById('loading-message').textContent = '❌ Coluna "ABSOLUTO" não encontrada na planilha.';
                     return;
@@ -193,12 +213,14 @@
                     let faixaFinal = faixaOriginal;
                     let categoriaFinal = categoriaOriginal;
 
+                    // Regra universal para Categoria Juvenil (Masculino e Feminino)
                     if (categoriaOriginal.includes('JUVENIL')) {
                         if (faixaOriginal === 'AZUL' || faixaOriginal === 'ROXA') {
                             faixaFinal = 'AZUL / ROXA';
                         }
                     }
 
+                    // --- TRATAMENTO FEMININO ---
                     if (sexoOriginal.includes('FEMININO') || sexoOriginal === 'F') {
                         if (!categoriaOriginal.includes('JUVENIL')) {
                             if (faixaOriginal === 'AZUL' || faixaOriginal === 'ROXA') {
@@ -209,6 +231,7 @@
                             categoriaFinal = 'ADULTO E MASTER (TODAS)';
                         }
                     } 
+                    // --- TRATAMENTO MASCULINO ---
                     else {
                         if (!categoriaOriginal.includes('JUVENIL')) {
                             if (categoriaOriginal === 'MASTER 1') {
@@ -226,7 +249,8 @@
                         faixa: faixaFinal,
                         categoria: categoriaFinal,
                         sexo: sexoOriginal.includes('FEMININO') || sexoOriginal === 'F' ? 'FEMININO' : 'MASCULINO',
-                        absoluto: (row[idx.abs] || '').toUpperCase().trim()
+                        absoluto: (row[idx.abs] || '').toUpperCase().trim(),
+                        pagamento: idx.pagamento !== -1 ? (row[idx.pagamento] || 'Pendente') : 'Pendente'
                     };
                 }).filter(atleta => atleta.absoluto === 'SIM');
 
@@ -279,16 +303,24 @@
                                         <th>ORD</th>
                                         <th>Atleta</th>
                                         <th>Equipe</th>
+                                        <th>Pagamento</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${atletas.map(a => `
+                                    ${atletas.map(a => {
+                                        const valorPagamento = a.pagamento;
+                                        const isConfirmado = valorPagamento.toUpperCase().includes('CONFIRM') || valorPagamento.toUpperCase().includes('PAGO');
+                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
+                                        const statusText = isConfirmado ? 'Confirmado' : 'Pendente';
+
+                                        return `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta">${a.nome}</td>
                                             <td data-label="Equipe">${a.equipe}</td>
+                                            <td data-label="Pagamento"><span class="status-badge ${statusClass}">${statusText}</span></td>
                                         </tr>
-                                    `).join('')}
+                                    `}).join('')}
                                 </tbody>
                             </table>
                         </div>
