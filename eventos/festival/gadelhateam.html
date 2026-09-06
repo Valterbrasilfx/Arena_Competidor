@@ -8,8 +8,8 @@
     
     <style>
         /* =========================================
-           CONFIGURAÇÕES DO CABEÇALHO (MANTIDAS)
-           ========================================= */
+            CONFIGURAÇÕES DO CABEÇALHO (MANTIDAS)
+            ========================================= */
         header {
             width: 100%;
             text-align: center;
@@ -34,8 +34,8 @@
         }
 
         /* =========================================
-           ESTILOS GERAIS E MODERNOS
-           ========================================= */
+            ESTILOS GERAIS E MODERNOS
+            ========================================= */
         :root {
             --primary-color: #2563eb; 
             --accent-green: #22c55e;
@@ -85,8 +85,8 @@
         }
 
         /* =========================================
-           LAYOUT DE GRID (BANNER + BOTÕES)
-           ========================================= */
+            LAYOUT DE GRID (BANNER + BOTÕES)
+            ========================================= */
         .dashboard-grid {
             display: grid;
             grid-template-columns: 1fr 1.2fr;
@@ -145,6 +145,7 @@
             text-align: center;
             box-shadow: var(--shadow-sm);
             border: 1px solid transparent;
+            cursor: pointer;
         }
 
         .btn-modern:active {
@@ -196,8 +197,8 @@
         }
 
         /* =========================================
-           CARD DE INFORMAÇÕES (GRID)
-           ========================================= */
+            CARD DE INFORMAÇÕES (GRID)
+            ========================================= */
         .info-card {
             background: var(--card-bg);
             border-radius: var(--radius);
@@ -264,8 +265,8 @@
         }
 
         /* =========================================
-           RODAPÉ E WHATSAPP
-           ========================================= */
+            RODAPÉ E WHATSAPP
+            ========================================= */
         .footer {
             padding: 30px 0;
             width: 100%;
@@ -314,18 +315,117 @@
         }
 
         /* =========================================
-           RESPONSIVIDADE (MOBILE) - CORRIGIDA
-           ========================================= */
+            ESTILOS DO MODAL (POPUP DO EDITAL)
+            ========================================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .modal-content {
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 800px;
+            max-height: 85vh;
+            border-radius: var(--radius);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            background-color: #111827;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.2rem;
+        }
+
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .modal-body {
+            padding: 24px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-main);
+        }
+
+        .modal-body h4 {
+            font-family: 'Poppins', sans-serif;
+            color: #111827;
+            margin-top: 24px;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 6px;
+        }
+
+        .modal-body p {
+            margin-bottom: 12px;
+        }
+
+        .modal-body ul {
+            margin-top: 4px;
+            margin-bottom: 16px;
+            padding-left: 20px;
+        }
+
+        .modal-body li {
+            margin-bottom: 6px;
+        }
+
+        /* =========================================
+            RESPONSIVIDADE (MOBILE) - CORRIGIDA
+            ========================================= */
         @media (max-width: 900px) {
             .dashboard-grid {
                 grid-template-columns: 1fr;
             }
             
-            /* CORREÇÃO DO BANNER AQUI */
             .card-banner {
-                /* Mantém o aspecto retrato para não cortar a imagem vertical */
                 aspect-ratio: 4/5; 
-                /* Remove o limite de altura antigo de 300px */
                 max-height: none; 
             }
         }
@@ -382,6 +482,10 @@
                     <a href="inscritos.html" class="btn-modern btn-secondary">
                         Atletas Inscritos
                     </a>
+                    <!-- BOTÃO EDITAL ACRESCENTADO AQUI -->
+                    <button type="button" class="btn-modern btn-secondary" onclick="openModal()" style="color: var(--primary-color); border-color: var(--primary-color);">
+                        Edital Oficial
+                    </button>
                     <a href="../../fotos.html" class="btn-modern btn-secondary" style="color: var(--primary-color); border-color: var(--primary-color);">
                         Fotos do Evento
                     </a>
@@ -401,7 +505,8 @@
                     <span class="info-label">Data do evento</span>
                     <span class="info-value"><span class="icon-box" style="background:#10b981"></span> 18 de Setembro de 2026</span>
                 </div>
-            
+            </div>
+        
             <div class="info-note">
                  As datas e horários estão sujeitos a alteração pela organização do evento. Fique atento às atualizações.
             </div>
@@ -411,6 +516,161 @@
     <div class="footer">
         &copy; 2026 Arena Competidor. Todos os direitos reservados.
     </div>
+
+    <!-- POPUP / MODAL DO EDITAL -->
+    <div id="editalModal" class="modal-overlay" onclick="outsideClick(event)">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>EDITAL OFICIAL – FESTIVAL GADELHA TEAM 2026</h3>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h4>1. APRESENTAÇÃO</h4>
+                <p>A Gadelha Team tem a honra de realizar o Festival Gadelha Team 2026, um evento voltado à promoção do esporte, da disciplina, da cultura marcial e da integração entre atletas, famílias e a comunidade. Levando vida por meio de doações de sangue.</p>
+                <p>O festival reunirá apresentações, competições e demonstrações de diversas modalidades, fortalecendo o desenvolvimento das artes marciais na região do Seridó e incentivando a prática esportiva como ferramenta de educação, saúde e inclusão social.</p>
+
+                <h4>2. INFORMAÇÕES GERAIS</h4>
+                <p><strong>Evento:</strong> Festival Gadelha Team 2026</p>
+                <p><strong>Data:</strong> 18 de setembro de 2026</p>
+                <p><strong>Local:</strong> Centro da Ilha de Santana – Caicó/RN</p>
+                <p><strong>Horário de abertura:</strong> 17h</p>
+                <p><strong>Realização:</strong> Gadelha Team</p>
+                <p><strong>Contato:</strong> (84) 99654-1181</p>
+                <p><strong>Instagram Oficial:</strong> @festivalgadelhateam</p>
+                <p><strong>Entrada:</strong> Gratuita</p>
+
+                <h4>3. OBJETIVOS DO EVENTO</h4>
+                <ul>
+                    <li>Incentivar a prática esportiva;</li>
+                    <li>Promover a integração entre modalidades;</li>
+                    <li>Valorizar atletas, professores e projetos sociais;</li>
+                    <li>Divulgar as artes marciais para a população;</li>
+                    <li>Estimular hábitos saudáveis e disciplina através do esporte;</li>
+                    <li>Fortalecer o turismo esportivo e o calendário de eventos da região;</li>
+                    <li>Ação social por meio das doações.</li>
+                </ul>
+
+                <h4>4. MODALIDADES PARTICIPANTES</h4>
+                <p>O festival poderá contar com:</p>
+                <ul>
+                    <li>Jiu-Jitsu</li>
+                    <li>Judô</li>
+                    <li>Karatê</li>
+                    <li>Taekwondo</li>
+                    <li>Muay Thai</li>
+                    <li>Swordplay</li>
+                </ul>
+
+                <h4>5. PROGRAMAÇÃO OFICIAL</h4>
+                <p><strong>17h30</strong> – Abertura Oficial</p>
+                <p><em>Área 01</em><br>17h45 – Apresentação de Muay Thai</p>
+                <p><em>Área 02</em><br>17h50 – Apresentação de Karatê</p>
+                <p><em>Área 03</em><br>17h55 – Apresentação de Taekwondo</p>
+                <p><em>Áreas 04 e 05</em><br>18h00 – Competição de Judô</p>
+                <p><em>Área 06</em><br>18h00 – Apresentação de Swordplay</p>
+                <p><em>Áreas 01, 02 e 03</em><br>18h15 – Competição de Jiu-Jítsu</p>
+                <p><em>A programação poderá sofrer ajustes pela organização visando o melhor andamento do evento.</em></p>
+
+                <h4>6. PARTICIPAÇÃO</h4>
+                <p>Poderão participar:</p>
+                <ul>
+                    <li>Atletas regularmente matriculados na Gadelha Team;</li>
+                    <li>Projetos sociais convidados;</li>
+                    <li>Equipes parceiras;</li>
+                    <li>Atletas previamente inscritos pela organização.</li>
+                </ul>
+                <p>Menores de idade deverão estar acompanhados por responsável legal ou representante da equipe.</p>
+
+                <h4>7. INSCRIÇÕES E AÇÃO SOCIAL – DOAÇÃO DE SANGUE</h4>
+                <p>O Festival Gadelha Team 2026 tem como um de seus principais objetivos utilizar o esporte como instrumento de solidariedade e contribuição social. Por isso, a inscrição dos participantes estará diretamente vinculada à campanha de doação de sangue promovida pelo evento.</p>
+                <p>As doações poderão ser realizadas entre os dias 01 e 16 de setembro de 2026.</p>
+                
+                <p><strong>7.1 – Validação por doação de sangue</strong></p>
+                <p>A inscrição poderá ser validada mediante a apresentação do comprovante de doação de sangue, sendo aceita:</p>
+                <ul>
+                    <li>Doação realizada pelo próprio aluno/atleta; ou</li>
+                    <li>Doação realizada por terceiros em nome do aluno/atleta, possibilitando a participação de crianças, menores de idade ou pessoas que, por qualquer motivo, não estejam aptas a realizar a doação.</li>
+                </ul>
+                <p>Cada inscrição deverá estar vinculada a uma doação de sangue válida, realizada dentro do período estabelecido pela organização.</p>
+
+                <p><strong>7.2 – Validação sem doação</strong></p>
+                <p>Caso não seja possível realizar ou conseguir uma doação de sangue para validação da inscrição, o participante poderá confirmar sua participação mediante o pagamento da taxa de inscrição no valor de R$ 30,00.</p>
+
+                <p><strong>7.3 – Comprovação</strong></p>
+                <p>O comprovante de doação deverá ser apresentado ou enviado para a organização do Festival, dentro do prazo estabelecido, enviando o comprovante no WhatsApp oficial na página de pagamento do arena competidor.</p>
+                <p>A inscrição somente será considerada confirmada após a validação do comprovante de doação ou do pagamento da taxa de R$ 30,00.</p>
+                <p>A campanha busca incentivar atletas, familiares, amigos e toda a comunidade Gadelha Team a participarem desse gesto de solidariedade, fazendo com que o Festival vá além da competição e contribua diretamente para ajudar a salvar vidas por meio da doação de sangue.</p>
+
+                <h4>8. PREMIAÇÃO</h4>
+                <p>As competições oficiais poderão contar com:</p>
+                <ul>
+                    <li>Medalhas;</li>
+                    <li>Troféus;</li>
+                    <li>Premiações especiais dos patrocinadores;</li>
+                    <li>Reconhecimento para atletas destaque.</li>
+                </ul>
+                <p>Os critérios específicos serão divulgados conforme cada modalidade.</p>
+
+                <h4>9. RESPONSABILIDADE MÉDICA</h4>
+                <p>Ao participar do evento, o atleta declara estar apto fisicamente para a prática esportiva.</p>
+                <p>A organização disponibilizará suporte de primeiros socorros para atendimento inicial em caso de necessidade.</p>
+                <p>Eventuais despesas médicas posteriores serão de responsabilidade do atleta ou responsável legal.</p>
+
+                <h4>10. USO DE IMAGEM</h4>
+                <p>Ao participar do Festival Gadelha Team, atletas, professores, equipes e responsáveis autorizam gratuitamente o uso de sua imagem, voz e nome para divulgação institucional do evento por 10 anos.</p>
+                <p>O material poderá ser utilizado em:</p>
+                <ul>
+                    <li>Redes sociais;</li>
+                    <li>Fotografias;</li>
+                    <li>Vídeos;</li>
+                    <li>Transmissões ao vivo;</li>
+                    <li>Material promocional;</li>
+                    <li>Imprensa e publicidade.</li>
+                </ul>
+
+                <h4>11. CONDUTA E DISCIPLINA</h4>
+                <p>Não serão tolerados:</p>
+                <ul>
+                    <li>Agressões físicas ou verbais;</li>
+                    <li>Atitudes antidesportivas;</li>
+                    <li>Desrespeito à arbitragem;</li>
+                    <li>Danos ao patrimônio público ou privado;</li>
+                    <li>Comportamentos que prejudiquem o andamento do evento.</li>
+                </ul>
+                <p>A organização poderá advertir, retirar ou desclassificar participantes que descumprirem estas normas.</p>
+
+                <h4>12. PATROCINADORES E APOIADORES</h4>
+                <p>O Festival Gadelha Team poderá contar com patrocinadores, apoiadores institucionais e parceiros comerciais, que terão suas marcas divulgadas conforme os critérios estabelecidos pela organização.</p>
+
+                <h4>13. DISPOSIÇÕES FINAIS</h4>
+                <p>A organização reserva-se o direito de alterar horários, programação e regulamentos sempre que necessário para garantir a segurança e o bom andamento do evento.</p>
+                <p>Os casos omissos serão resolvidos pela comissão organizadora.</p>
+                <p>Ao participar do evento, todos os envolvidos declaram estar de acordo com os termos deste edital.</p>
+
+                <p style="margin-top: 24px; text-align: center;"><strong>Caicó/RN, 2026</strong><br>Comissão Organizadora – Festival Gadelha Team<br>Contato: (84) 99654-1181<br>Instagram: @festivalgadelhateam</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DO MODAL -->
+    <script>
+        function openModal() {
+            document.getElementById('editalModal').style.display = 'flex';
+            document.body.style.overflow = 'hidden'; // Evita scroll do fundo
+        }
+
+        function closeModal() {
+            document.getElementById('editalModal').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Restaura o scroll
+        }
+
+        function outsideClick(event) {
+            const modal = document.getElementById('editalModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
 
     <a href="https://wa.me/5584996189717?text=Ol%C3%A1!%20Vim%20pelo%20site%20e%20gostaria%20de%20falar%20com%20o%20suporte." class="whatsapp-fixed-text-button" target="_blank" rel="noopener noreferrer">
         <svg class="whatsapp-icon-only" viewBox="0 0 16 16">
