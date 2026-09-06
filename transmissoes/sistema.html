@@ -341,7 +341,7 @@
                 },
                 async fetchChatMessages(stream) {
                     try {
-                        The res = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${stream.liveChatId}&part=snippet,authorDetails&key=${this.apiKey}`);
+                        const res = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${stream.liveChatId}&part=snippet,authorDetails&key=${this.apiKey}`);
                         const data = await res.json();
                         
                         if (data.items) {
