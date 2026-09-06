@@ -40,11 +40,12 @@
 
         .video-feed { 
             position: relative; 
-            padding-bottom: 56.25%; 
-            height: 0; 
+            width: 100%;
+            height: 100%;
             background: #000; 
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
+            min-height: 0;
         }
 
         .video-feed:hover {
@@ -72,7 +73,7 @@
         }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
         ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); }
         ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent-red); }
@@ -87,79 +88,77 @@
         }
     </style>
 </head>
-<body class="flex flex-col p-3">
+<body class="flex flex-col p-2.5 h-screen">
 
-    <div id="app" class="flex flex-col h-full overflow-hidden">
+    <div id="app" class="flex flex-col h-full overflow-hidden gap-2">
         
         <!-- HEADER / KPI PANEL -->
-        <header class="flex justify-between items-center mb-3 px-2 flex-shrink-0">
+        <header class="flex justify-between items-center px-1 flex-shrink-0">
             <div class="flex items-center gap-3">
-                <img src="../img/arena2.png" alt="Arena Logo" class="h-6 w-auto filter drop-shadow"> 
+                <img src="../img/arena2.png" alt="Arena Logo" class="h-5 w-auto filter drop-shadow"> 
                 <span class="text-[9px] font-mono-custom tracking-widest text-gray-500 uppercase border-l border-white/10 pl-3">v4.3 Pro</span>
             </div>
             
             <div class="flex gap-2">
-                <div class="kpi-card px-4 py-1.5 rounded-lg">
-                    <p class="text-[8px] text-gray-400 uppercase font-bold tracking-wider">Live Viewers</p>
-                    <p class="text-xl font-black text-red-500 leading-none font-mono-custom">{{ totalLiveViewers }}</p>
+                <div class="kpi-card px-3 py-1 rounded-lg">
+                    <p class="text-[7px] text-gray-400 uppercase font-bold tracking-wider">Live Viewers</p>
+                    <p class="text-lg font-black text-red-500 leading-none font-mono-custom">{{ totalLiveViewers }}</p>
                 </div>
-                <div class="kpi-card px-4 py-1.5 rounded-lg">
-                    <p class="text-[8px] text-gray-400 uppercase font-bold tracking-wider">Acumulado Lives</p>
-                    <p class="text-xl font-black text-amber-500 leading-none font-mono-custom">{{ totalAccumulatedViews }}</p>
+                <div class="kpi-card px-3 py-1 rounded-lg">
+                    <p class="text-[7px] text-gray-400 uppercase font-bold tracking-wider">Acumulado Lives</p>
+                    <p class="text-lg font-black text-amber-500 leading-none font-mono-custom">{{ totalAccumulatedViews }}</p>
                 </div>
-                <div class="kpi-card px-4 py-1.5 rounded-lg">
-                    <p class="text-[8px] text-gray-400 uppercase font-bold tracking-wider">Inscritos</p>
-                    <p class="text-xl font-black text-white leading-none font-mono-custom">{{ channelData.subs }}</p>
+                <div class="kpi-card px-3 py-1 rounded-lg">
+                    <p class="text-[7px] text-gray-400 uppercase font-bold tracking-wider">Inscritos</p>
+                    <p class="text-lg font-black text-white leading-none font-mono-custom">{{ channelData.subs }}</p>
                 </div>
-                <div class="kpi-card px-4 py-1.5 rounded-lg">
-                    <p class="text-[8px] text-gray-400 uppercase font-bold tracking-wider">Total Views Canal</p>
-                    <p class="text-xl font-black text-white leading-none font-mono-custom">{{ channelData.totalViews }}</p>
+                <div class="kpi-card px-3 py-1 rounded-lg">
+                    <p class="text-[7px] text-gray-400 uppercase font-bold tracking-wider">Total Views Canal</p>
+                    <p class="text-lg font-black text-white leading-none font-mono-custom">{{ channelData.totalViews }}</p>
                 </div>
             </div>
         </header>
 
         <!-- MAIN CONTENT AREA -->
-        <div class="flex-grow flex gap-3 overflow-hidden mb-3">
+        <div class="flex-grow flex gap-2.5 overflow-hidden min-h-0">
             
-            <!-- GRID DE STREAMS (4 ÁREAS) -->
-            <div class="flex-grow overflow-y-auto pr-1">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div v-for="(stream, index) in streams" :key="index" class="flex flex-col gap-2">
-                        <div class="video-feed rounded-xl shadow-2xl overflow-hidden">
-                            <iframe 
-                                :src="'https://www.youtube.com/embed/' + stream.id + '?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0'" 
-                                frameborder="0" 
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                referrerpolicy="strict-origin-when-cross-origin"
-                                allowfullscreen>
-                            </iframe>
+            <!-- GRID DE STREAMS (2x2 FIXO SEM SCROLL) -->
+            <div class="flex-grow grid grid-cols-2 grid-rows-2 gap-2 h-full min-h-0">
+                <div v-for="(stream, index) in streams" :key="index" class="flex flex-col gap-1 h-full min-h-0">
+                    <div class="video-feed rounded-lg shadow-xl overflow-hidden flex-grow">
+                        <iframe 
+                            :src="'https://www.youtube.com/embed/' + stream.id + '?autoplay=1&mute=1&controls=0&modestbranding=1&rel=0'" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin"
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+
+                    <div class="glass-panel p-2 rounded-lg relative flex-shrink-0">
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full" :class="stream.isLive ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-gray-600'"></span>
+                                <span class="text-[10px] font-black text-white tracking-wide uppercase font-mono-custom">{{ stream.area }}</span>
+                            </div>
+                            <span class="text-[8px] font-bold px-1.5 py-0.2 rounded-full border" 
+                                :class="stream.isLive ? 'bg-emerald-950/50 text-emerald-400 border-emerald-800/50' : 'bg-gray-900 text-gray-500 border-gray-800'">
+                                {{ stream.isLive ? 'LIVE' : 'OFFLINE' }}
+                            </span>
                         </div>
 
-                        <div class="glass-panel p-2.5 rounded-xl relative">
-                            <div class="flex justify-between items-center">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full" :class="stream.isLive ? 'bg-emerald-500 shadow-[0_0_8px_#10b981]' : 'bg-gray-600'"></span>
-                                    <span class="text-[11px] font-black text-white tracking-wide uppercase font-mono-custom">{{ stream.area }}</span>
-                                </div>
-                                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full border" 
-                                    :class="stream.isLive ? 'bg-emerald-950/50 text-emerald-400 border-emerald-800/50' : 'bg-gray-900 text-gray-500 border-gray-800'">
-                                    {{ stream.isLive ? 'LIVE TRANSMITTING' : 'OFFLINE' }}
-                                </span>
+                        <div class="grid grid-cols-3 gap-1 mt-1 pt-1 border-t border-white/5 font-mono-custom">
+                            <div>
+                                <p class="text-[6px] text-gray-500 uppercase">Espectadores</p>
+                                <p class="text-[10px] font-bold text-red-500">{{ stream.viewers }}</p>
                             </div>
-
-                            <div class="grid grid-cols-3 gap-2 mt-2 pt-2 border-t border-white/5 font-mono-custom">
-                                <div>
-                                    <p class="text-[7px] text-gray-500 uppercase">Espectadores</p>
-                                    <p class="text-[12px] font-bold text-red-500">{{ stream.viewers }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-[7px] text-gray-500 uppercase">Total Views</p>
-                                    <p class="text-[12px] font-bold text-amber-500">{{ stream.totalViews }}</p>
-                                </div>
-                                <div class="text-right">
-                                    <p class="text-[7px] text-gray-500 uppercase">Status</p>
-                                    <p class="text-[9px] text-gray-300 uppercase">{{ stream.isLive ? 'Ativo' : 'Aguardando' }}</p>
-                                </div>
+                            <div>
+                                <p class="text-[6px] text-gray-500 uppercase">Total Views</p>
+                                <p class="text-[10px] font-bold text-amber-500">{{ stream.totalViews }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-[6px] text-gray-500 uppercase">Status</p>
+                                <p class="text-[8px] text-gray-300 uppercase">{{ stream.isLive ? 'Ativo' : 'Aguardando' }}</p>
                             </div>
                         </div>
                     </div>
@@ -167,16 +166,16 @@
             </div>
 
             <!-- PAINEL CUSTOMIZADO DE CHATS MULTI-ÁREA -->
-            <div class="w-80 glass-panel rounded-xl p-3 flex flex-col flex-shrink-0">
-                <div class="flex justify-between items-center mb-2.5 pb-2 border-b border-white/10">
-                    <h3 class="text-[10px] font-extrabold uppercase text-red-500 tracking-wider flex items-center gap-2 font-mono-custom">
-                        <span class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></span> Chat Ao Vivo
+            <div class="w-72 glass-panel rounded-xl p-2.5 flex flex-col flex-shrink-0 h-full min-h-0">
+                <div class="flex justify-between items-center mb-2 pb-1.5 border-b border-white/15 flex-shrink-0">
+                    <h3 class="text-[9px] font-extrabold uppercase text-red-500 tracking-wider flex items-center gap-1.5 font-mono-custom">
+                        <span class="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse"></span> Chat Ao Vivo
                     </h3>
-                    <div class="flex flex-wrap gap-1 max-w-[160px] justify-end">
+                    <div class="flex gap-1">
                         <button 
                             @click="chatFilter = 'ALL'" 
                             :class="chatFilter === 'ALL' ? 'bg-red-600 text-white' : 'bg-gray-900 text-gray-400 hover:bg-gray-800'"
-                            class="px-1.5 py-0.5 text-[8px] font-bold rounded uppercase transition-all">
+                            class="px-1 py-0.5 text-[7px] font-bold rounded uppercase transition-all">
                             Todos
                         </button>
                         <button 
@@ -184,29 +183,29 @@
                             :key="idx"
                             @click="chatFilter = stream.area" 
                             :class="chatFilter === stream.area ? 'bg-red-600 text-white' : 'bg-gray-900 text-gray-400 hover:bg-gray-800'"
-                            class="px-1.5 py-0.5 text-[8px] font-bold rounded uppercase transition-all">
+                            class="px-1 py-0.5 text-[7px] font-bold rounded uppercase transition-all">
                             {{ stream.area.replace('AREA ', 'A') }}
                         </button>
                     </div>
                 </div>
 
                 <!-- FEED DE MENSAGENS DARK -->
-                <div class="flex-grow overflow-y-auto space-y-2 pr-1 font-mono-custom text-[11px]">
-                    <div v-if="filteredChatMessages.length === 0" class="h-full flex items-center justify-center text-gray-600 text-[10px]">
+                <div class="flex-grow overflow-y-auto space-y-1.5 pr-1 font-mono-custom text-[10px] min-h-0">
+                    <div v-if="filteredChatMessages.length === 0" class="h-full flex items-center justify-center text-gray-600 text-[9px]">
                         Aguardando mensagens...
                     </div>
                     <div 
                         v-for="(msg, idx) in filteredChatMessages" 
                         :key="idx" 
-                        class="chat-message-enter p-2 rounded-lg bg-black/40 border border-white/5 hover:border-white/10 transition-all">
-                        <div class="flex items-center justify-between gap-1 mb-1">
-                            <span class="text-[8px] font-bold px-1.5 py-0.2 rounded" 
+                        class="chat-message-enter p-1.5 rounded bg-black/40 border border-white/5 hover:border-white/10 transition-all">
+                        <div class="flex items-center justify-between gap-1 mb-0.5">
+                            <span class="text-[7px] font-bold px-1 rounded" 
                                 :class="msg.area === 'AREA 01' ? 'bg-red-950 text-red-400 border border-red-800/40' : 'bg-amber-950 text-amber-400 border border-amber-800/40'">
                                 {{ msg.area }}
                             </span>
-                            <span class="text-[8px] text-gray-500">{{ msg.publishedAt }}</span>
+                            <span class="text-[7px] text-gray-500">{{ msg.publishedAt }}</span>
                         </div>
-                        <div class="text-[10px] font-bold text-gray-200">
+                        <div class="text-[9px] font-bold text-gray-200">
                             {{ msg.author }}: <span class="font-normal text-gray-300">{{ msg.text }}</span>
                         </div>
                     </div>
@@ -216,15 +215,15 @@
         </div>
 
         <!-- FOOTER / LOGS & HEALTH -->
-        <footer class="h-32 flex gap-3 flex-shrink-0 pt-1">
-            <div class="flex-grow glass-panel p-2.5 overflow-hidden flex flex-col rounded-xl">
-                <div class="flex justify-between items-center mb-1.5">
-                    <h4 class="text-[9px] font-bold text-red-500 uppercase tracking-widest flex items-center gap-2 font-mono-custom">
+        <footer class="h-24 flex gap-2.5 flex-shrink-0">
+            <div class="flex-grow glass-panel p-2 overflow-hidden flex flex-col rounded-xl">
+                <div class="flex justify-between items-center mb-1">
+                    <h4 class="text-[8px] font-bold text-red-500 uppercase tracking-widest flex items-center gap-1.5 font-mono-custom">
                         <span class="w-1.5 h-1.5 bg-red-600 rounded-full animate-pulse"></span> Arena Engine Logs
                     </h4>
-                    <span class="text-[8px] font-mono-custom text-gray-600">VER 4.3.0</span>
+                    <span class="text-[7px] font-mono-custom text-gray-600">VER 4.3.0</span>
                 </div>
-                <div class="flex-grow overflow-y-auto space-y-1 font-mono-custom text-[9px] text-gray-400">
+                <div class="flex-grow overflow-y-auto space-y-0.5 font-mono-custom text-[8px] text-gray-400">
                     <p v-for="(log, idx) in logs" :key="idx" class="border-b border-white/5 pb-0.5 last:border-0">
                         <span class="text-red-900">[{{ log.time }}]</span> 
                         <span class="text-white opacity-40">#</span> {{ log.msg }}
@@ -232,11 +231,11 @@
                 </div>
             </div>
 
-            <div class="w-64 glass-panel p-2.5 rounded-xl flex flex-col justify-between flex-shrink-0">
-                <h4 class="text-[9px] font-black text-white uppercase tracking-wider italic font-mono-custom">Network Status</h4>
-                <div class="space-y-1.5">
+            <div class="w-60 glass-panel p-2 rounded-xl flex flex-col justify-between flex-shrink-0">
+                <h4 class="text-[8px] font-black text-white uppercase tracking-wider italic font-mono-custom">Network Status</h4>
+                <div class="space-y-1">
                     <div v-for="(metric, idx) in systemHealth" :key="idx">
-                        <div class="flex justify-between text-[8px] mb-0.5 uppercase text-gray-500 font-mono-custom">
+                        <div class="flex justify-between text-[7px] mb-0.5 uppercase text-gray-500 font-mono-custom">
                             <span>{{ metric.label }}</span>
                             <span :class="metric.color">{{ metric.value }}%</span>
                         </div>
@@ -245,7 +244,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="mt-1 text-[7px] text-gray-600 font-mono-custom">
+                <div class="text-[6px] text-gray-600 font-mono-custom">
                     ARENA COMPETIDOR CONTROLS
                 </div>
             </div>
@@ -342,7 +341,7 @@
                 },
                 async fetchChatMessages(stream) {
                     try {
-                        const res = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${stream.liveChatId}&part=snippet,authorDetails&key=${this.apiKey}`);
+                        The res = await fetch(`https://www.googleapis.com/youtube/v3/liveChat/messages?liveChatId=${stream.liveChatId}&part=snippet,authorDetails&key=${this.apiKey}`);
                         const data = await res.json();
                         
                         if (data.items) {
