@@ -4,6 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscrição - Desafio Virtual Sports</title>
+
+    <!-- Meta Pixel Code -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', '1095928876190446');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id=1095928876190446&ev=PageView&noscript=1"
+    /></noscript>
+    <!-- End Meta Pixel Code -->
+
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
 
@@ -323,7 +342,7 @@
             <p><span>Meta:</span> <span id="res_meta">-</span></p>
             <p><span>Desafio ATENA:</span> <span id="res_mascote">Não</span></p>
             <p><span>Cidade/UF:</span> <span id="res_local">-</span></p>
-            <div class="total-box">Total: R$ <span id="res_total">46,99</span></div>
+            <div class="total-box">Total: R$ <span id="res_total">56,99</span></div>
         </div>
 
         <button type="submit" form="inscricaoForm" id="btnSubmit" class="btn-submit">FINALIZAR E IR PARA PAGAMENTO</button>
@@ -451,24 +470,27 @@
 
                 const URL_SCRIPT = "https://script.google.com/macros/s/AKfycbw59gHz8pUZTwEq_uS50bCiquho2lFdsEHy7RLs7uDaWBbOCuHQDbCKNjAdUPjzMjlC/exec";
 
-                fetch(URL_SCRIPT, {
+                // Envio para o Google Planilhas
+                await fetch(URL_SCRIPT, {
                     method: 'POST',
                     mode: 'no-cors',
-                    header: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify(dados)
-                })
-                .then(() => {
-                    const nomeParam = encodeURIComponent(dados.nome);
-                    window.location.href = `pagamento.html?atleta=${nomeParam}&valor=${valorCalculado}`;
-                })
-                .catch(err => {
-                    console.error("Erro no fetch:", err);
-                    alert("Erro de conexão.");
-                    btn.disabled = false;
-                    btn.innerText = "FINALIZAR E IR PARA PAGAMENTO";
                 });
 
+                // Dispara o evento de Lead do Meta Pixel com o valor da inscrição
+                if (typeof fbq === 'function') {
+                    fbq('track', 'Lead', {
+                        value: parseFloat(valorCalculado),
+                        currency: 'BRL'
+                    });
+                }
+
+                const nomeParam = encodeURIComponent(dados.nome);
+                window.location.href = `pagamento.html?atleta=${nomeParam}&valor=${valorCalculado}`;
+
             } catch (error) {
+                console.error("Erro no envio:", error);
                 alert("Erro ao processar dados.");
                 btn.disabled = false;
                 btn.innerText = "FINALIZAR E IR PARA PAGAMENTO";
