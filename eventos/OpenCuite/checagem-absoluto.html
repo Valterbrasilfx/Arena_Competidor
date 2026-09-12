@@ -92,6 +92,7 @@
             font-weight: 600;
             font-size: 0.95rem;
             background: #fff;
+            text-transform: uppercase;
         }
 
         .accordion-header::after { content: '▼'; font-size: 0.7rem; color: var(--text-secondary); }
@@ -116,7 +117,7 @@
             font-size: 0.7rem; color: var(--text-secondary); 
             text-transform: uppercase; border-bottom: 2px solid #f3f4f6; 
         }
-        td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 0.85rem; vertical-align: middle; }
+        td { padding: 12px; border-bottom: 1px solid #f3f4f6; font-size: 0.85rem; vertical-align: middle; text-transform: uppercase; }
 
         .ord-badge {
             background: #e5e7eb;
@@ -125,24 +126,6 @@
             font-weight: 700;
             font-size: 0.75rem;
             color: #374151;
-        }
-
-        /* BADGE DE STATUS CONFIRMADO */
-        .status-badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-
-        .status-confirmado {
-            background-color: #dcfce7;
-            color: #15803d;
-            border: 1px solid #bbf7d0;
         }
 
         .link-voltar {
@@ -177,25 +160,24 @@
     </header>
 
     <div class="main-content">
-        <h1>Checagem de Absoluto (Confirmados)</h1>
+        <h1>Checagem de Absoluto</h1>
 
         <div class="filtros-container">
             <div class="filtro-grupo"><label>Gênero</label><select id="filtroGenero"><option value="todos">Todos</option></select></div>
             <div class="filtro-grupo"><label>Faixa</label><select id="filtroFaixa"><option value="todos">Todos</option></select></div>
         </div>
 
-        <div id="loading-message">Carregando inscritos confirmados do Absoluto...</div>
+        <div id="loading-message">Carregando inscritos do Absoluto...</div>
         <div id="listaInscritosAbsoluto"></div>
         <a href="checagem.html" class="link-voltar">Voltar para Opções</a>
     </div>
 
     <script>
         const CSV_URL = 'https://script.google.com/macros/s/AKfycbzkGn8NFSDi_X5ituL-tMZm7-UCRNMxfMKzjTXDcQ698dNRMiHDNdvFJx1PE_d-lUTV/exec';
-        const ORDEM_FAIXAS = { 'PRETA': 1, 'MARROM': 2, 'ROXA': 3, 'AZUL': 4, 'BRANCA': 5 };
         
-        // Índice da coluna R (18ª coluna = índice 17)
-        const INDEX_COLUNA_R = 17;
-
+        // Ordem ajustada para unificar Marrom e Preta no topo
+        const ORDEM_FAIXAS = { 'MARROM E PRETA': 1, 'ROXA': 2, 'AZUL': 3, 'BRANCA': 4 };
+        
         let dadosAtletasAbsoluto = [];
 
         function parseCSVLine(line) {
@@ -214,10 +196,6 @@
             }
             result.push(current.trim());
             return result;
-        }
-
-        function obterBadgeStatus() {
-            return `<span class="status-badge status-confirmado">CONFIRMADO</span>`;
         }
 
         async function fetchAndProcessData() {
@@ -251,25 +229,26 @@
                     const colunas = parseCSVLine(linha);
                     const getVal = (colIdx) => colIdx !== -1 && colunas[colIdx] ? colunas[colIdx].replace(/"/g, '').trim() : '';
 
-                    const statusR = colunas[INDEX_COLUNA_R]?.replace(/"/g, '').trim() || '';
+                    let faixaVal = getVal(idx.faixa).toUpperCase() || 'BRANCA';
+                    
+                    // Unifica Preta e Marrom em um grupo único
+                    if (faixaVal.includes('PRETA') || faixaVal.includes('MARROM')) {
+                        faixaVal = 'MARROM E PRETA';
+                    }
 
                     return {
                         ord: getVal(idx.ord) || '-',
                         nome: getVal(idx.nome),
                         equipe: getVal(idx.equipe),
                         professor: getVal(idx.professor) || 'Não informado',
-                        faixa: getVal(idx.faixa).toUpperCase() || 'BRANCA',
+                        faixa: faixaVal,
                         categoria: getVal(idx.cat),
                         sexo: getVal(idx.sexo).toUpperCase(),
-                        absoluto: getVal(idx.abs).toUpperCase(),
-                        statusR: statusR
+                        absoluto: getVal(idx.abs).toUpperCase()
                     };
                 }).filter(atleta => {
                     const pediuAbsoluto = atleta.absoluto.includes('SIM') || atleta.absoluto === 'S';
-                    const estaConfirmado = atleta.statusR.toUpperCase().includes('CONFIRMADO');
-                    
-                    // Mantém apenas inscritos do Absoluto com Status CONFIRMADO na Coluna R
-                    return pediuAbsoluto && estaConfirmado;
+                    return pediuAbsoluto;
                 });
 
                 loadingEl.style.display = 'none';
@@ -328,7 +307,7 @@
             container.innerHTML = '';
 
             if (filtrados.length === 0) {
-                container.innerHTML = '<p style="text-align:center; font-weight:600; color:#6b7280; margin-top:20px;">Nenhum atleta confirmado encontrado para os filtros selecionados.</p>';
+                container.innerHTML = '<p style="text-align:center; font-weight:600; color:#6b7280; margin-top:20px;">Nenhum atleta encontrado para os filtros selecionados.</p>';
                 return;
             }
 
@@ -367,7 +346,6 @@
                                         <th>ORD</th>
                                         <th>Atleta</th>
                                         <th>Equipe</th>
-                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -376,7 +354,6 @@
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta">${a.nome}</td>
                                             <td data-label="Equipe">${a.equipe}</td>
-                                            <td data-label="Status">${obterBadgeStatus()}</td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
