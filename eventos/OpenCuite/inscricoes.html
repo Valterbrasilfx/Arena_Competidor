@@ -380,7 +380,7 @@
              "Master 5": { masculino: ["Galo até 58kg", "Pluma até 64kg", "Pena até 70kg", "Leve até 76kg", "Médio até 82,3kg", "Meio-Pesado até 88,3kg", "Pesado até 94,3kg", "Super-Pesado até 100,5kg", "Pesadíssimo acima de 100,5kg"], feminino: ["Pluma até 53,5kg", "Pena até 58,5kg", "Leve até 64kg", "Médio até 69kg", "Meio-Pesado até 74kg", "Pesado até 80kg", "Super-Pesado até 85kg", "Pesadíssimo acima de 85kg"] },
              "Master 6": { masculino: ["Galo até 58kg", "Pluma até 64kg", "Pena até 70kg", "Leve até 76kg", "Médio até 82,3kg", "Meio-Pesado até 88,3kg", "Pesado até 94,3kg", "Super-Pesado até 100,5kg", "Pesadíssimo acima de 100,5kg"], feminino: ["Pluma até 53,5kg", "Pena até 58,5kg", "Leve até 64kg", "Médio até 69kg", "Meio-Pesado até 74kg", "Pesado até 80kg", "Super-Pesado até 85kg", "Pesadíssimo acima de 85kg"] },
              "Master 7": { masculino: ["Galo até 58kg", "Pluma até 64kg", "Pena até 70kg", "Leve até 76kg", "Médio até 82,3kg", "Meio-Pesado até 88,3kg", "Pesado até 94,3kg", "Super-Pesado até 100,5kg", "Pesadíssimo acima de 100,5kg"], feminino: ["Pluma até 53,5kg", "Pena até 58,5kg", "Leve até 64kg", "Médio até 69kg", "Meio-Pesado até 74kg", "Pesado até 80kg", "Super-Pesado até 85kg", "Pesadíssimo acima de 85kg"] },
-        };
+         };
 
         const faixasPorDivisao = {
             "Pré-Mirim": ["Branca/Cinza", "Amarela/Laranja/Verde"],
@@ -545,12 +545,10 @@
             const pes = pesoInput.value || '...';
             categoriaIdadeInput.value = cat;
 
-            // Lógica de Preço por Categoria
-            const categoriasBase = ["Pré-Mirim", "Mirim", "Infantil A", "Infantil B", "Infanto-Juvenil A", "Infanto-Juvenil B", "Juvenil"];
+            // Valor fixo da inscrição atualizado para R$ 65,00
             let valorBase = 0;
-
             if(cat) {
-                valorBase = categoriasBase.includes(cat) ? 65.00 : 85.00;
+                valorBase = 65.00;
             }
 
             let total = valorBase;
