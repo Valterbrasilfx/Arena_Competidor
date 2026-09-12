@@ -8,8 +8,8 @@
     
     <style>
         /* =========================================
-           CONFIGURAÇÕES TEMA SENOGI
-           ========================================= */
+            CONFIGURAÇÕES TEMA SENOGI
+            ========================================= */
         :root {
             --primary-color: #2563eb; 
             --bg-color: #f3f4f6;
@@ -36,8 +36,8 @@
         header img { max-width: 250px; width: 80%; height: auto; }
 
         /* =========================================
-           CONTEÚDO PRINCIPAL
-           ========================================= */
+            CONTEÚDO PRINCIPAL
+            ========================================= */
         .main-content {
             margin-top: 140px;
             width: 90%;
@@ -106,6 +106,32 @@
             transform: translateX(5px);
         }
 
+        /* ESTILO PARA QUANDO ESTIVER BLOQUEADO */
+        .btn-checagem.bloqueado {
+            opacity: 0.6;
+            cursor: not-allowed;
+            pointer-events: none;
+            background-color: #e5e7eb;
+        }
+
+        .btn-checagem.bloqueado::after {
+            content: '🔒';
+        }
+
+        /* MENSAGEM DO TIMER */
+        #timer-message {
+            background-color: #fef3c7;
+            border: 1px solid #f59e0b;
+            color: #b45309;
+            padding: 16px;
+            border-radius: var(--radius);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            display: none;
+        }
+
         /* BOTÃO VOLTAR EVENTO */
         .btn-voltar-evento {
             display: inline-block;
@@ -156,15 +182,17 @@
         <h1>CHAVEAMENTO</h1>
         <p class="subtitle">Selecione o tipo de visualização desejada</p>
         
-        <div class="opcoes-checagem">
-            <a href="https://drive.google.com/file/d/1XUBs4otISYTp4IZD5frau_g3nRdUz7Ym/view?usp=sharing" class="btn-checagem">
+        <!-- Mensagem de aviso do timer -->
+        <div id="timer-message"></div>
+
+        <div class="opcoes-checagem" id="opcoes-container">
+            <a href="https://drive.google.com/file/d/1XUBs4otISYTp4IZD5frau_g3nRdUz7Ym/view?usp=sharing" class="btn-checagem" id="btn-categoria">
                 CATEGORIA
             </a>
             
-            <a href="https://drive.google.com/file/d/1B4UnNQMz-u5zPFlW5g_lQboZcKeTnRJW/view?usp=sharing" class="btn-checagem">
+            <a href="https://drive.google.com/file/d/1B4UnNQMz-u5zPFlW5g_lQboZcKeTnRJW/view?usp=sharing" class="btn-checagem" id="btn-absoluto">
                 ABSOLUTO
             </a>
-        
         </div>
 
         <a href="https://arenacompetidor.com" class="btn-voltar-evento">
@@ -176,5 +204,34 @@
         &copy; 2026 Arena Competidor. Todos os direitos reservados.
     </div>
 
+    <script>
+        function verificarLiberacao() {
+            // Data alvo: 05 de Dezembro de 2026 às 00:00:00
+            const dataLiberacao = new Date('2026-12-05T00:00:00');
+            const agora = new Date();
+
+            const btnCategoria = document.getElementById('btn-categoria');
+            const btnAbsoluto = document.getElementById('btn-absoluto');
+            const timerMessage = document.getElementById('timer-message');
+
+            if (agora < dataLiberacao) {
+                // Se ainda não chegou a data, bloqueia os botões e exibe o aviso
+                btnCategoria.classList.add('bloqueado');
+                btnAbsoluto.classList.add('bloqueado');
+                
+                // Opcional: Calcular quanto falta para exibir uma contagem ou aviso amigável
+                timerMessage.style.display = 'block';
+                timerMessage.innerHTML = '🔒 Os chaveamentos serão liberados no dia <strong>05 de dezembro de 2026</strong>.';
+            } else {
+                // Se já passou ou chegou a data, libera os botões e oculta o aviso
+                btnCategoria.classList.remove('bloqueado');
+                btnAbsoluto.classList.remove('bloqueado');
+                timerMessage.style.display = 'none';
+            }
+        }
+
+        // Executa ao carregar a página
+        verificarLiberacao();
+    </script>
 </body>
 </html>
