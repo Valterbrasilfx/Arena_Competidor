@@ -115,9 +115,8 @@
 
                 <label>Tipo de Inscrição:</label>
                 <select id="tipo-inscricao">
-                    <option value="65.00">Categoria Kids (R$ 65,00)</option>
-                    <option value="85.00">Categoria Adulto/Master (R$ 85,00)</option>
-                    <option value="140.00">Categoria + Absoluto (R$ 140,00)</option>
+                    <option value="65.00">Categoria (R$ 65,00)</option>
+                    <option value="120.00">Categoria + Absoluto (R$ 120,00)</option>
                 </select>
 
                 <label>Método utilizado (após pagar):</label>
@@ -132,7 +131,7 @@
            <table class="summary-table">
                <tbody>
                    <tr><td>Subtotal</td><td id="linha-categoria-valor">R$ 0,00</td></tr>
-                   <tr id="linha-absoluto" style="display:none;"><td>Taxa Adicional</td><td id="linha-extra-texto">Absoluto</td></tr>
+                   <tr id="linha-absoluto" style="display:none;"><td>Taxa Adicional</td><td id="linha-extra-texto">Absoluto (+ R$ 55,00)</td></tr>
                    <tr class="total-row"><th>Total a Pagar</th><td id="valor-total">R$ 0,00</td></tr>
                </tbody>
            </table>
@@ -199,19 +198,19 @@
             const metodo = document.getElementById('metodo-pagamento').value;
             const formatado = valor.toFixed(2).replace('.', ',');
 
-            document.getElementById('linha-categoria-valor').innerText = `R$ ${formatado}`;
+            document.getElementById('linha-categoria-valor').innerText = `R$ 65,00`;
             document.getElementById('valor-total').innerText = `R$ ${formatado}`;
             document.getElementById('btn-toggle-pix-direto').innerText = `VER DADOS PARA PAGAMENTO (R$ ${formatado})`;
             
-            // Mostra linha de absoluto se o valor for 140
-            document.getElementById('linha-absoluto').style.display = valor > 100 ? 'table-row' : 'none';
+            // Mostra linha de absoluto se o valor for 120.00
+            document.getElementById('linha-absoluto').style.display = valor > 65 ? 'table-row' : 'none';
 
             const link = document.getElementById('whatsapp-link');
             if(nome && ordem && metodo) {
                 link.classList.add('enabled');
                 link.innerText = 'Enviar Comprovante pelo WhatsApp 📱';
                 const msg = encodeURIComponent(`✅ COMPROVANTE\nEvento: ${evento}\nAtleta: ${nome}\nID: ${ordem}\nValor: R$ ${formatado}\nMétodo: ${metodo}`);
-                link.href = `https://api.whatsapp.com/send?phone=5584987513740&text=${msg}`;
+                link.href = `https://api.whatsapp.com/send?phone=5584996841020&text=${msg}`;
             } else {
                 link.classList.remove('enabled');
                 link.innerText = 'Preencha os campos para liberar o envio';
