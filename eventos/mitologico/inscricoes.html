@@ -477,14 +477,6 @@
                     body: JSON.stringify(dados)
                 });
 
-                // Dispara o evento de Lead do Meta Pixel com o valor da inscrição
-                if (typeof fbq === 'function') {
-                    fbq('track', 'Lead', {
-                        value: parseFloat(valorCalculado),
-                        currency: 'BRL'
-                    });
-                }
-
                 const nomeParam = encodeURIComponent(dados.nome);
                 window.location.href = `pagamento.html?atleta=${nomeParam}&valor=${valorCalculado}`;
 
