@@ -477,6 +477,12 @@
                     body: JSON.stringify(dados)
                 });
 
+                // Evento de Compra do Meta Pixel
+                fbq('track', 'Purchase', {
+                    value: parseFloat(valorCalculado),
+                    currency: 'BRL'
+                });
+
                 const nomeParam = encodeURIComponent(dados.nome);
                 window.location.href = `pagamento.html?atleta=${nomeParam}&valor=${valorCalculado}`;
 
