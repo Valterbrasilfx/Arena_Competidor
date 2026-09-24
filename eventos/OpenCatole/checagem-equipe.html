@@ -140,6 +140,22 @@
             color: #4b5563;
         }
 
+        .status-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+        .status-confirmado {
+            background: #dcfce7;
+            color: #166534;
+        }
+        .status-pendente {
+            background: #fef9c3;
+            color: #854d0e;
+        }
+
         .link-voltar {
             display: inline-block;
             margin-top: 40px;
@@ -211,7 +227,8 @@
                     professor: headers.findIndex(h => h.includes('PROFESSOR')),
                     faixa: headers.indexOf('SUA FAIXA'),
                     peso: headers.indexOf('SEU PESO'),
-                    categoria: headers.indexOf('SUA CATEGORIA')
+                    categoria: headers.indexOf('SUA CATEGORIA'),
+                    status: 17 // Coluna R corresponde ao índice 17 (considerando A=0, B=1 ... R=17)
                 };
 
                 const data = lines.slice(1).map(line => {
@@ -223,7 +240,8 @@
                         professor: values[idx.professor] || 'NÃO INFORMADO',
                         faixa: values[idx.faixa] || '',
                         peso: values[idx.peso] || '',
-                        categoria: values[idx.categoria] || ''
+                        categoria: values[idx.categoria] || '',
+                        status: values[idx.status] || 'PENDENTE'
                     };
                 }); // Removido o filtro .filter() que limitava aos confirmados
 
@@ -270,16 +288,22 @@
                                         <th>ORD</th>
                                         <th>Atleta</th>
                                         <th>Categoria</th>
+                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${infoEquipe.professores[prof].map(a => `
+                                    ${infoEquipe.professores[prof].map(a => {
+                                      const isConfirmado = a.status.toUpperCase().includes('CONFIRM') || a.status.toUpperCase() === 'OK' || a.status.toUpperCase() === 'PAGO';
+                                      const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
+                                      return `
                                         <tr>
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
-                                            <td data-label="Atleta"><strong>${a.nome}</strong><br><small>${a.faixa} / ${a.peso}</small></td>
+                                            <td data-label="Atleta"><strong>${a.nome}</strong><br><small>${a.faixa} /${a.peso}</small></td>
                                             <td data-label="Categoria">${a.categoria}</td>
+                                            <td data-label="Status"><span class="status-badge ${statusClass}">${a.status}</span></td>
                                         </tr>
-                                    `).join('')}
+                                    `;
+                                  }).join('')}
                                 </tbody>
                             </table>
                         </div>
