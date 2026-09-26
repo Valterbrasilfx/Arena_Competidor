@@ -86,10 +86,6 @@
             background: #dcfce7;
             color: #166534;
         }
-        .status-pendente {
-            background: #fef9c3;
-            color: #854d0e;
-        }
 
         #photoModal {
             display: none; position: fixed; z-index: 2000; top: 0; left: 0;
@@ -183,9 +179,12 @@
                     const colunas = linha.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                     let obj = {};
                     cabecalhoOriginal.forEach((c, i) => { obj[c] = colunas[i]?.replace(/"/g, '').trim() || ''; });
-                    // Adicionando explicitamente a coluna R (índice 17) para o status
                     obj.STATUS_COL_R = colunas[17]?.replace(/"/g, '').trim() || 'PENDENTE';
                     return obj;
+                }).filter(a => {
+                    // Mantém apenas os atletas com status confirmado
+                    const s = a.STATUS_COL_R.toUpperCase();
+                    return s.includes('CONFIRM') || s === 'OK' || s === 'PAGO';
                 });
 
                 document.getElementById('loading').style.display = 'none';
@@ -230,7 +229,6 @@
             const fC = document.getElementById('filtroCategoria').value;
             const fP = document.getElementById('filtroPeso').value;
 
-            // Retornando toda a lista sem filtrar por status de pagamento
             const filtradosParaTabela = dadosAtletas.filter(a => {
                 return (fG === 'todos' || a['SEXO'] === fG) &&
                     (fF === 'todos' || a['SUA FAIXA'] === fF) &&
@@ -270,9 +268,7 @@
                                 <tbody>
                                     ${atletas.map(a => {
                                         const urlFinal = tratarLinkFoto(a[colMap.FOTO]);
-                                      const statusVal = a.STATUS_COL_R;
-                                      const isConfirmado = statusVal.toUpperCase().includes('CONFIRM') || statusVal.toUpperCase() === 'OK' || statusVal.toUpperCase() === 'PAGO';
-                                      const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
+                                        const statusVal = a.STATUS_COL_R;
 
                                         return `
                                         <tr>
@@ -287,9 +283,9 @@
                                             </td>
                                             <td data-label="Equipe">${a[colMap.EQUIPE] || '---'}</td>
                                             <td data-label="Professor">${a[colMap.PROFESSOR] || '---'}</td>
-                                            <td data-label="Status"><span class="status-badge ${statusClass}">${statusVal}</span></td>
+                                            <td data-label="Status"><span class="status-badge status-confirmado">${statusVal}</span></td>
                                         </tr>
-                                    `}).join('')}
+                                        `}).join('')}
                                 </tbody>
                             </table>
                         </div>
