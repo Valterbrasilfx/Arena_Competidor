@@ -128,10 +128,6 @@
             background: #dcfce7;
             color: #166534;
         }
-        .status-pendente {
-            background: #fef9c3;
-            color: #854d0e;
-        }
 
         .link-voltar {
             display: block; width: fit-content; margin: 40px auto;
@@ -157,7 +153,7 @@
     </header>
 
     <div class="main-content">
-        <h1>Checagem de Absoluto (Todos os Inscritos)</h1>
+        <h1>Checagem de Absoluto (Confirmados)</h1>
         <div id="loading-message">Carregando inscritos no absoluto...</div>
         <div id="listaInscritosAbsoluto"></div>
         <a href="checagem.html" class="link-voltar">Voltar para Opções</a>
@@ -193,17 +189,22 @@
                     abs: headers.indexOf('ABSOLUTO')
                 };
 
-                const data = rows.slice(1).map(row => ({
-                    ord: row[idx.ord] || '-',
-                    nome: row[idx.nome] || '',
-                    equipe: row[idx.equipe] || '',
-                    faixa: (row[idx.faixa] || 'BRANCA').toUpperCase(),
-                    categoria: row[idx.cat] || '',
-                    sexo: (row[idx.sexo] || '').toUpperCase(),
-                    absoluto: (row[idx.abs] || '').toUpperCase(),
-                    statusColR: row[17] ? row[17].replace(/^"|"$/g, '').trim() : 'PENDENTE'
-                })).filter(atleta => {
-                    return atleta.absoluto === 'SIM';
+                const data = rows.slice(1).map(row => {
+                    const statusVal = row[17] ? row[17].replace(/^"|"$/g, '').trim() : 'PENDENTE';
+                    return {
+                        ord: row[idx.ord] || '-',
+                        nome: row[idx.nome] || '',
+                        equipe: row[idx.equipe] || '',
+                        faixa: (row[idx.faixa] || 'BRANCA').toUpperCase(),
+                        categoria: row[idx.cat] || '',
+                        sexo: (row[idx.sexo] || '').toUpperCase(),
+                        absoluto: (row[idx.abs] || '').toUpperCase(),
+                        statusColR: statusVal
+                    };
+                }).filter(atleta => {
+                    const statusUpper = atleta.statusColR.toUpperCase();
+                    const isConfirmado = statusUpper.includes('CONFIRM') || statusUpper === 'OK' || statusUpper === 'PAGO';
+                    return atleta.absoluto === 'SIM' && isConfirmado;
                 });
 
                 renderizar(data);
@@ -219,7 +220,7 @@
             document.getElementById('loading-message').style.display = 'none';
 
             if (data.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">Nenhum atleta inscrito no Absoluto encontrado.</p>';
+                container.innerHTML = '<p style="text-align:center;">Nenhum atleta confirmado no Absoluto encontrado.</p>';
                 return;
             }
 
@@ -263,16 +264,12 @@
                                 </thead>
                                 <tbody>
                                     ${atletas.map(a => {
-                                        const statusVal = a.statusColR;
-                                        const isConfirmado = statusVal.toUpperCase().includes('CONFIRM') || statusVal.toUpperCase() === 'OK' || statusVal.toUpperCase() === 'PAGO';
-                                        const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
-
                                         return `
                                             <tr>
                                                 <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                                 <td data-label="Atleta">${a.nome}</td>
                                                 <td data-label="Equipe">${a.equipe}</td>
-                                                <td data-label="Status"><span class="status-badge ${statusClass}">${statusVal}</span></td>
+                                                <td data-label="Status"><span class="status-badge status-confirmado">${a.statusColR}</span></td>
                                             </tr>
                                         `;
                                     }).join('')}
