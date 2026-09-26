@@ -243,7 +243,11 @@
                         categoria: values[idx.categoria] || '',
                         status: values[idx.status] || 'PENDENTE'
                     };
-                }); // Removido o filtro .filter() que limitava aos confirmados
+                }).filter(atleta => {
+                    // Filtra mantendo apenas os confirmados
+                    const s = atleta.status.toUpperCase();
+                    return s.includes('CONFIRM') || s === 'OK' || s === 'PAGO';
+                });
 
                 renderEquipes(data);
             } catch (error) {
@@ -258,7 +262,7 @@
             document.getElementById('loading-message').style.display = 'none';
 
             if (data.length === 0) {
-                container.innerHTML = '<p style="text-align:center">Nenhum atleta inscrito no momento.</p>';
+                container.innerHTML = '<p style="text-align:center">Nenhum atleta confirmado no momento.</p>';
                 return;
             }
 
@@ -293,17 +297,15 @@
                                 </thead>
                                 <tbody>
                                     ${infoEquipe.professores[prof].map(a => {
-                                      const isConfirmado = a.status.toUpperCase().includes('CONFIRM') || a.status.toUpperCase() === 'OK' || a.status.toUpperCase() === 'PAGO';
-                                      const statusClass = isConfirmado ? 'status-confirmado' : 'status-pendente';
-                                      return `
-                                        <tr>
-                                            <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
-                                            <td data-label="Atleta"><strong>${a.nome}</strong><br><small>${a.faixa} /${a.peso}</small></td>
-                                            <td data-label="Categoria">${a.categoria}</td>
-                                            <td data-label="Status"><span class="status-badge ${statusClass}">${a.status}</span></td>
-                                        </tr>
-                                    `;
-                                  }).join('')}
+                                        return `
+                                            <tr>
+                                                <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
+                                                <td data-label="Atleta"><strong>${a.nome}</strong><br><small>${a.faixa} /${a.peso}</small></td>
+                                                <td data-label="Categoria">${a.categoria}</td>
+                                                <td data-label="Status"><span class="status-badge status-confirmado">${a.status}</span></td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
                                 </tbody>
                             </table>
                         </div>
@@ -314,7 +316,7 @@
                     <div class="accordion-header" onclick="toggleAcc(this)">
                         <div class="team-info">
                             <h2>${nomeEquipe}</h2>
-                            <p>${infoEquipe.total} Atleta(s) Inscrito(s)</p>
+                            <p>${infoEquipe.total} Atleta(s) Confirmado(s)</p>
                         </div>
                     </div>
                     <div class="accordion-content">${htmlProfessores}</div>
