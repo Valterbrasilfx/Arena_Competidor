@@ -8,8 +8,8 @@
     
     <style>
         /* =========================================
-           CONFIGURAÇÕES TEMA SENOGI
-           ========================================= */
+            CONFIGURAÇÕES TEMA SENOGI
+            ========================================= */
         :root {
             --primary-color: #2563eb; 
             --bg-color: #f3f4f6;
@@ -36,8 +36,8 @@
         header img { max-width: 250px; width: 80%; height: auto; }
 
         /* =========================================
-           CONTEÚDO PRINCIPAL
-           ========================================= */
+            CONTEÚDO PRINCIPAL
+            ========================================= */
         .main-content {
             margin-top: 140px;
             width: 90%;
@@ -157,12 +157,12 @@
         <p class="subtitle">Selecione o tipo de visualização desejada</p>
         
         <div class="opcoes-checagem">
-            <a href="../../meu-evento-agd.html" class="btn-checagem">
+            <a href="../../meu-evento-agd.html" class="btn-checagem" onclick="verificarLiberacao(event, this.href)">
                 CATEGORIA
             </a>
            
             
-            <a href="../../meu-evento-agd.html" class="btn-checagem">
+            <a href="../../meu-evento-agd.html" class="btn-checagem" onclick="verificarLiberacao(event, this.href)">
                 ABSOLUTO 
           
             </a>
@@ -177,5 +177,19 @@
         &copy; 2026 Arena Competidor. Todos os direitos reservados.
     </div>
 
+    <script>
+        function verificarLiberacao(event, url) {
+            // Data estipulada: 26 de setembro de 2026, às 10:00:00
+            const dataLiberacao = new Date('2026-09-26T10:00:00');
+            const dataAtual = new Date();
+
+            if (dataAtual < dataLiberacao) {
+                event.preventDefault(); // Impede o redirecionamento
+                alert('⚠️ Os chaveamentos serão liberados no dia 26 de setembro de 2026 às 10:00 da manhã.');
+            } else {
+                window.location.href = url; // Libera o acesso normalmente
+            }
+        }
+    </script>
 </body>
 </html>
