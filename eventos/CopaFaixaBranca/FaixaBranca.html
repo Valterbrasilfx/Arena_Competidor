@@ -8,8 +8,8 @@
     
     <style>
         /* =========================================
-           CONFIGURAÇÕES DO CABEÇALHO
-           ========================================= */
+            CONFIGURAÇÕES DO CABEÇALHO
+            ========================================= */
         header {
             width: 100%;
             text-align: center;
@@ -29,8 +29,8 @@
         }
 
         /* =========================================
-           ESTILOS DO CONTADOR (NOVO)
-           ========================================= */
+            ESTILOS DO CONTADOR (NOVO)
+            ========================================= */
         .countdown-wrapper {
             width: 100%;
             background: #ffffff;
@@ -78,8 +78,8 @@
         }
 
         /* =========================================
-           ESTILOS GERAIS ORIGINAIS
-           ========================================= */
+            ESTILOS GERAIS ORIGINAIS
+            ========================================= */
         :root {
             --primary-color: #2563eb; 
             --accent-green: #22c55e;
@@ -374,6 +374,41 @@
             box-shadow: 0 10px 25px rgba(0,0,0,0.5);
         }
 
+        /* ESTILO ESPECÍFICO PARA O MODAL DO EDITAL (TEXTO) */
+        .modal-content-edital {
+            background: #ffffff;
+            width: 100%;
+            max-width: 750px;
+            max-height: 85vh;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            text-align: left;
+        }
+
+        .edital-header-modal {
+            padding: 20px 25px;
+            background: #111827;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .edital-body-modal {
+            padding: 25px;
+            overflow-y: auto;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: var(--text-main);
+            white-space: pre-line; /* Mantém as quebras de linha do texto do edital */
+        }
+
         .close-modal-btn {
             position: absolute;
             top: -40px;
@@ -386,9 +421,18 @@
             border: none;
             outline: none;
         }
+
+        .close-edital-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
         
         .modal-overlay.active { opacity: 1; }
-        .modal-overlay.active .modal-content { transform: scale(1); }
+        .modal-overlay.active .modal-content, 
+        .modal-overlay.active .modal-content-edital { transform: scale(1); }
 
         /* WHATSAPP */
         .whatsapp-fixed-text-button {
@@ -492,7 +536,7 @@
                     <a href="chaves.html" class="btn-modern btn-secondary">
                         Visualizar Chaves
                     </a>
-                    <a href="" class="btn-modern btn-danger" target="_blank">
+                    <a href="#" class="btn-modern btn-danger" onclick="openEditalModal(event)">
                         Baixar Edital (PDF)
                     </a>
                     <a href="../../fotos.html" class="btn-modern btn-secondary" style="color: var(--primary-color); border-color: var(--primary-color);">
@@ -554,10 +598,115 @@
         <span class="whatsapp-text-visible" style="color: white; font-size: 16px; font-weight: 700; font-family: 'Poppins', sans-serif;">Suporte</span>
     </a>
 
+    <!-- MODAL DE PATROCÍNIO -->
     <div id="sponsorModal" class="modal-overlay">
         <div class="modal-content">
             <button class="close-modal-btn" onclick="closeModal()">&times;</button>
             <img src="../../img/patrociniopopup.png" alt="Destaque Patrocínio">
+        </div>
+    </div>
+
+    <!-- MODAL DO EDITAL -->
+    <div id="editalModal" class="modal-overlay">
+        <div class="modal-content-edital">
+            <div class="edital-header-modal">
+                <span>Edital Oficial - Copa Faixa Branca 2026</span>
+                <button class="close-edital-btn" onclick="closeEditalModal()">&times;</button>
+            </div>
+            <div class="edital-body-modal">EDITAL OFICIAL – COPA FAIXA BRANCA DE JIU-JITSU 2026
+“A Copa mais insana do Jiu-Jitsu”
+ 
+A organização da Copa Faixa Branca de Jiu-Jitsu 2026 torna público o presente edital, estabelecendo as normas gerais de participação, inscrições, categorias, absolutos e premiação do evento.
+ 
+1. INFORMAÇÕES GERAIS
+Evento: Copa Faixa Branca de Jiu-Jitsu 2026
+Data: 13 de dezembro de 2026
+Cidade: Caicó/RN 
+Inscrições: www.arenacompetidor.com
+Público: Faixa branca juvenil, adulto e máster. Masculino e feminino. 
+A competição tem como objetivo proporcionar aos atletas faixa branca uma experiência competitiva de alto nível, incentivando o desenvolvimento técnico e a valorização dos atletas iniciantes no Jiu-Jitsu.
+ 
+2. INSCRIÇÕES
+As inscrições serão realizadas exclusivamente através da plataforma Arena Competidor, dentro dos prazos divulgados pela organização.
+Início de inscrições: 
+19 de outubro (segunda)
+Termino de inscrições: 
+9 de dezembro (quarta-feira)
+Valores:
+• Categoria de peso: R$ 90,00
+• Absoluto: R$ 50,00
+A inscrição no absoluto deverá ser realizada conforme as divisões disponibilizadas na plataforma.
+O atleta é responsável por conferir seus dados, idade, peso, sexo e demais informações cadastradas antes do encerramento do período de inscrições.
+ 
+3. PREMIAÇÃO DOS ABSOLUTOS
+A Copa Faixa Branca contará com premiação máxima de R$ 1.000,00 por absoluto, tanto no masculino quanto no feminino, nas seguintes divisões:
+Juvenil – até R$ 1.000,00
+Adulto – até R$ 1.000,00
+Master – até R$ 1.000,00
+3.1 – Premiação proporcional ao número de inscritos
+O valor de R$ 1.000,00 corresponde à premiação máxima de cada absoluto.
+A premiação efetivamente paga, será determinada pela quantidade de atletas inscritos e confirmados em cada absoluto, de acordo com a seguinte proporção:
+Atletas no absoluto | % da premiação | Valor da premiação
+2 atletas — 20% — R$ 200,00
+4 atletas — 40% — R$ 400,00
+6 atletas — 60% — R$ 600,00
+8 atletas — 80% — R$ 800,00
+10 atletas ou mais — 100% — R$ 1.000,00
+3.2 – Regra de cálculo
+Para efeito da premiação, será considerada individualmente a quantidade de inscritos em cada absoluto.
+Dessa forma, os absolutos Juvenil Masculino, Juvenil Feminino, Adulto Masculino, Adulto Feminino, Master Masculino e Master Feminino terão suas quantidades de inscritos contabilizadas separadamente.
+Exemplo: caso o Absoluto Adulto Masculino tenha 6 atletas inscritos, o campeão receberá 60% da premiação máxima, equivalente a R$ 600,00. Caso alcance 10 ou mais atletas, a premiação será integral, no valor de R$ 1.000,00.
+A premiação não é cumulativa e será destinada ao campeão do respectivo absoluto.
+
+4. DIVISÕES
+A competição será destinada exclusivamente a atletas faixa branca, respeitando as divisões disponibilizadas pela organização.
+As disputas serão organizadas considerando:
+• Sexo;
+• Faixa etária;
+• Categoria de peso;
+• Categoria absoluta.
+As divisões etárias previstas serão Juvenil, Adulto e Master, conforme critérios adotados pela organização.
+ 
+5. CATEGORIA ABSOLUTA
+A participação no absoluto dependerá de inscrição específica no valor de R$ 50,00 antecipada na plataforma, dentro das datas estabelecidas de inscrições.
+O atleta deverá estar devidamente inscrito na divisão-categoria correspondente à sua idade e sexo.
+Não será possível o ressarcimento do valor da inscrição após 48h antes da data do evento. 
+ 
+6. CHECAGEM E CHAVES
+Após o encerramento das inscrições, será disponibilizado período para conferência dos dados dos atletas.
+É responsabilidade do competidor ou professor verificar eventuais erros dentro do prazo de checagem divulgado pela organização.
+Após a publicação definitiva das chaves, alterações poderão não ser aceitas.
+Os horários das lutas e demais informações serão disponibilizados através da plataforma Arena Competidor e/ou dos canais oficiais do evento.
+Caso o atleta se encontre só em sua categoria, ele terá por direito, se assim quiser, a devolução do valor da inscrição. Cancelando sua participação na mesma. A solicitação terá que ser feita após a checagem, 48h antes da data do evento. 
+ 
+7. PESAGEM
+A pesagem seguirá o cronograma e os procedimentos que serão divulgados pela organização.
+O atleta deverá comparecer dentro do limite de peso correspondente à categoria em que realizou sua inscrição.
+As regras específicas referentes a horário, tolerância, uniforme utilizado na pesagem e eventual desclassificação por excesso de peso serão divulgadas pela organização antes da competição no instagram.
+ 
+8. REGRAS E CONDUTA
+Todos os atletas deverão manter comportamento respeitoso e esportivo durante toda a competição.
+Não serão toleradas agressões fora do contexto da luta, ofensas à arbitragem, organização, adversários, professores ou demais participantes.
+Atitudes antidesportivas poderão resultar em advertência ou desclassificação, conforme decisão da organização.
+ 
+9. UNIFORME
+Por se tratar de uma competição de Jiu-Jitsu, os atletas deverão utilizar kimono adequado à prática esportiva e em boas condições.
+Os critérios específicos de cor, tamanho e inspeção do kimono seguirão as regras técnicas adotadas para o evento, seguindo a Confederação Brasileira de Jiu-Jítsu (CBJJ).
+ 
+10. RESPONSABILIDADE DO ATLETA
+Ao efetuar sua inscrição, o atleta declara estar fisicamente apto para participar de uma competição de Jiu-Jitsu e reconhece os riscos inerentes à prática esportiva.
+Atletas menores de idade deverão participar mediante ciência e autorização de seus pais ou responsáveis legais.
+ 
+11. USO DE IMAGEM
+A participação no evento implica autorização gratuita por 10 anos, para utilização de imagem e voz do atleta em fotografias, vídeos, transmissões e materiais relacionados à divulgação da Copa Faixa Branca, respeitada a legislação aplicável.
+ 
+12. ALTERAÇÕES E CASOS OMISSOS
+A organização poderá realizar ajustes no cronograma, horários, áreas de luta ou demais aspectos operacionais quando necessários ao bom andamento da competição.
+Os casos não previstos neste edital serão analisados e decididos pela organização do evento.
+A efetivação da inscrição implica conhecimento e concordância com as disposições deste edital.
+Caicó/RN – 13 de dezembro de 2026
+COPA FAIXA BRANCA DE JIU-JITSU
+Inscrições: Arena Competidor</div>
         </div>
     </div>
 
@@ -587,7 +736,7 @@
         setInterval(updateCountdown, 1000);
         updateCountdown();
 
-        /* FUNÇÕES DO MODAL */
+        /* FUNÇÕES DO MODAL DE PATROCÍNIO */
         function openModal() {
             const modal = document.getElementById('sponsorModal');
             modal.style.display = 'flex';
@@ -606,6 +755,24 @@
 
         document.getElementById('sponsorModal').addEventListener('click', function(e) {
             if (e.target === this) { closeModal(); }
+        });
+
+        /* FUNÇÕES DO MODAL DO EDITAL */
+        function openEditalModal(event) {
+            event.preventDefault();
+            const modal = document.getElementById('editalModal');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('active'); }, 10);
+        }
+
+        function closeEditalModal() {
+            const modal = document.getElementById('editalModal');
+            modal.classList.remove('active');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        document.getElementById('editalModal').addEventListener('click', function(e) {
+            if (e.target === this) { closeEditalModal(); }
         });
     </script>
 
