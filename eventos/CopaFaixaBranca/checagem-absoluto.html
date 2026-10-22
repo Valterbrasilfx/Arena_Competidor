@@ -117,12 +117,6 @@
             color: #374151;
         }
 
-        .status-badge {
-            font-weight: 700;
-            font-size: 0.75rem;
-            text-transform: uppercase;
-        }
-
         .link-voltar {
             display: block; width: fit-content; margin: 40px auto;
             padding: 14px 30px; background-color: #111827; color: #fff;
@@ -147,8 +141,8 @@
     </header>
 
     <div class="main-content">
-        <h1>Checagem de Absoluto (Confirmados)</h1>
-        <div id="loading-message">Carregando inscritos confirmados...</div>
+        <h1>Checagem de Absoluto</h1>
+        <div id="loading-message">Carregando inscritos no Absoluto...</div>
         <div id="listaInscritosAbsoluto"></div>
         <a href="checagem.html" class="link-voltar">Voltar para Opções</a>
     </div>
@@ -180,10 +174,10 @@
                     faixa: headers.indexOf('SUA FAIXA'),
                     cat: headers.indexOf('SUA CATEGORIA'),
                     sexo: headers.indexOf('SEXO'),
-                    abs: headers.indexOf('ABSOLUTO'),
-                    status: 17 // Coluna R
+                    abs: headers.indexOf('ABSOLUTO')
                 };
 
+                // Filtra apenas por ter marcado "SIM" no Absoluto, sem checar o Status
                 const data = rows.slice(1).map(row => ({
                     ord: row[idx.ord] || '-',
                     nome: row[idx.nome] || '',
@@ -191,14 +185,8 @@
                     faixa: (row[idx.faixa] || 'BRANCA').toUpperCase(),
                     categoria: row[idx.cat] || '',
                     sexo: (row[idx.sexo] || '').toUpperCase(),
-                    absoluto: (row[idx.abs] || '').toUpperCase(),
-                    status: row[idx.status] || 'Aguardando'
-                })).filter(atleta => {
-                    // FILTRO DUPLO: Deve estar no absoluto SIM E status CONFIRMADO
-                    const isAbsoluto = atleta.absoluto === 'SIM';
-                    const isConfirmado = atleta.status.toLowerCase().includes('confirmad');
-                    return isAbsoluto && isConfirmado;
-                });
+                    absoluto: (row[idx.abs] || '').toUpperCase()
+                })).filter(atleta => atleta.absoluto === 'SIM');
 
                 renderizar(data);
             } catch (error) {
@@ -213,7 +201,7 @@
             document.getElementById('loading-message').style.display = 'none';
 
             if (data.length === 0) {
-                container.innerHTML = '<p style="text-align:center;">Nenhum atleta confirmado no Absoluto encontrado.</p>';
+                container.innerHTML = '<p style="text-align:center;">Nenhum atleta inscrito no Absoluto encontrado.</p>';
                 return;
             }
 
@@ -252,7 +240,6 @@
                                         <th>ORD</th>
                                         <th>Atleta</th>
                                         <th>Equipe</th>
-                                        <th>Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -261,9 +248,6 @@
                                             <td data-label="ORD"><span class="ord-badge">${a.ord}</span></td>
                                             <td data-label="Atleta">${a.nome}</td>
                                             <td data-label="Equipe">${a.equipe}</td>
-                                            <td data-label="Status" class="status-badge" style="color: var(--accent-green)">
-                                                ● ${a.status}
-                                            </td>
                                         </tr>
                                     `).join('')}
                                 </tbody>
