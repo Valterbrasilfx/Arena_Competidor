@@ -224,7 +224,7 @@
             <ul> 
                 <li><strong>Como funciona?:</strong> Escolha a distância que deseja completar ao longo do mês e registre suas corridas. 
                 O desafio é 100% virtual — ou seja, você pode correr onde e quando quiser!</li> 
-                <li><strong>Inscrição:</strong> R$ 49,99 — preencha os dados abaixo para garantir sua participação.</li> 
+                <li><strong>Inscrição:</strong> R$ 57,99 — preencha os dados abaixo para garantir sua participação.</li> 
                 <li><strong>Confirmação:</strong> Sua inscrição só será validada após a verificação manual do pagamento pela equipe organizadora.</li> 
                 <li><strong>Dúvidas ou problemas?</strong> Entre em contato com os organizadores.</li> 
             </ul> 
@@ -274,7 +274,7 @@
                 <input type="checkbox" id="checkMascote" name="etapaMascote">
                 <div class="mascote-text">
                     <strong>ADICIONAR DESAFIO ANFITRITE?</strong><br>
-                    <small>Garanta sua participação extra por apenas <b>R$ 40,00</b> adicionais (Total R$ 89,99).</small>
+                    <small>Garanta sua participação extra por apenas <b>R$ 42,00</b> adicionais (Total R$ 99,99).</small>
                 </div>
             </label>
 
@@ -341,7 +341,7 @@
             <p><span>Meta:</span> <span id="res_meta">-</span></p>
             <p><span>Desafio ANFITRITE:</span> <span id="res_mascote">Não</span></p>
             <p><span>Cidade/UF:</span> <span id="res_local">-</span></p>
-            <div class="total-box">Total: R$ <span id="res_total">49,99</span></div>
+            <div class="total-box">Total: R$ <span id="res_total">57,99</span></div>
         </div>
 
         <button type="submit" form="inscricaoForm" id="btnSubmit" class="btn-submit">FINALIZAR E IR PARA PAGAMENTO</button>
@@ -419,7 +419,7 @@
             document.getElementById('res_meta').innerText = document.getElementById('distancia').value || '-';
             
             const isMascote = checkMascote.checked;
-            const valorTotal = isMascote ? 89.99 : 49.99;
+            const valorTotal = isMascote ? 99.99 : 57.99;
             
             document.getElementById('res_mascote').innerText = isMascote ? 'Sim' : 'Não';
             document.getElementById('res_total').innerText = valorTotal.toLocaleString('pt-BR', {minimumFractionDigits: 2});
@@ -447,7 +447,7 @@
                 let fotoBase64 = "";
                 if (fotoFile) fotoBase64 = await toBase64(fotoFile);
 
-                const valorCalculado = checkMascote.checked ? "89.99" : "49.99";
+                const valorCalculado = checkMascote.checked ? "99.99" : "57.99";
 
                 const dados = {
                     nome: document.getElementById('nome').value,
