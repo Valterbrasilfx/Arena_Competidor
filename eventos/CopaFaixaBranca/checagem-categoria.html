@@ -52,6 +52,12 @@
         }
         .faixa-group-header::before { content: ''; width: 4px; height: 18px; background: var(--primary-color); border-radius: 2px; }
 
+        .genero-group-header {
+            background-color: #374151; color: #fff; padding: 10px 16px; border-radius: 6px;
+            margin: 20px 0 10px 0; font-family: 'Poppins', sans-serif; font-weight: 600;
+            text-transform: uppercase; font-size: 0.8rem;
+        }
+
         .accordion-item { background: var(--card-bg); border-radius: 12px; margin-bottom: 8px; box-shadow: 2px 2px 8px rgba(0,0,0,0.03); overflow: hidden; border: 1px solid #e5e7eb; }
         .accordion-header { padding: 15px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-weight: 600; font-size: 0.95rem; background: #fff; }
         .accordion-header::after { content: '▼'; font-size: 0.7rem; color: var(--text-secondary); }
@@ -127,6 +133,103 @@
         const CSV_URL = 'https://script.google.com/macros/s/AKfycbwW9GG6HNthyHBg_1fekhnxGfl8rfqpm_7N1rUvGGwd5mOxdjD49m4yBusURLdQoVuH/exec';
         const FOTO_PADRAO = 'https://cdn-icons-png.flaticon.com/512/149/149071.png';
         const ORDEM_FAIXAS = { 'PRETA': 1, 'MARROM': 2, 'ROXA': 3, 'AZUL': 4, 'BRANCA': 5, 'VERDE': 6, 'LARANJA': 7, 'AMARELA': 8, 'CINZA': 9 };
+
+        const CATEGORIAS_PESO_MAP = {
+            "Pré-Mirim 1": { 
+                masculino: ["Pluma/Light-Feather até 17,9kg", "Pena/Feather até 20kg", "Leve/Light até 23kg", "Médio/Middle até 26kg", "Meio-Pesado/Medium-Heavy até 29kg", "Pesado/Heavy até 32kg", "Super-Pesado/Super-Heavy até 35kg", "Pesadíssimo/Ultra-Heavy acima de 35kg"], 
+                feminino: ["Pluma/Light-Feather até 17,9kg", "Pena/Feather até 20kg", "Leve/Light até 23kg", "Médio/Middle até 26kg", "Meio-Pesado/Medium-Heavy até 29kg", "Pesado/Heavy até 32kg", "Super-Pesado/Super-Heavy até 35kg", "Pesadíssimo/Ultra-Heavy acima de 35kg"] 
+            },
+            "Pré-Mirim 2": { 
+                masculino: ["Pluma/Light-Feather até 17,9kg", "Pena/Feather até 20kg", "Leve/Light até 23kg", "Médio/Middle até 26kg", "Meio-Pesado/Medium-Heavy até 29kg", "Pesado/Heavy até 32kg", "Super-Pesado/Super-Heavy até 35kg", "Pesadíssimo/Ultra-Heavy acima de 35kg"], 
+                feminino: ["Pluma/Light-Feather até 17,9kg", "Pena/Feather até 20kg", "Leve/Light até 23kg", "Médio/Middle até 26kg", "Meio-Pesado/Medium-Heavy até 29kg", "Pesado/Heavy até 32kg", "Super-Pesado/Super-Heavy até 35kg", "Pesadíssimo/Ultra-Heavy acima de 35kg"] 
+            },
+            "Pré-Mirim 3": { 
+                masculino: ["Pluma/Light-Feather até 21kg", "Pena/Feather até 24kg", "Leve/Light até 27,2kg", "Médio/Middle até 30,2kg", "Meio-Pesado/Medium-Heavy até 33,2kg", "Pesado/Heavy até 36,2kg", "Super-Pesado/Super-Heavy até 39,3kg", "Pesadíssimo/Ultra-Heavy acima de 39,3kg"], 
+                feminino: ["Pluma/Light-Feather até 21kg", "Pena/Feather até 24kg", "Leve/Light até 27,2kg", "Médio/Middle até 30,2kg", "Meio-Pesado/Medium-Heavy até 33,2kg", "Pesado/Heavy até 36,2kg", "Super-Pesado/Super-Heavy até 39,3kg", "Pesadíssimo/Ultra-Heavy acima de 39,3kg"] 
+            },
+            "Mirim 1": { 
+                masculino: ["Pluma/Light-Feather até 21kg", "Pena/Feather até 24kg", "Leve/Light até 27,2kg", "Médio/Middle até 30,2kg", "Meio-Pesado/Medium-Heavy até 33,2kg", "Pesado/Heavy até 36,2kg", "Super-Pesado/Super-Heavy até 39,3kg", "Pesadíssimo/Ultra-Heavy acima de 39,3kg"], 
+                feminino: ["Pluma/Light-Feather até 21kg", "Pena/Feather até 24kg", "Leve/Light até 27,2kg", "Médio/Middle até 30,2kg", "Meio-Pesado/Medium-Heavy até 33,2kg", "Pesado/Heavy até 36,2kg", "Super-Pesado/Super-Heavy até 39,3kg", "Pesadíssimo/Ultra-Heavy acima de 39,3kg"] 
+            },
+            "Mirim 2": { 
+                masculino: ["Galo/Rooster até 24kg", "Pluma/Light-Feather até 27kg", "Pena/Feather até 30,2kg", "Leve/Light até 33,2kg", "Médio/Middle até 36,2kg", "Meio-Pesado/Medium-Heavy até 39,3kg", "Pesado/Heavy até 42,3kg", "Super-Pesado/Super-Heavy até 45,3kg", "Pesadíssimo/Ultra-Heavy acima de 45,3kg"], 
+                feminino: ["Galo/Rooster até 24kg", "Pluma/Light-Feather até 27kg", "Pena/Feather até 30,2kg", "Leve/Light até 33,2kg", "Médio/Middle até 36,2kg", "Meio-Pesado/Medium-Heavy até 39,3kg", "Pesado/Heavy até 42,3kg", "Super-Pesado/Super-Heavy até 45,3kg", "Pesadíssimo/Ultra-Heavy acima de 45,3kg"] 
+            },
+            "Mirim 3": { 
+                masculino: ["Galo/Rooster até 24kg", "Pluma/Light-Feather até 27kg", "Pena/Feather até 30,2kg", "Leve/Light até 33,2kg", "Médio/Middle até 36,2kg", "Meio-Pesado/Medium-Heavy até 39,3kg", "Pesado/Heavy até 42,3kg", "Super-Pesado/Super-Heavy até 45,3kg", "Pesadíssimo/Ultra-Heavy acima de 45,3kg"], 
+                feminino: ["Galo/Rooster até 24kg", "Pluma/Light-Feather até 27kg", "Pena/Feather até 30,2kg", "Leve/Light até 33,2kg", "Médio/Middle até 36,2kg", "Meio-Pesado/Medium-Heavy até 39,3kg", "Pesado/Heavy até 42,3kg", "Super-Pesado/Super-Heavy até 45,3kg", "Pesadíssimo/Ultra-Heavy acima de 45,3kg"] 
+            },
+            "Infantil 1": { 
+                masculino: ["Galo/Rooster até 32,2kg", "Pluma/Light-Feather até 36,2kg", "Pena/Feather até 40,3kg", "Leve/Light até 44,3kg", "Médio/Middle até 48,3kg", "Meio-Pesado/Medium-Heavy até 52,5kg", "Pesado/Heavy até 56,5kg", "Super-Pesado/Super-Heavy até 60,5kg", "Pesadíssimo/Ultra-Heavy acima de 60,5kg"], 
+                feminino: ["Galo/Rooster até 32,2kg", "Pluma/Light-Feather até 36,2kg", "Pena/Feather até 40,3kg", "Leve/Light até 44,3kg", "Médio/Middle até 48,3kg", "Meio-Pesado/Medium-Heavy até 52,5kg", "Pesado/Heavy até 56,5kg", "Super-Pesado/Super-Heavy até 60,5kg", "Pesadíssimo/Ultra-Heavy acima de 60,5kg"] 
+            },
+            "Infantil 2": { 
+                masculino: ["Galo/Rooster até 32,2kg", "Pluma/Light-Feather até 36,2kg", "Pena/Feather até 40,3kg", "Leve/Light até 44,3kg", "Médio/Middle até 48,3kg", "Meio-Pesado/Medium-Heavy até 52,5kg", "Pesado/Heavy até 56,5kg", "Super-Pesado/Super-Heavy até 60,5kg", "Pesadíssimo/Ultra-Heavy acima de 60,5kg"], 
+                feminino: ["Galo/Rooster até 32,2kg", "Pluma/Light-Feather até 36,2kg", "Pena/Feather até 40,3kg", "Leve/Light até 44,3kg", "Médio/Middle até 48,3kg", "Meio-Pesado/Medium-Heavy até 52,5kg", "Pesado/Heavy até 56,5kg", "Super-Pesado/Super-Heavy até 60,5kg", "Pesadíssimo/Ultra-Heavy acima de 60,5kg"] 
+            },
+            "Infantil 3": { 
+                masculino: ["Galo/Rooster até 36,2kg", "Pluma/Light-Feather até 40,3kg", "Pena/Feather até 44,3kg", "Leve/Light até 48,3kg", "Médio/Middle até 52,5kg", "Meio-Pesado/Medium-Heavy até 56,5kg", "Pesado/Heavy até 60,5kg", "Super-Pesado/Super-Heavy até 65kg", "Pesadíssimo/Ultra-Heavy acima de 65kg"], 
+                feminino: ["Galo/Rooster até 36,2kg", "Pluma/Light-Feather até 40,3kg", "Pena/Feather até 44,3kg", "Leve/Light até 48,3kg", "Médio/Middle até 52,5kg", "Meio-Pesado/Medium-Heavy até 56,5kg", "Pesado/Heavy até 60,5kg", "Super-Pesado/Super-Heavy até 65kg", "Pesadíssimo/Ultra-Heavy acima de 65kg"] 
+            },
+            "Infanto-Juvenil 1": { 
+                masculino: ["Galo/Rooster até 36,2kg", "Pluma/Light-Feather até 40,3kg", "Pena/Feather até 44,3kg", "Leve/Light até 48,3kg", "Médio/Middle até 52,5kg", "Meio-Pesado/Medium-Heavy até 56,5kg", "Pesado/Heavy até 60,5kg", "Super-Pesado/Super-Heavy até 65kg", "Pesadíssimo/Ultra-Heavy acima de 65kg"], 
+                feminino: ["Galo/Rooster até 36,2kg", "Pluma/Light-Feather até 40,3kg", "Pena/Feather até 44,3kg", "Leve/Light até 48,3kg", "Médio/Middle até 52,5kg", "Meio-Pesado/Medium-Heavy até 56,5kg", "Pesado/Heavy até 60,5kg", "Super-Pesado/Super-Heavy até 65kg", "Pesadíssimo/Ultra-Heavy acima de 65kg"] 
+            },
+            "Infanto-Juvenil 2": { 
+                masculino: ["Galo/Rooster até 44,3kg", "Pluma/Light-Feather até 48,3kg", "Pena/Feather até 52,5kg", "Leve/Light até 56,5kg", "Médio/Middle até 60,5kg", "Meio-Pesado/Medium-Heavy até 65kg", "Pesado/Heavy até 69kg", "Super-Pesado/Super-Heavy até 73kg", "Pesadíssimo/Ultra-Heavy acima de 73kg"], 
+                feminino: ["Galo/Rooster até 40,3kg", "Pluma/Light-Feather até 44,3kg", "Pena/Feather até 48,3kg", "Leve/Light até 52,5kg", "Médio/Middle até 56,5kg", "Meio-Pesado/Medium-Heavy até 60,5kg", "Pesado/Heavy até 65kg", "Super-Pesado/Super-Heavy até 69kg", "Pesadíssimo/Ultra-Heavy acima de 69kg"] 
+            },
+            "Infanto-Juvenil 3": { 
+                masculino: ["Galo/Rooster até 44,3kg", "Pluma/Light-Feather até 48,3kg", "Pena/Feather até 52,5kg", "Leve/Light até 56,5kg", "Médio/Middle até 60,5kg", "Meio-Pesado/Medium-Heavy até 65kg", "Pesado/Heavy até 69kg", "Super-Pesado/Super-Heavy até 73kg", "Pesadíssimo/Ultra-Heavy acima de 73kg"], 
+                feminino: ["Galo/Rooster até 40,3kg", "Pluma/Light-Feather até 44,3kg", "Pena/Feather até 48,3kg", "Leve/Light até 52,5kg", "Médio/Middle até 56,5kg", "Meio-Pesado/Medium-Heavy até 60,5kg", "Pesado/Heavy até 65kg", "Super-Pesado/Super-Heavy até 69kg", "Pesadíssimo/Ultra-Heavy acima de 69kg"] 
+            },
+            "Juvenil": { 
+                masculino: ["Galo/Rooster até 53,5kg", "Pluma/Light-Feather até 58,5kg", "Pena/Feather até 64kg", "Leve/Light até 69kg", "Médio/Middle até 74kg", "Meio-Pesado/Medium-Heavy até 79,3kg", "Pesado/Heavy até 84,3kg", "Super-Pesado/Super-Heavy até 89,3kg", "Pesadíssimo/Ultra-Heavy acima de 89,3kg"], 
+                feminino: ["Galo/Rooster até 44,3kg", "Pluma/Light-Feather até 48,3kg", "Pena/Feather até 52,5kg", "Leve/Light até 56,5kg", "Médio/Middle até 60,5kg", "Meio-Pesado/Medium-Heavy até 65kg", "Pesado/Heavy até 69kg", "Super-Pesado/Super-Heavy até 73kg", "Pesadíssimo/Ultra-Heavy acima de 73kg"] 
+            },
+            "Adulto": { 
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"], 
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"] 
+            },
+            "Master 1": { 
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"], 
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"] 
+            },
+            "Master 2": { 
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"], 
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"] 
+            },
+            "Master 3": { 
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"], 
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"] 
+            },
+            "Master 4": { 
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"], 
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"] 
+            },
+            "Master 5": { 
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"], 
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"] 
+            },
+            "Master 6": { 
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"], 
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"] 
+            },
+            "Master 7": { 
+                masculino: ["Galo/Rooster até 57,5kg", "Pluma/Light-Feather até 64kg", "Pena/Feather até 70kg", "Leve/Light até 76kg", "Médio/Middle até 82,3kg", "Meio-Pesado/Medium-Heavy até 88,3kg", "Pesado/Heavy até 94,3kg", "Super-Pesado/Super-Heavy até 100,5kg", "Pesadíssimo/Ultra-Heavy acima de 100,5kg"], 
+                feminino: ["Galo/Rooster até 48,5kg", "Pluma/Light-Feather até 53,5kg", "Pena/Feather até 58,5kg", "Leve/Light até 64kg", "Médio/Middle até 69kg", "Meio-Pesado/Medium-Heavy até 74kg", "Pesado/Heavy até 79,3kg", "Super-Pesado/Super-Heavy até 84,3kg", "Pesadíssimo/Ultra-Heavy acima de 84,3kg"] 
+            }
+        };
+
+        const ORDEM_CATEGORIAS_IDADE = [
+            "Master 7", "Master 6", "Master 5", "Master 4", "Master 3", "Master 2", "Master 1",
+            "Adulto",
+            "Juvenil",
+            "Infanto-Juvenil 3", "Infanto-Juvenil 2", "Infanto-Juvenil 1",
+            "Infantil 3", "Infantil 2", "Infantil 1",
+            "Mirim 3", "Mirim 2", "Mirim 1",
+            "Pré-Mirim 3", "Pré-Mirim 2", "Pré-Mirim 1"
+        ];
         
         let dadosAtletas = [];
         let colMap = {};
@@ -191,8 +294,15 @@
                 const opcoesSet = new Set();
                 filtrados.forEach(a => { if(a[campo]) opcoesSet.add(a[campo]) });
 
-                const arr = Array.from(opcoesSet).sort();
-                if(id === 'filtroFaixa') arr.sort((a,b) => (ORDEM_FAIXAS[a.toUpperCase()]||99) - (ORDEM_FAIXAS[b.toUpperCase()]||99));
+                const arr = Array.from(opcoesSet);
+                
+                if(id === 'filtroFaixa') {
+                    arr.sort((a,b) => (ORDEM_FAIXAS[a.toUpperCase()]||99) - (ORDEM_FAIXAS[b.toUpperCase()]||99));
+                } else if(id === 'filtroCategoria') {
+                    arr.sort((a, b) => ORDEM_CATEGORIAS_IDADE.indexOf(a) - ORDEM_CATEGORIAS_IDADE.indexOf(b));
+                } else {
+                    arr.sort();
+                }
 
                 select.innerHTML = '<option value="todos">Todos</option>';
                 arr.forEach(optValue => {
@@ -212,7 +322,6 @@
             const fC = document.getElementById('filtroCategoria').value;
             const fP = document.getElementById('filtroPeso').value;
 
-            // REMOVIDO O FILTRO DE STATUS: Mostra todos os atletas que correspondem aos filtros selecionados
             const filtradosParaTabela = dadosAtletas.filter(a => {
                 return (fG === 'todos' || a['SEXO'] === fG) &&
                        (fF === 'todos' || a['SUA FAIXA'] === fF) &&
@@ -225,54 +334,99 @@
             }
 
             container.innerHTML = '';
+            
+            // Estrutura hierárquica: FAIXA -> GÊNERO -> CHAVE (CATEGORIA DE IDADE + PESO)
             const estrutura = {};
+            
             filtradosParaTabela.forEach(a => {
                 const fx = a['SUA FAIXA'] || 'BRANCA';
-                const ch = `${a['SUA CATEGORIA']} - ${a['SEU PESO']} (${a['SEXO']})`;
+                const genero = a['SEXO'] || 'Outros';
+                const ch = `${a['SUA CATEGORIA']} - ${a['SEU PESO']} (${genero})`;
+                
                 if (!estrutura[fx]) estrutura[fx] = {};
-                if (!estrutura[fx][ch]) estrutura[fx][ch] = [];
-                estrutura[fx][ch].push(a);
+                if (!estrutura[fx][genero]) estrutura[fx][genero] = {};
+                if (!estrutura[fx][genero][ch]) estrutura[fx][genero][ch] = [];
+                
+                estrutura[fx][genero][ch].push(a);
             });
 
-            Object.keys(estrutura).sort((a,b) => (ORDEM_FAIXAS[a.toUpperCase()]||99)-(ORDEM_FAIXAS[b.toUpperCase()]||99)).forEach(fx => {
+            // 1. Itera pelas faixas na ordem oficial
+            Object.keys(estrutura).sort((a,b) => (ORDEM_FAIXAS[a.toUpperCase()]||99) - (ORDEM_FAIXAS[b.toUpperCase()]||99)).forEach(fx => {
                 const divFaixa = document.createElement('div');
                 divFaixa.className = 'faixa-group-header';
                 divFaixa.textContent = `Faixa ${fx}`;
                 container.appendChild(divFaixa);
 
-                Object.keys(estrutura[fx]).sort().forEach(ch => {
-                    const atletas = estrutura[fx][ch];
-                    const item = document.createElement('div');
-                    item.className = 'accordion-item';
-                    item.innerHTML = `
-                        <div class="accordion-header" onclick="toggleAcc(this)">${ch} (${atletas.length})</div>
-                        <div class="accordion-content">
-                            <table>
-                                <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th></tr></thead>
-                                <tbody>
-                                    ${atletas.map(a => {
-                                        const urlFinal = tratarLinkFoto(a[colMap.FOTO]);
+                // 2. Itera pelos gêneros (ordenados alfabeticamente para garantir Masculino antes de Feminino)
+                Object.keys(estrutura[fx]).sort().forEach(genero => {
+                    const divGenero = document.createElement('div');
+                    divGenero.className = 'genero-group-header';
+                    divGenero.textContent = genero;
+                    container.appendChild(divGenero);
 
-                                        return `
-                                        <tr>
-                                            <td data-label="Atleta">
-                                                <div class="atleta-perfil">
-                                                    <img src="${urlFinal}" class="atleta-foto" onclick="abrirFoto('${urlFinal}')" onerror="this.src='${FOTO_PADRAO}'">
-                                                    <div class="atleta-info-txt">
-                                                        <span class="atleta-ord">ORD: ${a[colMap.ORD] || '---'}</span>
-                                                        <span class="atleta-nome">${a[colMap.NOME] || '---'}</span>
+                    // 3. Ordena as chaves de peso/idade seguindo a ordem decrescente de idade e a ordem crescente de peso
+                    const chavesOrdenadas = Object.keys(estrutura[fx][genero]).sort((chaveA, chaveB) => {
+                        const catIdadeA = ORDEM_CATEGORIAS_IDADE.find(c => chaveA.startsWith(c));
+                        const catIdadeB = ORDEM_CATEGORIAS_IDADE.find(c => chaveB.startsWith(c));
+                        
+                        const idxA = ORDEM_CATEGORIAS_IDADE.indexOf(catIdadeA);
+                        const idxB = ORDEM_CATEGORIAS_IDADE.indexOf(catIdadeB);
+
+                        if (idxA !== idxB) {
+                            return idxA - idxB; // Do Master até Pré-Mirim
+                        }
+
+                        if (catIdadeA) {
+                            const genKey = genero.toLowerCase();
+                            const pesosOficiais = CATEGORIAS_PESO_MAP[catIdadeA]?.[genKey] || [];
+                            
+                            const pesoA = pesosOficiais.find(p => chaveA.includes(p));
+                            const pesoB = pesosOficiais.find(p => chaveB.includes(p));
+
+                            const posA = pesosOficiais.indexOf(pesoA);
+                            const posB = pesosOficiais.indexOf(pesoB);
+
+                            if (posA !== -1 && posB !== -1) return posA - posB;
+                        }
+
+                        return chaveA.localeCompare(chaveB);
+                    });
+
+                    // 4. Renderiza os accordions de cada chave
+                    chavesOrdenadas.forEach(ch => {
+                        const atletas = estrutura[fx][genero][ch];
+                        const item = document.createElement('div');
+                        item.className = 'accordion-item';
+                        item.innerHTML = `
+                            <div class="accordion-header" onclick="toggleAcc(this)">${ch.replace(` (${genero})`, '')} (${atletas.length})</div>
+                            <div class="accordion-content">
+                                <table>
+                                    <thead><tr><th>Atleta</th><th>Equipe</th><th>Professor</th></tr></thead>
+                                    <tbody>
+                                        ${atletas.map(a => {
+                                            const urlFinal = tratarLinkFoto(a[colMap.FOTO]);
+
+                                            return `
+                                            <tr>
+                                                <td data-label="Atleta">
+                                                    <div class="atleta-perfil">
+                                                        <img src="${urlFinal}" class="atleta-foto" onclick="abrirFoto('${urlFinal}')" onerror="this.src='${FOTO_PADRAO}'">
+                                                        <div class="atleta-info-txt">
+                                                            <span class="atleta-ord">ORD: ${a[colMap.ORD] || '---'}</span>
+                                                            <span class="atleta-nome">${a[colMap.NOME] || '---'}</span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td data-label="Equipe">${a[colMap.EQUIPE] || '---'}</td>
-                                            <td data-label="Professor">${a[colMap.PROFESSOR] || '---'}</td>
-                                        </tr>
-                                        `}).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
-                    container.appendChild(item);
+                                                </td>
+                                                <td data-label="Equipe">${a[colMap.EQUIPE] || '---'}</td>
+                                                <td data-label="Professor">${a[colMap.PROFESSOR] || '---'}</td>
+                                            </tr>
+                                            `}).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
+                        container.appendChild(item);
+                    });
                 });
             });
         }
