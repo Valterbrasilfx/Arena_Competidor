@@ -1,0 +1,14 @@
+FIGHTSCORE PRO — FRONTEND + ONLINE
+
+Arquivos principais:
+- tela_inicial.html: configuração da luta
+- placar_operador.html: painel de controle
+- placar_tv.html: placar para segundo monitor
+- placar_transmissao.html: overlay transparente para OBS Browser Source
+- js/scoreboard.js: estado, cronômetro, comunicação local e Supabase Realtime
+- js/config.js: credenciais públicas do Supabase
+- css/app.css: estilos
+
+Para habilitar o OBS Browser Source e sincronização pela internet, siga integralmente o arquivo LEIA-ME-ONLINE.txt.
+
+Resumo: esta solução não precisa de backend próprio nem banco de dados. Ela usa Supabase Realtime Broadcast como serviço externo gerenciado. Sem configurar esse serviço, o modo local continua disponível, mas o OBS Browser Source isolado não recebe os dados do Chrome.

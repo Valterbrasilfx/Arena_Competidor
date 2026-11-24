@@ -1,0 +1,88 @@
+FIGHTSCORE PRO — VERSÃO ONLINE COM OBS BROWSER SOURCE
+====================================================
+
+O QUE ESTA VERSÃO FAZ
+---------------------
+- Mantém as quatro páginas: tela_inicial, operador, TV e overlay OBS.
+- Mantém modo local com localStorage/BroadcastChannel.
+- Adiciona sincronização online pelo Supabase Realtime Broadcast.
+- Não exige servidor/backend próprio, código de servidor, SQL ou tabela de banco.
+- O operador transmite o estado completo da luta; TV e OBS recebem por WebSocket.
+- O operador envia um heartbeat do estado a cada 1 segundo para que um OBS que acabou de conectar receba o placar atual.
+- Cada luta usa um identificador de sala (room) aleatório na URL.
+
+IMPORTANTE: Supabase é um serviço gerenciado de infraestrutura realtime. Não é um backend que você precise programar ou hospedar, mas é um serviço externo necessário para atravessar navegadores/dispositivos diferentes pela internet.
+
+PASSO 1 — CRIAR O PROJETO SUPABASE
+---------------------------------
+1. Acesse https://supabase.com e crie uma conta/projeto.
+2. No projeto, abra Connect (ou Project Settings / API Keys, conforme a interface).
+3. Copie a Project URL.
+4. Copie a chave PUBLISHABLE (começa com sb_publishable_). Em projetos antigos pode aparecer a chave anon/legacy.
+5. NUNCA copie a chave secret ou service_role para o frontend.
+
+PASSO 2 — CONFIGURAR O FIGHTSCORE
+--------------------------------
+Abra js/config.js e substitua os dois valores de exemplo:
+
+window.FIGHTSCORE_CONFIG = {
+  SUPABASE_URL: 'https://SEU-PROJETO.supabase.co',
+  SUPABASE_ANON_KEY: 'sb_publishable_SUA_CHAVE'
+};
+
+Apesar do nome histórico SUPABASE_ANON_KEY no arquivo, cole ali a chave PUBLISHABLE (sb_publishable_...). Ela é apropriada para uso no navegador. Não use chave secret/service_role.
+
+PASSO 3 — PERMITIR CANAIS PÚBLICOS REALTIME
+------------------------------------------
+O FightScore usa um canal Broadcast público por sala (private: false), sem tabela de banco.
+No painel Supabase, abra Realtime / Settings e confira se “Allow public access to channels” está habilitado.
+Se essa opção estiver desabilitada, os clientes públicos não conseguirão entrar no canal. Não crie políticas SQL para esta versão pública.
+
+PASSO 4 — PUBLICAR O SITE
+------------------------
+Publique a pasta fightscore-pro inteira em uma hospedagem estática com HTTPS, por exemplo Cloudflare Pages, Netlify ou GitHub Pages.
+Não mude os caminhos relativos nem separe os arquivos js/ e css/.
+
+PASSO 5 — USAR NA COMPETIÇÃO
+----------------------------
+1. Abra https://SEU-DOMINIO/tela_inicial.html.
+2. Cadastre os atletas e clique em Salvar e abrir operador.
+3. No operador, aguarde “Conexão online: Conectado à nuvem”.
+4. Abra o placar TV pelo botão. Ele já recebe o mesmo código de sala.
+5. Clique em “Copiar URL para OBS”.
+6. No OBS, adicione uma fonte “Navegador” (Browser Source), cole a URL copiada e configure a resolução desejada (ex.: 1920 x 1080).
+7. Mantenha o painel do operador aberto durante a luta.
+
+Para abrir o placar TV em outro computador, use o botão Abrir placar TV e copie o endereço completo com ?room=... para esse computador.
+
+COMO FUNCIONA O CRONÔMETRO
+--------------------------
+O operador publica o horário final do cronômetro (deadline), e não depende de contar segundos no OBS. Cada tela calcula o tempo restante usando esse horário. Isso reduz deriva entre os dispositivos, mas pressupõe relógios dos dispositivos razoavelmente sincronizados.
+
+SEGURANÇA — LEIA ANTES DE USAR EM EVENTO
+---------------------------------------
+Esta versão usa um canal público e um UUID aleatório por sala. O UUID funciona como um código de acesso: quem tiver a URL completa da sala pode ouvir o canal e tecnicamente também enviar mensagens nele. Portanto:
+- Não publique a URL do overlay nem a URL do operador em redes sociais ou páginas públicas.
+- Compartilhe a URL do overlay apenas com a equipe técnica que configura o OBS.
+- Não coloque dados pessoais sensíveis dos atletas no estado transmitido.
+- A chave publishable pode aparecer no frontend; a chave secret/service_role nunca pode.
+
+Para produção com controle de acesso forte (operador autenticado e visualizadores somente leitura), a próxima evolução deverá usar autenticação e canais privados com políticas RLS, ou uma função/relay protegido. Esta versão prioriza implantação simples e não substitui essa camada de autorização.
+
+MODO LOCAL
+----------
+Se js/config.js ficar sem credenciais, o sistema continua funcionando localmente nas janelas do mesmo navegador/origem. A sincronização online entre Chrome e OBS Browser Source só fica ativa depois de configurar o Supabase e publicar em HTTPS.
+
+DIAGNÓSTICO
+-----------
+- “Supabase ainda não configurado”: confira js/config.js.
+- “SDK_ERROR”: verifique internet e se o CDN do Supabase está acessível.
+- “CHANNEL_ERROR” ou “TIMED_OUT”: confira a URL, a chave publishable, se o projeto está ativo e se os canais públicos estão habilitados.
+- Se o OBS ficar sem dados, confirme que a URL colada contém ?room=... e que é exatamente a URL copiada pelo operador.
+- O overlay só recebe atualizações enquanto o operador estiver conectado e com a página aberta.
+
+DOCUMENTAÇÃO OFICIAL
+--------------------
+Supabase Realtime Broadcast: https://supabase.com/docs/guides/realtime/broadcast
+Supabase Realtime Settings: https://supabase.com/docs/guides/realtime/settings
+Supabase API Keys: https://supabase.com/docs/guides/api/api-keys
